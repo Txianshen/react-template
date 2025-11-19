@@ -6,7 +6,6 @@ import AuthGuard from "../components/AuthGuard";
 import Layout from "../layout/Layout";
 
 // 页面组件
-import HomePage from "../pages/home/index";
 import LoginPage from "../pages/login";
 import SettingsPage from "../pages/home/components/SettingsPage";
 import BrowserAutomation from "../pages/home/components/BrowserAutomation";
@@ -42,7 +41,15 @@ const routesConfig: RouteObject[] = [
     children: [
       {
         index: true,
-        element: <HomePage />,
+        element: <Navigate to="/app/settings" replace />,
+      },
+      {
+        path: "settings",
+        element: <SettingsPage />,
+      },
+      {
+        path: "browser",
+        element: <BrowserAutomation />,
       },
       {
         path: "agents",
@@ -84,14 +91,6 @@ const routesConfig: RouteObject[] = [
             element: <PostPentestAgent />,
           },
         ],
-      },
-      {
-        path: "settings",
-        element: <SettingsPage />,
-      },
-      {
-        path: "browser",
-        element: <BrowserAutomation />,
       },
     ],
   },
