@@ -2,7 +2,8 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
-import { toast } from "sonner";
+// import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,15 +14,15 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+// import { loginApi } from "@/api/login";
 
 const loginSchema = z.object({
   username: z.string(),
   password: z.string(),
-  // username: z.string().min(1, "请输入用户名").max(50, "用户名不能超过50个字符"),
-  // password: z.string().min(1, "请输入密码").max(100, "密码不能超过100个字符"),
 });
 
 export default function LoginPage() {
+  const navigate = useNavigate();
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -30,26 +31,37 @@ export default function LoginPage() {
     },
   });
 
-  function onSubmit(data: z.infer<typeof loginSchema>) {
-    // TODO: 这里需要调用后端登录接口
-    console.log("登录数据:", data);
-
-    // 模拟登录验证
-    toast.success("登录成功!", {
-      description: `欢迎回来, ${data.username}`,
-      position: "top-center",
-    });
+  async function onSubmit(data: z.infer<typeof loginSchema>) {
+    console.log(data);
+    // 目前默认直接跳转
+    navigate("/app");
+    // 等后续登录接口有了再对接
+    // const response = await loginApi(data);
+    // if (response && response.token) {
+    //   // 保存 token 到 localStorage
+    //   localStorage.setItem("token", response.token);
+    //   localStorage.setItem("username", data.username);
+    //   toast.success("登录成功!", {
+    //     description: `欢迎回来, ${data.username}`,
+    //   });
+    //   // 跳转到主页
+    //   navigate("/app");
+    // } else {
+    //   toast.error("登录失败", {
+    //     description: response.message,
+    //   });
+    // }
   }
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background p-4">
       <Card className="w-full max-w-[480px] border-border/50 bg-card/50 backdrop-blur-sm gap-4">
-        <CardHeader className="space-y-1">
+        <CardHeader className="space-y-1 px-4">
           <CardTitle className="text-xl font-bold tracking-tight">
             登录
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="px-4">
           <form
             id="login-form"
             onSubmit={form.handleSubmit(onSubmit)}
@@ -114,7 +126,7 @@ export default function LoginPage() {
             <Button
               type="submit"
               form="login-form"
-              className="h-10 w-full rounded-full cursor-pointer bg-gradient-to-r from-cyan-500 to-emerald-500 text-lg font-semibold text-white shadow-lg transition-all hover:shadow-xl hover:scale-[1.02]"
+              className="h-10 w-full rounded-full cursor-pointer bg-gradient-to-r from-cyan-500 to-emerald-500 text-lg font-semibold text-white shadow-lg transition-all hover:shadow-xl hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
             >
               登录
             </Button>

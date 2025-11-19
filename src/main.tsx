@@ -10,5 +10,5 @@ createRoot(document.getElementById("root")!).render(
     <ThemeProvider attribute="class" defaultTheme="dark" forcedTheme="dark">
       <App />
     </ThemeProvider>
-  </StrictMode>,
+  </StrictMode>
 );
