@@ -1,5 +1,6 @@
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { tabsConfig } from "@/router";
 
 export default function Layout() {
   const navigate = useNavigate();
@@ -7,36 +8,13 @@ export default function Layout() {
 
   // 根据当前路由路径确定激活的 tab
   const getActiveTab = () => {
-    const path = location.pathname;
-    if (path === "/app" || path === "/app/settings") return "settings";
-    if (path.includes("/app/browser")) return "browser";
-    if (path.includes("/app/agents/general")) return "general";
-    if (path.includes("/app/agents/recon")) return "recon";
-    if (path.includes("/app/agents/port-scan")) return "port-scan";
-    if (path.includes("/app/agents/web-redteam")) return "web-redteam";
-    if (path.includes("/app/agents/apitest")) return "apitest";
-    if (path.includes("/app/agents/vulscan")) return "vulscan";
-    if (path.includes("/app/agents/vulexp")) return "vulexp";
-    if (path.includes("/app/agents/code-audit")) return "code-audit";
-    if (path.includes("/app/agents/post-pentest")) return "post-pentest";
-    return "settings"; // 默认值
+    const currentPath = location.pathname;
+    const activeTab = tabsConfig.find((tab) => tab.path === currentPath);
+    return activeTab ? activeTab.path : "/app/settings"; // 默认值
   };
 
   const handleTabChange = (value: string) => {
-    const routes: Record<string, string> = {
-      settings: "/app/settings",
-      browser: "/app/browser",
-      general: "/app/agents/general",
-      recon: "/app/agents/recon",
-      "port-scan": "/app/agents/port-scan",
-      "web-redteam": "/app/agents/web-redteam",
-      apitest: "/app/agents/apitest",
-      vulscan: "/app/agents/vulscan",
-      vulexp: "/app/agents/vulexp",
-      "code-audit": "/app/agents/code-audit",
-      "post-pentest": "/app/agents/post-pentest",
-    };
-    navigate(routes[value]);
+    navigate(value);
   };
 
   return (
@@ -86,17 +64,11 @@ export default function Layout() {
         className="mt-4"
       >
         <TabsList className="grid w-full grid-cols-11 bg-[#27272a]">
-          <TabsTrigger value="settings">⚙️ 智能体设置</TabsTrigger>
-          <TabsTrigger value="browser">🖥️ 浏览器自动化</TabsTrigger>
-          <TabsTrigger value="general">🤖 综合渗透智能体</TabsTrigger>
-          <TabsTrigger value="recon">✉️ 信息搜集智能体</TabsTrigger>
-          <TabsTrigger value="port-scan">💻 端口探测智能体</TabsTrigger>
-          <TabsTrigger value="web-redteam">🌐 Web红队智能体</TabsTrigger>
-          <TabsTrigger value="apitest">☁️ API测试智能体</TabsTrigger>
-          <TabsTrigger value="vulscan">🎯 漏洞扫描智能体</TabsTrigger>
-          <TabsTrigger value="vulexp">😈 漏洞利用智能体</TabsTrigger>
-          <TabsTrigger value="code-audit">📃 代码审计智能体</TabsTrigger>
-          <TabsTrigger value="post-pentest">🕸️ 后渗透智能体</TabsTrigger>
+          {tabsConfig.map((tab) => (
+            <TabsTrigger key={tab.path} value={tab.path}>
+              {tab.icon} {tab.title}
+            </TabsTrigger>
+          ))}
         </TabsList>
       </Tabs>
 
