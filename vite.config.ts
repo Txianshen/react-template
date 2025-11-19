@@ -17,4 +17,15 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  server: {
+    host: true, // 或者使用 '0.0.0.0'
+    port: 5173,
+    proxy: {
+      "/api": {
+        target: "http://localhost:3000", // 后端服务地址
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ""),
+      },
+    },
+  },
 });
