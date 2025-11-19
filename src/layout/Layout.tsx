@@ -44,7 +44,7 @@ export default function Layout() {
             backgroundClip: "text",
           }}
         >
-          Matrix 智攻矩阵 - AI智能攻防平台 V4.9
+          {import.meta.env.VITE_APP_NAME} {import.meta.env.VITE_APP_VERSION}
         </h1>
 
         {/* 底部高光条 */}
