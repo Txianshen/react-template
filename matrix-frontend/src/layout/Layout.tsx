@@ -1,14 +1,12 @@
-import { Outlet } from 'react-router-dom'
+import { Outlet } from "react-router-dom";
 // import { ThemeToggle } from '../components/ThemeToggle'
 export default function Layout() {
-
-
   return (
-    <div>    
+    <div>
       {/* <ThemeToggle /> */}
-      <main style={{ padding: '20px' }}>
+      <main style={{ padding: "20px" }}>
         <Outlet />
       </main>
     </div>
-  )
+  );
 }

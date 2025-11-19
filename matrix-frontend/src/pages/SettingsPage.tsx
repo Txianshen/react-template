@@ -3,5 +3,5 @@ export default function SettingsPage() {
     <div>
       <h1>设置页面</h1>
     </div>
-  )
+  );
 }

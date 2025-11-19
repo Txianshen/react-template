@@ -3,5 +3,5 @@ export default function BrowserAutomation() {
     <div>
       <h1>浏览器自动化</h1>
     </div>
-  )
+  );
 }

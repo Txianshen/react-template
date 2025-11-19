@@ -3,5 +3,5 @@ export default function CodeAuditAgent() {
     <div>
       <h1>📃 代码审计智能体</h1>
     </div>
-  )
+  );
 }

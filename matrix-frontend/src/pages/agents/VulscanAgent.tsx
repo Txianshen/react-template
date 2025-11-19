@@ -3,5 +3,5 @@ export default function VulscanAgent() {
     <div>
       <h1>🎯 漏洞扫描智能体</h1>
     </div>
-  )
+  );
 }

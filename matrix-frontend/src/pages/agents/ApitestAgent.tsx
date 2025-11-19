@@ -3,5 +3,5 @@ export default function ApitestAgent() {
     <div>
       <h1>☁️ API测试智能体</h1>
     </div>
-  )
+  );
 }

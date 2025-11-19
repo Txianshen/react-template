@@ -3,5 +3,5 @@ export default function PortScanAgent() {
     <div>
       <h1>💻 端口探测智能体</h1>
     </div>
-  )
+  );
 }

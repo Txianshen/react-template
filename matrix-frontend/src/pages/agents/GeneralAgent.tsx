@@ -3,5 +3,5 @@ export default function GeneralAgent() {
     <div>
       <h1>🤖 综合渗透智能体</h1>
     </div>
-  )
+  );
 }

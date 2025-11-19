@@ -3,5 +3,5 @@ export default function WebRedteamAgent() {
     <div>
       <h1>🌐 Web红队智能体</h1>
     </div>
-  )
+  );
 }

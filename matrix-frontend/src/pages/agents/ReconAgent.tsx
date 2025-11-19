@@ -3,5 +3,5 @@ export default function ReconAgent() {
     <div>
       <h1>✉️ 信息搜集智能体</h1>
     </div>
-  )
+  );
 }
