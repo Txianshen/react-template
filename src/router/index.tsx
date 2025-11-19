@@ -17,19 +17,19 @@ import Layout from "../layout/Layout";
 
 // 页面组件
 import LoginPage from "../pages/login";
-import SettingsPage from "../pages/home/components/SettingsPage";
-import BrowserAutomation from "../pages/home/components/BrowserAutomation";
+import SettingsPage from "../pages/home/SettingsPage";
+import BrowserAutomation from "../pages/home/BrowserAutomation";
 
 // 智能体页面
-import GeneralAgent from "../pages/home/components/agents/GeneralAgent";
-import ReconAgent from "../pages/home/components/agents/ReconAgent";
-import PortScanAgent from "../pages/home/components/agents/PortScanAgent";
-import WebRedteamAgent from "../pages/home/components/agents/WebRedteamAgent";
-import ApitestAgent from "../pages/home/components/agents/ApitestAgent";
-import VulscanAgent from "../pages/home/components/agents/VulscanAgent";
-import VulexpAgent from "../pages/home/components/agents/VulexpAgent";
-import CodeAuditAgent from "../pages/home/components/agents/CodeAuditAgent";
-import PostPentestAgent from "../pages/home/components/agents/PostPentestAgent";
+import GeneralAgent from "../pages/home/agents/GeneralAgent";
+import ReconAgent from "../pages/home/agents/ReconAgent";
+import PortScanAgent from "../pages/home/agents/PortScanAgent";
+import WebRedteamAgent from "../pages/home/agents/WebRedteamAgent";
+import ApitestAgent from "../pages/home/agents/ApitestAgent";
+import VulscanAgent from "../pages/home/agents/VulscanAgent";
+import VulexpAgent from "../pages/home/agents/VulexpAgent";
+import CodeAuditAgent from "../pages/home/agents/CodeAuditAgent";
+import PostPentestAgent from "../pages/home/agents/PostPentestAgent";
 
 // 路由配置
 const routesConfig: ExtendedRouteObject[] = [
@@ -61,7 +61,7 @@ const routesConfig: ExtendedRouteObject[] = [
       {
         path: "browser",
         element: <BrowserAutomation />,
-        meta: { title: "浏览器自动化", icon: "🖥️", showInTabs: true },
+        meta: { title: "浏览器自动化", icon: "⚙️", showInTabs: true },
       },
       {
         path: "agents",
