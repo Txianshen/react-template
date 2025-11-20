@@ -33,33 +33,70 @@ const ResponsiveTabs: React.FC<ResponsiveTabsProps> = ({
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const tabsContainerRef = useRef<HTMLDivElement>(null);
+  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const [visibleCount, setVisibleCount] = useState(tabItems.length);
+  const [tabWidths, setTabWidths] = useState<number[]>([]);
 
   const visibleTabs = tabItems.slice(0, visibleCount);
   const hiddenTabs = tabItems.slice(visibleCount);
+
+  // 测量所有 Tab 的实际宽度
   useEffect(() => {
+    const measureTabWidths = () => {
+      const widths = tabRefs.current.map((ref) => {
+        if (ref) {
+          // 获取元素的实际宽度,包括 padding 和 margin
+          const rect = ref.getBoundingClientRect();
+          const styles = window.getComputedStyle(ref);
+          const marginLeft = parseFloat(styles.marginLeft);
+          const marginRight = parseFloat(styles.marginRight);
+          return rect.width + marginLeft + marginRight;
+        }
+        return 0;
+      });
+      setTabWidths(widths);
+    };
+
+    // 延迟测量,确保 DOM 已渲染
+    const timer = setTimeout(measureTabWidths, 0);
+    return () => clearTimeout(timer);
+  }, [tabItems]);
+
+  useEffect(() => {
+    if (tabWidths.length === 0) return;
+
     const observer = new ResizeObserver((entries) => {
       const entry = entries[0];
-      const width = entry.contentRect.width;
-      const buttonWidth = 150; // 每个按钮占的宽度（包括间距）
+      const containerWidth = entry.contentRect.width;
       const moreButtonWidth = 60; // 扩展按钮宽度
-      let count;
-      const totalButtonsWidth = tabItems.length * buttonWidth;
-      if (totalButtonsWidth <= width) {
-        // 所有按钮都能显示，不显示扩展按钮
+
+      let totalWidth = 0;
+      let count = 0;
+      const totalTabsWidth = tabWidths.reduce((sum, w) => sum + w, 0);
+
+      if (totalTabsWidth <= containerWidth) {
+        // 所有按钮都能显示,不需要扩展按钮
         count = tabItems.length;
       } else {
-        // 按钮超出容器，需要显示扩展按钮
-        count = Math.floor((width - moreButtonWidth) / buttonWidth);
+        // 需要计算能显示多少个按钮
+        const availableWidth = containerWidth - moreButtonWidth;
+        for (let i = 0; i < tabWidths.length; i++) {
+          if (totalWidth + tabWidths[i] <= availableWidth) {
+            totalWidth += tabWidths[i];
+            count++;
+          } else {
+            break;
+          }
+        }
       }
-      console.log("width", width, count);
-      // 至少显示 2 个（防止全被隐藏）
+
+      // 至少显示 2 个(防止全被隐藏)
       setVisibleCount(Math.max(2, Math.min(tabItems.length, count)));
     });
 
     if (tabsContainerRef.current) observer.observe(tabsContainerRef.current);
     return () => observer.disconnect();
-  }, [tabItems.length]);
+  }, [tabItems.length, tabWidths]);
 
   // 处理下拉菜单中 tab 的点击
   const handleHiddenTabClick = (tabValue: string) => {
@@ -77,12 +114,32 @@ const ResponsiveTabs: React.FC<ResponsiveTabsProps> = ({
         ref={tabsContainerRef}
         className="flex w-full overflow-hidden justify-start"
       >
-        {visibleTabs.map((tab) => {
+        {visibleTabs.map((tab, index) => {
           return (
             <TabsTrigger
               key={tab.value}
               value={tab.value}
               className="!flex-none"
+              ref={(el) => {
+                tabRefs.current[index] = el;
+              }}
+            >
+              {tab.label}
+            </TabsTrigger>
+          );
+        })}
+        {/* 隐藏的 Tab 用于测量宽度 */}
+        {hiddenTabs.map((tab, index) => {
+          const actualIndex = visibleTabs.length + index;
+          return (
+            <TabsTrigger
+              key={`hidden-${tab.value}`}
+              value={tab.value}
+              className="!flex-none invisible absolute pointer-events-none"
+              ref={(el) => {
+                tabRefs.current[actualIndex] = el;
+              }}
+              tabIndex={-1}
             >
               {tab.label}
             </TabsTrigger>
