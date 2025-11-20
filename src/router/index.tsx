@@ -1,7 +1,8 @@
 import type { RouteObject } from "react-router-dom";
 import { Navigate, createHashRouter } from "react-router-dom";
-import { lazy } from "react";
+import { lazy, Suspense } from "react";
 import AuthGuard from "../components/AuthGuard";
+import PageLoader from "../components/PageLoader";
 
 // 扩展路由对象类型，添加元数据
 export type ExtendedRouteObject = RouteObject & {
@@ -52,7 +53,9 @@ const routesConfig: ExtendedRouteObject[] = [
     path: "/app",
     element: (
       <AuthGuard>
-        <Layout />
+        <Suspense fallback={<PageLoader />}>
+          <Layout />
+        </Suspense>
       </AuthGuard>
     ),
     children: [
