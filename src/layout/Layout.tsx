@@ -1,7 +1,5 @@
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { KeepAlive } from "react-activation";
 import ResponsiveTabs from "@/components/ResponsiveTabs";
-
 import { tabsConfig } from "@/router";
 
 export default function Layout() {
@@ -73,9 +71,7 @@ export default function Layout() {
 
       {/* 内容区域 */}
       <main className="p-4">
-        <KeepAlive id={location.pathname} name={location.pathname}>
-          <Outlet />
-        </KeepAlive>
+        <Outlet />
       </main>
 
       {/* CSS 动画定义 */}

@@ -1,9 +1,9 @@
 import type { RouteObject } from "react-router-dom";
 import { Navigate, createHashRouter } from "react-router-dom";
 import { lazy, Suspense } from "react";
+import { KeepAlive } from "react-activation";
 import AuthGuard from "../guards/AuthGuard";
 import PageLoader from "../components/PageLoader";
-
 // 扩展路由对象类型，添加元数据
 export type ExtendedRouteObject = RouteObject & {
   meta?: {
@@ -14,8 +14,8 @@ export type ExtendedRouteObject = RouteObject & {
   children?: ExtendedRouteObject[];
 };
 
-// 布局组件 - 立即加载
-import Layout from "../layout/Layout";
+// 布局组件 - 懒加载
+const Layout = lazy(() => import("../layout/Layout"));
 
 // 页面组件 - 懒加载
 const LoginPage = lazy(() => import("../pages/login"));
@@ -65,12 +65,24 @@ const routesConfig: ExtendedRouteObject[] = [
       },
       {
         path: "settings",
-        element: <SettingsPage />,
+        element: (
+          <KeepAlive id="/app/settings">
+            <Suspense>
+              <SettingsPage />
+            </Suspense>
+          </KeepAlive>
+        ),
         meta: { title: "智能体设置", icon: "⚙️", showInTabs: true },
       },
       {
         path: "browser",
-        element: <BrowserAutomation />,
+        element: (
+          <KeepAlive id="/app/browser">
+            <Suspense>
+              <BrowserAutomation />
+            </Suspense>
+          </KeepAlive>
+        ),
         meta: { title: "浏览器自动化", icon: "⚙️", showInTabs: true },
       },
       {
@@ -78,47 +90,101 @@ const routesConfig: ExtendedRouteObject[] = [
         children: [
           {
             path: "general",
-            element: <GeneralAgent />,
+            element: (
+              <KeepAlive id="/app/agents/general">
+                <Suspense>
+                  <GeneralAgent />
+                </Suspense>
+              </KeepAlive>
+            ),
             meta: { title: "综合渗透智能体", icon: "🤖", showInTabs: true },
           },
           {
             path: "recon",
-            element: <ReconAgent />,
+            element: (
+              <KeepAlive id="/app/agents/recon">
+                <Suspense>
+                  <ReconAgent />
+                </Suspense>
+              </KeepAlive>
+            ),
             meta: { title: "信息搜集智能体", icon: "✉️", showInTabs: true },
           },
           {
             path: "port-scan",
-            element: <PortScanAgent />,
+            element: (
+              <KeepAlive id="/app/agents/port-scan">
+                <Suspense>
+                  <PortScanAgent />
+                </Suspense>
+              </KeepAlive>
+            ),
             meta: { title: "端口探测智能体", icon: "💻", showInTabs: true },
           },
           {
             path: "web-redteam",
-            element: <WebRedteamAgent />,
+            element: (
+              <KeepAlive id="/app/agents/web-redteam">
+                <Suspense>
+                  <WebRedteamAgent />
+                </Suspense>
+              </KeepAlive>
+            ),
             meta: { title: "Web红队智能体", icon: "🌐", showInTabs: true },
           },
           {
             path: "apitest",
-            element: <ApitestAgent />,
+            element: (
+              <KeepAlive id="/app/agents/apitest">
+                <Suspense>
+                  <ApitestAgent />
+                </Suspense>
+              </KeepAlive>
+            ),
             meta: { title: "API测试智能体", icon: "☁️", showInTabs: true },
           },
           {
             path: "vulscan",
-            element: <VulscanAgent />,
+            element: (
+              <KeepAlive id="/app/agents/vulscan">
+                <Suspense>
+                  <VulscanAgent />
+                </Suspense>
+              </KeepAlive>
+            ),
             meta: { title: "漏洞扫描智能体", icon: "🎯", showInTabs: true },
           },
           {
             path: "vulexp",
-            element: <VulexpAgent />,
+            element: (
+              <KeepAlive id="/app/agents/vulexp">
+                <Suspense>
+                  <VulexpAgent />
+                </Suspense>
+              </KeepAlive>
+            ),
             meta: { title: "漏洞利用智能体", icon: "😈", showInTabs: true },
           },
           {
             path: "code-audit",
-            element: <CodeAuditAgent />,
+            element: (
+              <KeepAlive id="/app/agents/code-audit">
+                <Suspense>
+                  <CodeAuditAgent />
+                </Suspense>
+              </KeepAlive>
+            ),
             meta: { title: "代码审计智能体", icon: "📃", showInTabs: true },
           },
           {
             path: "post-pentest",
-            element: <PostPentestAgent />,
+            element: (
+              <KeepAlive id="/app/agents/post-pentest">
+                <Suspense>
+                  <PostPentestAgent />
+                </Suspense>
+              </KeepAlive>
+            ),
             meta: { title: "后渗透智能体", icon: "🕸️", showInTabs: true },
           },
         ],
