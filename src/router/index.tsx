@@ -1,7 +1,7 @@
 import type { RouteObject } from "react-router-dom";
 import { Navigate, createHashRouter } from "react-router-dom";
 import { lazy, Suspense } from "react";
-import AuthGuard from "../components/AuthGuard";
+import AuthGuard from "../guards/AuthGuard";
 import PageLoader from "../components/PageLoader";
 
 // 扩展路由对象类型，添加元数据
