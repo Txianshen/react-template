@@ -1,5 +1,6 @@
 import type { RouteObject } from "react-router-dom";
 import { Navigate, createHashRouter } from "react-router-dom";
+import { lazy } from "react";
 import AuthGuard from "../components/AuthGuard";
 
 // 扩展路由对象类型，添加元数据
@@ -12,24 +13,30 @@ export type ExtendedRouteObject = RouteObject & {
   children?: ExtendedRouteObject[];
 };
 
-// 布局组件
+// 布局组件 - 立即加载
 import Layout from "../layout/Layout";
 
-// 页面组件
-import LoginPage from "../pages/login";
-import SettingsPage from "../pages/home/SettingsPage";
-import BrowserAutomation from "../pages/home/BrowserAutomation";
+// 页面组件 - 懒加载
+const LoginPage = lazy(() => import("../pages/login"));
+const SettingsPage = lazy(() => import("../pages/home/SettingsPage"));
+const BrowserAutomation = lazy(() => import("../pages/home/BrowserAutomation"));
 
-// 智能体页面
-import GeneralAgent from "../pages/home/agents/GeneralAgent";
-import ReconAgent from "../pages/home/agents/ReconAgent";
-import PortScanAgent from "../pages/home/agents/PortScanAgent";
-import WebRedteamAgent from "../pages/home/agents/WebRedteamAgent";
-import ApitestAgent from "../pages/home/agents/ApitestAgent";
-import VulscanAgent from "../pages/home/agents/VulscanAgent";
-import VulexpAgent from "../pages/home/agents/VulexpAgent";
-import CodeAuditAgent from "../pages/home/agents/CodeAuditAgent";
-import PostPentestAgent from "../pages/home/agents/PostPentestAgent";
+// 智能体页面 - 懒加载
+const GeneralAgent = lazy(() => import("../pages/home/agents/GeneralAgent"));
+const ReconAgent = lazy(() => import("../pages/home/agents/ReconAgent"));
+const PortScanAgent = lazy(() => import("../pages/home/agents/PortScanAgent"));
+const WebRedteamAgent = lazy(
+  () => import("../pages/home/agents/WebRedteamAgent")
+);
+const ApitestAgent = lazy(() => import("../pages/home/agents/ApitestAgent"));
+const VulscanAgent = lazy(() => import("../pages/home/agents/VulscanAgent"));
+const VulexpAgent = lazy(() => import("../pages/home/agents/VulexpAgent"));
+const CodeAuditAgent = lazy(
+  () => import("../pages/home/agents/CodeAuditAgent")
+);
+const PostPentestAgent = lazy(
+  () => import("../pages/home/agents/PostPentestAgent")
+);
 
 // 路由配置
 const routesConfig: ExtendedRouteObject[] = [

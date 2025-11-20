@@ -31,4 +31,10 @@ export default defineConfig([
       "prettier/prettier": "error", // Prettier 错误显示为 ESLint 错误
     },
   },
+  {
+    files: ["src/components/ui/**/*.{ts,tsx}"],
+    rules: {
+      "react-refresh/only-export-components": "off", // shadcn/ui 组件允许导出 hooks
+    },
+  },
 ]);
