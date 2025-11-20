@@ -1,5 +1,6 @@
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import ResponsiveTabs from "@/components/ResponsiveTabs";
+
 import { tabsConfig } from "@/router";
 
 export default function Layout() {
@@ -18,12 +19,11 @@ export default function Layout() {
   };
 
   return (
-    <div className="min-h-screen bg-[#1a1a1a]">
+    <div className="mx-auto min-h-screen w-full max-w-7xl px-8 py-4 2xl:max-w-screen-2xl">
       {/* 标题区域 */}
       <div
-        className="relative overflow-hidden rounded-xl bg-gradient-to-r from-[#1a1a2e] via-[#16213e] to-[#0f3460] p-4 text-center shadow-[0_12px_24px_rgba(0,0,0,0.3),0_0_0_1px_rgba(91,192,222,0.4)_inset]"
+        className="relative overflow-hidden rounded-xl bg-gradient-to-r from-[#1a1a2e] via-[#16213e] to-[#0f3460] p-4 mx-3 my-2.5 text-center shadow-[0_12px_24px_rgba(0,0,0,0.3),0_0_0_1px_rgba(91,192,222,0.4)_inset]"
         style={{
-          margin: "0rem 0",
           fontFamily: "Arial, sans-serif",
         }}
       >
@@ -57,23 +57,21 @@ export default function Layout() {
         />
       </div>
 
-      {/* Tabs 导航 */}
-      <Tabs
-        value={getActiveTab()}
-        onValueChange={handleTabChange}
-        className="mt-4"
-      >
-        <TabsList className="grid w-full grid-cols-11 bg-[#27272a]">
-          {tabsConfig.map((tab) => (
-            <TabsTrigger key={tab.path} value={tab.path}>
-              {tab.icon} {tab.title}
-            </TabsTrigger>
-          ))}
-        </TabsList>
-      </Tabs>
+      {/* Tabs 导航 - 使用 ResponsiveTabs 组件 */}
+      <div className="mt-4">
+        <ResponsiveTabs
+          value={getActiveTab()}
+          onValueChange={handleTabChange}
+          tabItems={tabsConfig.map((tab) => ({
+            value: tab.path,
+            label: `${tab.icon} ${tab.title}`,
+            content: null, // 内容由 Outlet 渲染，不需要在这里定义
+          }))}
+        />
+      </div>
 
       {/* 内容区域 */}
-      <main className="p-6">
+      <main className="p-4">
         <Outlet />
       </main>
 
