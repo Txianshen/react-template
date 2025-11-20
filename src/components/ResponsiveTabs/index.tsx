@@ -7,7 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ChevronDownIcon } from "lucide-react";
+import { MoreHorizontal } from "lucide-react";
 
 // 定义 TabItem 类型
 interface TabItem {
@@ -34,8 +34,9 @@ const ResponsiveTabs: React.FC<ResponsiveTabsProps> = ({
 
   const tabsContainerRef = useRef<HTMLDivElement>(null);
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
-  const [visibleCount, setVisibleCount] = useState(tabItems.length);
+  const [visibleCount, setVisibleCount] = useState(0); // 初始为0,避免闪烁
   const [tabWidths, setTabWidths] = useState<number[]>([]);
+  const [isInitialized, setIsInitialized] = useState(false); // 标记是否完成初始化
 
   const visibleTabs = tabItems.slice(0, visibleCount);
   const hiddenTabs = tabItems.slice(visibleCount);
@@ -55,21 +56,22 @@ const ResponsiveTabs: React.FC<ResponsiveTabsProps> = ({
         return 0;
       });
       setTabWidths(widths);
+      setIsInitialized(true); // 标记初始化完成
     };
 
-    // 延迟测量,确保 DOM 已渲染
-    const timer = setTimeout(measureTabWidths, 0);
-    return () => clearTimeout(timer);
+    // 使用 requestAnimationFrame 确保 DOM 完全渲染
+    const rafId = requestAnimationFrame(() => {
+      measureTabWidths();
+    });
+    return () => cancelAnimationFrame(rafId);
   }, [tabItems]);
 
+  // 计算可见Tab数量
   useEffect(() => {
-    if (tabWidths.length === 0) return;
+    if (tabWidths.length === 0 || !tabsContainerRef.current) return;
 
-    const observer = new ResizeObserver((entries) => {
-      const entry = entries[0];
-      const containerWidth = entry.contentRect.width;
+    const calculateVisibleCount = (containerWidth: number) => {
       const moreButtonWidth = 60; // 扩展按钮宽度
-
       let totalWidth = 0;
       let count = 0;
       const totalTabsWidth = tabWidths.reduce((sum, w) => sum + w, 0);
@@ -91,10 +93,21 @@ const ResponsiveTabs: React.FC<ResponsiveTabsProps> = ({
       }
 
       // 至少显示 2 个(防止全被隐藏)
-      setVisibleCount(Math.max(2, Math.min(tabItems.length, count)));
+      return Math.max(2, Math.min(tabItems.length, count));
+    };
+
+    // 首次计算
+    const initialWidth = tabsContainerRef.current.getBoundingClientRect().width;
+    setVisibleCount(calculateVisibleCount(initialWidth));
+
+    // 监听容器大小变化
+    const observer = new ResizeObserver((entries) => {
+      const entry = entries[0];
+      const containerWidth = entry.contentRect.width;
+      setVisibleCount(calculateVisibleCount(containerWidth));
     });
 
-    if (tabsContainerRef.current) observer.observe(tabsContainerRef.current);
+    observer.observe(tabsContainerRef.current);
     return () => observer.disconnect();
   }, [tabItems.length, tabWidths]);
 
@@ -112,14 +125,18 @@ const ResponsiveTabs: React.FC<ResponsiveTabsProps> = ({
     >
       <TabsList
         ref={tabsContainerRef}
-        className="flex w-full overflow-hidden justify-start"
+        className="flex w-full overflow-hidden justify-start !bg-transparent !p-0 border-b border-gray-300 dark:border-gray-700 rounded-none"
+        style={{
+          opacity: isInitialized ? 1 : 0,
+          transition: "opacity 0.15s ease-in",
+        }}
       >
         {visibleTabs.map((tab, index) => {
           return (
             <TabsTrigger
               key={tab.value}
               value={tab.value}
-              className="!flex-none"
+              className="!rounded-none cursor-pointer !border-0 !border-b-2 border-transparent data-[state=active]:!bg-transparent data-[state=active]:!shadow-none data-[state=active]:!text-[#10b981] data-[state=active]:!border-b-[#10b981]"
               ref={(el) => {
                 tabRefs.current[index] = el;
               }}
@@ -135,7 +152,7 @@ const ResponsiveTabs: React.FC<ResponsiveTabsProps> = ({
             <TabsTrigger
               key={`hidden-${tab.value}`}
               value={tab.value}
-              className="!flex-none invisible absolute pointer-events-none"
+              className="invisible absolute pointer-events-none cursor-pointer"
               ref={(el) => {
                 tabRefs.current[actualIndex] = el;
               }}
@@ -157,20 +174,28 @@ const ResponsiveTabs: React.FC<ResponsiveTabsProps> = ({
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="h-10 px-3 data-[state=active]:bg-transparent"
+                  className="h-10 cursor-pointer px-3 data-[state=active]:bg-transparent focus-visible:ring-0 focus-visible:outline-none"
                 >
-                  <ChevronDownIcon className="ml-1 h-4 w-4" />
+                  <MoreHorizontal className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                {hiddenTabs.map((tab) => (
-                  <DropdownMenuItem
-                    key={tab.value}
-                    onClick={() => handleHiddenTabClick(tab.value)}
-                  >
-                    {tab.label}
-                  </DropdownMenuItem>
-                ))}
+              <DropdownMenuContent align="end" className="">
+                {hiddenTabs.map((tab) => {
+                  const isActive = value === tab.value;
+                  return (
+                    <DropdownMenuItem
+                      key={tab.value}
+                      onClick={() => handleHiddenTabClick(tab.value)}
+                      className={
+                        isActive
+                          ? "text-[#10b981] font-medium border-b-2 border-[#10b981] rounded-none"
+                          : ""
+                      }
+                    >
+                      {tab.label}
+                    </DropdownMenuItem>
+                  );
+                })}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
