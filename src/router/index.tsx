@@ -19,7 +19,7 @@ const Layout = lazy(() => import("../layout/Layout"));
 
 // 页面组件 - 懒加载
 const LoginPage = lazy(() => import("../pages/login"));
-const SettingsPage = lazy(() => import("../pages/home/SettingsPage"));
+const SettingsPage = lazy(() => import("../pages/home/settingsPage/index"));
 const BrowserAutomation = lazy(() => import("../pages/home/BrowserAutomation"));
 
 // 智能体页面 - 懒加载

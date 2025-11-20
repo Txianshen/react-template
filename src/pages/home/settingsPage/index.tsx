@@ -12,43 +12,8 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { toast } from "sonner";
-
-// 模型配置常量
-const MODEL_OPTIONS = {
-  DeepSeek: {
-    label: "DeepSeek 模型",
-    choices: ["deepseek-v3", "deepseek-r1"],
-  },
-  OpenAI: {
-    label: "OpenAI 模型",
-    choices: [
-      "gpt-4.1",
-      "gpt-4.1-mini",
-      "gpt-4o",
-      "chatgpt-4o-latest",
-      "gpt-4o-mini",
-      "o4-mini",
-      "o3-mini",
-    ],
-  },
-  通义千问: {
-    label: "千问模型",
-    choices: [
-      "qwen3-max",
-      "qwen3-30b-a3b-thinking-2507",
-      "qwen3-30b-a3b-instruct-2507",
-      "qwen3-235b-a22b-thinking-2507",
-      "qwen3-235b-a22b-instruct-2507",
-      "qwen2.5-32b-instruct",
-      "qwen2.5-coder-32b-instruct",
-      "qwq-32b",
-      "qwen3-32b",
-      "qwen3-coder-30b-a3b-instruct",
-    ],
-  },
-};
-
-type ProviderType = keyof typeof MODEL_OPTIONS | "自定义模型";
+import { MODEL_OPTIONS, type ProviderType } from "@/lib/constance";
+import WrapBox from "@/pages/home/settingsPage/components/wrapBox";
 
 export default function SettingsPage() {
   // 产品信息（只读）
@@ -59,14 +24,22 @@ export default function SettingsPage() {
   const auxFunctions = "后渗透辅助、杀软查询、提权辅助、常用命令、代码审计等";
 
   // 状态管理
+  // 对话轮数
   const [turns, setTurns] = useState<number>(50);
+  // 模型提供商
   const [provider, setProvider] = useState<ProviderType>("DeepSeek");
+  // 选择的模型
   const [selectedModel, setSelectedModel] = useState<string>("deepseek-v3");
+  // 自定义模型参数
+  // 自定义模型名称
   const [customModelName, setCustomModelName] = useState<string>("ds_v31");
+  // 自定义模型API密钥
   const [customApiKey, setCustomApiKey] = useState<string>("");
+  // 自定义模型基础URL
   const [customBaseUrl, setCustomBaseUrl] = useState<string>(
     "http://192.168.3.10:8080/v1"
   );
+  // 工作模式
   const [mode, setMode] = useState<"Pentest" | "CTF">("Pentest");
 
   // 处理提供商切换
@@ -98,86 +71,83 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="space-y-6 p-6">
-      {/* 产品简介 */}
-      <div className="space-y-2">
-        <Label>产品简介</Label>
-        <Textarea
-          value={productIntro}
-          readOnly
-          className="min-h-[100px] resize-none bg-muted"
-        />
-      </div>
+    <div className="space-y-6">
+      <div className="border rounded-lg border-[#3f3f46] bg-[#27272a]">
+        {/* 产品简介 */}
+        <WrapBox title="产品简介">
+          <Textarea
+            value={productIntro}
+            readOnly
+            className="min-h-[80px]  resize-none bg-muted focus-visible:ring-0 border-none focus-visible:outline-none !bg-[#3f3f46]"
+          />
+        </WrapBox>
 
-      {/* 主要功能 */}
-      <div className="space-y-2">
-        <Label>主要功能</Label>
-        <Textarea
-          value={mainFunctions}
-          readOnly
-          className="min-h-[60px] resize-none bg-muted"
-        />
-      </div>
+        {/* 主要功能 */}
+        <WrapBox title="主要功能">
+          <Textarea
+            value={mainFunctions}
+            readOnly
+            className="min-h-[40px] resize-none bg-muted focus-visible:ring-0 border-none focus-visible:outline-none !bg-[#3f3f46]"
+          />
+        </WrapBox>
 
-      {/* 辅助功能 */}
-      <div className="space-y-2">
-        <Label>辅助功能</Label>
-        <Textarea
-          value={auxFunctions}
-          readOnly
-          className="min-h-[60px] resize-none bg-muted"
-        />
-      </div>
+        {/* 辅助功能 */}
+        <WrapBox title="辅助功能">
+          <Textarea
+            value={auxFunctions}
+            readOnly
+            className="min-h-[40px] resize-none bg-muted focus-visible:ring-0 border-none focus-visible:outline-none !bg-[#3f3f46]"
+          />
+        </WrapBox>
 
-      {/* 最大对话轮数 */}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <Label>最大对话轮数</Label>
-          <span className="text-sm font-medium text-primary">{turns}</span>
-        </div>
-        <p className="text-sm text-muted-foreground">请在20到100间选择</p>
-        <Slider
-          value={[turns]}
-          onValueChange={(value) => setTurns(value[0])}
-          min={20}
-          max={100}
-          step={1}
-          className="w-full"
-        />
-      </div>
+        {/* 最大对话轮数 */}
+        <WrapBox title="最大对话轮数" description="请在20到100间选择">
+          <div className="flex items-center gap-4 mt-4">
+            <span className="text-sm text-muted-foreground">20</span>
+            <Slider
+              value={[turns]}
+              onValueChange={(value) => setTurns(value[0])}
+              min={20}
+              max={100}
+              step={1}
+              className="cursor-pointer flex-1 [&_[role=slider]]:bg-emerald-500 [&_[role=slider]]:border-emerald-500 [&>span:first-child]:bg-white [&_.bg-primary]:bg-emerald-500"
+            />
+            <span className="text-sm text-muted-foreground">100</span>
+          </div>
+        </WrapBox>
 
-      {/* 模型提供商 */}
-      <div className="space-y-4">
-        <Label>模型提供商</Label>
-        <p className="text-sm text-muted-foreground">
-          请首先选择您要使用的模型提供商
-        </p>
-        <RadioGroup value={provider} onValueChange={handleProviderChange}>
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="DeepSeek" id="provider-deepseek" />
-            <Label htmlFor="provider-deepseek" className="cursor-pointer">
-              DeepSeek
-            </Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="OpenAI" id="provider-openai" />
-            <Label htmlFor="provider-openai" className="cursor-pointer">
-              OpenAI
-            </Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="通义千问" id="provider-qwen" />
-            <Label htmlFor="provider-qwen" className="cursor-pointer">
-              通义千问
-            </Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="自定义模型" id="provider-custom" />
-            <Label htmlFor="provider-custom" className="cursor-pointer">
-              自定义模型
-            </Label>
-          </div>
-        </RadioGroup>
+        {/* 模型提供商 */}
+        <WrapBox
+          title="模型提供商"
+          description="请首先选择您要使用的模型提供商"
+        >
+          <RadioGroup value={provider} onValueChange={handleProviderChange}>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="DeepSeek" id="provider-deepseek" />
+              <Label htmlFor="provider-deepseek" className="cursor-pointer">
+                DeepSeek
+              </Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="OpenAI" id="provider-openai" />
+              <Label htmlFor="provider-openai" className="cursor-pointer">
+                OpenAI
+              </Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="通义千问" id="provider-qwen" />
+              <Label htmlFor="provider-qwen" className="cursor-pointer">
+                通义千问
+              </Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="自定义模型" id="provider-custom" />
+              <Label htmlFor="provider-custom" className="cursor-pointer">
+                自定义模型
+              </Label>
+            </div>
+          </RadioGroup>
+        </WrapBox>
       </div>
 
       {/* 具体模型选择 (非自定义时显示) */}
