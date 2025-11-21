@@ -35,14 +35,11 @@ export default function StatusPanel({
   };
 
   return (
-    <AccordionItem
-      value="status"
-      className="border rounded-lg bg-background px-4"
-    >
+    <AccordionItem value="status" className="border rounded-lg  ">
       <AccordionTrigger className="hover:no-underline">
         当前智能体状态
       </AccordionTrigger>
-      <AccordionContent className="space-y-4 pt-3">
+      <AccordionContent className="space-y-4 pt-0">
         <div className="space-y-2">
           <Label className="text-base font-semibold">智能体说明</Label>
           <Textarea
@@ -73,7 +70,7 @@ export default function StatusPanel({
           <Input
             value={isRunning ? "[+] 运行中..." : "[-] 未启动..."}
             readOnly
-            className={`bg-muted ${isRunning ? "text-green-500" : "text-gray-500"}`}
+            className={`bg-muted`}
           />
         </div>
 

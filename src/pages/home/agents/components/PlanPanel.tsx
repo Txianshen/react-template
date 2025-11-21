@@ -3,19 +3,22 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Streamdown } from "streamdown";
 
 export default function PlanPanel() {
+  // 示例 Markdown 内容，实际使用时应该从 props 传入
+  const markdownContent = `🔍 暂无渗透计划`;
+
   return (
-    <AccordionItem
-      value="plan"
-      className="border rounded-lg bg-background px-4"
-    >
+    <AccordionItem value="plan" className="border rounded-lg ">
       <AccordionTrigger className="hover:no-underline">
         当前任务状态
       </AccordionTrigger>
-      <AccordionContent className="pt-3">
-        <div className="p-3 bg-muted rounded-md text-sm">
-          <p className="text-muted-foreground">🔍 暂无渗透计划</p>
+      <AccordionContent className="pt-0">
+        <div className="rounded-md text-sm">
+          <Streamdown className="prose prose-sm dark:prose-invert max-w-none">
+            {markdownContent}
+          </Streamdown>
         </div>
       </AccordionContent>
     </AccordionItem>

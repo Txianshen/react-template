@@ -34,14 +34,11 @@ export default function ReportPanel() {
   };
 
   return (
-    <AccordionItem
-      value="report"
-      className="border rounded-lg bg-background px-4"
-    >
+    <AccordionItem value="report" className="border rounded-lg ">
       <AccordionTrigger className="hover:no-underline">
         渗透报告下载
       </AccordionTrigger>
-      <AccordionContent className="space-y-3 pt-3">
+      <AccordionContent className="space-y-3 pt-0">
         <div className="space-y-2">
           <Label className="text-sm">选择报告文件</Label>
           <Select value={selectedReport} onValueChange={setSelectedReport}>

@@ -70,7 +70,7 @@ export default function Layout() {
       </div>
 
       {/* 内容区域 */}
-      <main className="p-4">
+      <main className="py-4">
         <Outlet />
       </main>
 

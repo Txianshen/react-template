@@ -3,7 +3,7 @@
 
 export default function ChatArea({ placeholder }: { placeholder: string }) {
   return (
-    <div className="flex flex-col h-full bg-muted/30 rounded-lg border">
+    <div className="flex flex-col h-[680px] bg-muted/30 rounded-lg border">
       {/* 消息列表区域 - 占位 */}
       <div className="flex-1 p-4 overflow-y-auto">
         <div className="flex items-center justify-center h-full text-muted-foreground">

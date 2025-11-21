@@ -24,14 +24,11 @@ export default function HistoryPanel() {
   ];
 
   return (
-    <AccordionItem
-      value="history"
-      className="border rounded-lg bg-background px-4"
-    >
+    <AccordionItem value="history" className="border rounded-lg ">
       <AccordionTrigger className="hover:no-underline">
         从历史渗透记录继续
       </AccordionTrigger>
-      <AccordionContent className="space-y-3 pt-3">
+      <AccordionContent className="space-y-3 pt-0">
         <div className="space-y-2">
           <Label className="text-sm">选择历史渗透记录</Label>
           <Select value={selectedHistory} onValueChange={setSelectedHistory}>

@@ -20,7 +20,7 @@ export default function AgentSidebar({
   console.log("agentType,", agentType);
 
   return (
-    <div className="w-80 space-y-4 overflow-y-auto p-4 bg-muted/30 rounded-lg">
+    <div className="w-115 space-y-4 overflow-y-auto p-4 bg-muted/30 rounded-lg">
       <Accordion
         type="multiple"
         defaultValue={["status"]}
