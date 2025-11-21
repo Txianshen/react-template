@@ -14,17 +14,17 @@ interface AgentConfig {
 }
 
 /**
- * 智能体页面布局组件
+ * 智能体容器组件
  */
-interface AgentPageLayoutProps {
+interface AgentContainerProps {
   config: AgentConfig;
   className?: string;
 }
 
-export default function AgentPageLayout({
+export default function AgentContainer({
   config,
   className = "flex h-full gap-4",
-}: AgentPageLayoutProps) {
+}: AgentContainerProps) {
   return (
     <div className={className}>
       {/* 左侧 Sidebar */}
