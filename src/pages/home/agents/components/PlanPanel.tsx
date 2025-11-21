@@ -3,7 +3,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Streamdown } from "streamdown";
+import { MessageResponse } from "@/components/ai-elements/message";
 
 export default function PlanPanel() {
   // 示例 Markdown 内容，实际使用时应该从 props 传入
@@ -16,9 +16,9 @@ export default function PlanPanel() {
       </AccordionTrigger>
       <AccordionContent className="pt-0">
         <div className="rounded-md text-sm">
-          <Streamdown className="prose prose-sm dark:prose-invert max-w-none">
+          <MessageResponse className="prose prose-sm dark:prose-invert max-w-none">
             {markdownContent}
-          </Streamdown>
+          </MessageResponse>
         </div>
       </AccordionContent>
     </AccordionItem>
