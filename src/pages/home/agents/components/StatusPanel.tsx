@@ -40,8 +40,8 @@ export default function StatusPanel({
         当前智能体状态
       </AccordionTrigger>
       <AccordionContent className="space-y-4 pt-0">
-        <div className="space-y-2">
-          <Label className="text-base font-semibold">智能体说明</Label>
+        <div className="space-y-2 border rounded-md py-2.5 px-3">
+          <Label className="text-sm">智能体说明</Label>
           <Textarea
             value={description}
             readOnly
@@ -49,7 +49,7 @@ export default function StatusPanel({
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-3 border rounded-md py-2.5 px-3">
           <div className="space-y-2">
             <Label className="text-sm">当前大语言模型</Label>
             <Input value={currentModel} readOnly className="bg-muted" />
@@ -60,12 +60,9 @@ export default function StatusPanel({
           </div>
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-2 border rounded-md py-2.5 px-3">
           <Label className="text-sm">当前运行智能体</Label>
           <Input value={agentName} readOnly className="bg-muted" />
-        </div>
-
-        <div className="space-y-2">
           <Label className="text-sm">后台运行情况</Label>
           <Input
             value={isRunning ? "[+] 运行中..." : "[-] 未启动..."}
@@ -78,7 +75,7 @@ export default function StatusPanel({
           <Button
             onClick={handleStart}
             disabled={isRunning}
-            className="bg-gradient-to-r from-cyan-500 to-emerald-500 hover:from-cyan-600 hover:to-emerald-600"
+            className="text-[#fff] bg-gradient-to-r from-cyan-500 to-emerald-500 hover:from-cyan-600 hover:to-emerald-600 rounded-full"
           >
             启动后台智能体
           </Button>
@@ -86,6 +83,7 @@ export default function StatusPanel({
             onClick={handleStop}
             disabled={!isRunning}
             variant="destructive"
+            className="rounded-full"
           >
             停止后台智能体
           </Button>

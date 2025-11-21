@@ -16,9 +16,7 @@ export default function PlanPanel() {
       </AccordionTrigger>
       <AccordionContent className="pt-0">
         <div className="rounded-md text-sm">
-          <MessageResponse className="prose prose-sm dark:prose-invert max-w-none">
-            {markdownContent}
-          </MessageResponse>
+          <MessageResponse>{markdownContent}</MessageResponse>
         </div>
       </AccordionContent>
     </AccordionItem>

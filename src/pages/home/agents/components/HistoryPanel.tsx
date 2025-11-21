@@ -29,7 +29,7 @@ export default function HistoryPanel() {
         从历史渗透记录继续
       </AccordionTrigger>
       <AccordionContent className="space-y-3 pt-0">
-        <div className="space-y-2">
+        <div className="space-y-2 border rounded-md py-2.5 px-3">
           <Label className="text-sm">选择历史渗透记录</Label>
           <Select value={selectedHistory} onValueChange={setSelectedHistory}>
             <SelectTrigger>

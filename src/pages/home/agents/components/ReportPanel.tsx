@@ -39,7 +39,7 @@ export default function ReportPanel() {
         渗透报告下载
       </AccordionTrigger>
       <AccordionContent className="space-y-3 pt-0">
-        <div className="space-y-2">
+        <div className="space-y-2 border rounded-md py-2.5 px-3">
           <Label className="text-sm">选择报告文件</Label>
           <Select value={selectedReport} onValueChange={setSelectedReport}>
             <SelectTrigger>
@@ -56,14 +56,19 @@ export default function ReportPanel() {
         </div>
 
         <div className="grid grid-cols-2 gap-2">
-          <Button onClick={refreshReportList} variant="outline" size="sm">
+          <Button
+            onClick={refreshReportList}
+            variant="outline"
+            size="sm"
+            className="rounded-full"
+          >
             刷新报告列表
           </Button>
           <Button
             onClick={downloadReport}
             disabled={!selectedReport}
             size="sm"
-            className="bg-gradient-to-r from-cyan-500 to-emerald-500 hover:from-cyan-600 hover:to-emerald-600"
+            className="text-[#fff] bg-gradient-to-r from-cyan-500 to-emerald-500 hover:from-cyan-600 hover:to-emerald-600 rounded-full"
           >
             下载渗透测试报告
           </Button>
