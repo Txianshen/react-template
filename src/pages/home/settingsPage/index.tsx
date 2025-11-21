@@ -152,11 +152,11 @@ export default function SettingsPage() {
 
       {/* 具体模型选择 (非自定义时显示) */}
       {provider !== "自定义模型" && provider in MODEL_OPTIONS && (
-        <div className="space-y-4">
-          <Label>
-            {MODEL_OPTIONS[provider as keyof typeof MODEL_OPTIONS].label}
-          </Label>
-          <p className="text-sm text-muted-foreground">请选择具体模型</p>
+        <WrapBox
+          title={MODEL_OPTIONS[provider as keyof typeof MODEL_OPTIONS].label}
+          description="请选择具体模型"
+          className="border border-[#3f3f46] bg-[#27272a]"
+        >
           <RadioGroup value={selectedModel} onValueChange={setSelectedModel}>
             {MODEL_OPTIONS[provider as keyof typeof MODEL_OPTIONS].choices.map(
               (model) => (
@@ -169,54 +169,61 @@ export default function SettingsPage() {
               )
             )}
           </RadioGroup>
-        </div>
+        </WrapBox>
       )}
 
       {/* 自定义模型配置 */}
       {provider === "自定义模型" && (
-        <Accordion type="single" collapsible defaultValue="custom-model">
-          <AccordionItem value="custom-model">
-            <AccordionTrigger>自定义模型设置</AccordionTrigger>
-            <AccordionContent className="space-y-4 pt-4">
-              <div className="space-y-2">
-                <Label htmlFor="custom-model-name">模型名称 (Model Name)</Label>
-                <Input
-                  id="custom-model-name"
-                  placeholder="例如: gpt-4o-mini"
-                  value={customModelName}
-                  onChange={(e) => setCustomModelName(e.target.value)}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="custom-api-key">API Key</Label>
-                <Input
-                  id="custom-api-key"
-                  type="password"
-                  placeholder="例如: sk-..."
-                  value={customApiKey}
-                  onChange={(e) => setCustomApiKey(e.target.value)}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="custom-base-url">Base URL</Label>
-                <Input
-                  id="custom-base-url"
-                  placeholder="留空则使用默认值"
-                  value={customBaseUrl}
-                  onChange={(e) => setCustomBaseUrl(e.target.value)}
-                />
-              </div>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
+        <WrapBox className="border border-[#3f3f46] bg-[#27272a]">
+          <Accordion type="single" collapsible defaultValue="custom-model">
+            <AccordionItem value="custom-model" className="px-0">
+              <AccordionTrigger className="py-0 hover:no-underline">
+                自定义模型设置
+              </AccordionTrigger>
+              <AccordionContent className="space-y-4 pt-4">
+                <div className="space-y-2">
+                  <Label htmlFor="custom-model-name">
+                    模型名称 (Model Name)
+                  </Label>
+                  <Input
+                    id="custom-model-name"
+                    placeholder="例如: gpt-4o-mini"
+                    value={customModelName}
+                    onChange={(e) => setCustomModelName(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="custom-api-key">API Key</Label>
+                  <Input
+                    id="custom-api-key"
+                    type="password"
+                    placeholder="例如: sk-..."
+                    value={customApiKey}
+                    onChange={(e) => setCustomApiKey(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="custom-base-url">Base URL</Label>
+                  <Input
+                    id="custom-base-url"
+                    placeholder="留空则使用默认值"
+                    value={customBaseUrl}
+                    onChange={(e) => setCustomBaseUrl(e.target.value)}
+                  />
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+        </WrapBox>
       )}
 
       {/* 工作模式 */}
-      <div className="space-y-4">
-        <Label>工作模式</Label>
-        <p className="text-sm text-muted-foreground">
-          请选择您要使用的综合智能体工作模式
-        </p>
+
+      <WrapBox
+        title="工作模式"
+        description="请选择您要使用的综合智能体工作模式"
+        className="border border-[#3f3f46] bg-[#27272a]"
+      >
         <RadioGroup
           value={mode}
           onValueChange={(v) => setMode(v as "Pentest" | "CTF")}
@@ -234,8 +241,7 @@ export default function SettingsPage() {
             </Label>
           </div>
         </RadioGroup>
-      </div>
-
+      </WrapBox>
       {/* 应用按钮 */}
       <Button
         onClick={handleApplySettings}
