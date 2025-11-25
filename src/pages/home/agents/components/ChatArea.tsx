@@ -1,6 +1,6 @@
 // ChatArea 组件占位符
 // 待后端 SSE 接口和消息格式确定后实现
-import { ChatInput } from "./chatInput.tsx";
+import { ChatInput } from "@/components/chat/components/ChatInput.tsx";
 import ChatHistory from "./ChatHistory.tsx";
 import type { FileUIPart } from "ai";
 
