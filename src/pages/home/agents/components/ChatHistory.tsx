@@ -2,8 +2,13 @@ import {
   Conversation,
   ConversationContent,
 } from "@/components/ai-elements/conversation";
-import { Message, MessageContent, MessageResponse } from "@/components/chat";
+import {
+  Message,
+  MessageContent,
+  MessageResponse,
+} from "@/components/ai-elements/message";
 import { AgentSwitchCard } from "@/components/chat/components/AgentSwitchCard";
+import { Tool } from "@/components/chat/components/Tool";
 import { useMemo } from "react";
 import { MOCK_MESSAGE_LIST } from "@/lib/constance";
 
@@ -26,7 +31,7 @@ export default function ChatHistory() {
 
   return (
     <Conversation className="h-full">
-      <ConversationContent>
+      <ConversationContent className="gap-4">
         {/* 添加 Reasoning 组件demo示例
         <Reasoning
           isStreaming={false}
@@ -49,19 +54,12 @@ export default function ChatHistory() {
           if (message.metadata?.title?.includes("调用")) {
             return (
               <div key={index} className="w-full max-w-[80%]">
-                <div className="bg-gray-100 border border-gray-300 rounded-lg">
-                  <div className="flex items-center justify-between p-3 border-b border-gray-300">
-                    <div className="font-medium text-sm">
-                      {message.metadata.title}
-                    </div>
-                    <div className="text-xs text-gray-500">
-                      {message.metadata.duration?.toFixed(2)}s
-                    </div>
-                  </div>
-                  <div className="p-3">
-                    <MessageResponse>{message.content}</MessageResponse>
-                  </div>
-                </div>
+                <Tool
+                  title={message.metadata.title}
+                  content={message.content}
+                  status="done"
+                  duration={message.metadata.duration}
+                />
               </div>
             );
           }
