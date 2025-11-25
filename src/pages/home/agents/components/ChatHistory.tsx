@@ -3,7 +3,7 @@ import {
   ConversationContent,
 } from "@/components/ai-elements/conversation";
 import { Message, MessageContent, MessageResponse } from "@/components/chat";
-// import Reasoning from "@/components/chat/components/Reasoning";
+import { AgentSwitchCard } from "@/components/chat/components/AgentSwitchCard";
 import { useMemo } from "react";
 import { MOCK_MESSAGE_LIST } from "@/lib/constance";
 
@@ -37,14 +37,10 @@ export default function ChatHistory() {
           if (message.metadata?.title?.includes("智能体发生切换")) {
             return (
               <div key={index} className="w-full max-w-[80%]">
-                <div className="bg-blue-100 border border-blue-300 rounded-lg p-3">
-                  <div className="text-blue-800 font-medium text-sm">
-                    {message.metadata.title}
-                  </div>
-                  <div className="text-blue-700 text-sm mt-1">
-                    {message.content}
-                  </div>
-                </div>
+                <AgentSwitchCard
+                  title={message.metadata.title}
+                  content={message.content}
+                />
               </div>
             );
           }
