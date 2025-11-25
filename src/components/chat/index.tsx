@@ -5,6 +5,6 @@
 // 4 选择项组件（yes/no）
 import Reasoning from "./components/Reasoning";
 import { Tool } from "./components/Tool";
-import { AgentSwitchCard } from "./components/AgentSwitchCard";
-
-export { Reasoning, Tool, AgentSwitchCard };
+import { AgentSwitchCard } from "./components/AgentSwitchMessage";
+import OptionsMessage from "./components/OptionsMessage";
+export { Reasoning, Tool, AgentSwitchCard, OptionsMessage };

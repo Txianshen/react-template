@@ -7,10 +7,12 @@ import {
   MessageContent,
   MessageResponse,
 } from "@/components/ai-elements/message";
-import { AgentSwitchCard } from "@/components/chat/components/AgentSwitchCard";
+import { AgentSwitchCard } from "@/components/chat/components/AgentSwitchMessage";
 import { Tool } from "@/components/chat/components/Tool";
+import { OptionsMessage } from "@/components/chat/components/OptionsMessage";
 import { useMemo } from "react";
 import { MOCK_MESSAGE_LIST } from "@/lib/constance";
+import type { ToolUIPart } from "ai";
 
 // 定义消息类型
 export type MessageType = {
@@ -21,7 +23,7 @@ export type MessageType = {
     status?: string;
   } | null;
   content: string;
-  options: unknown[] | null;
+  options: { value: string; label: string }[] | null;
 };
 
 // 定义 ChatHistory 组件
@@ -59,6 +61,28 @@ export default function ChatHistory() {
                   content={message.content}
                   status="done"
                   duration={message.metadata.duration}
+                />
+              </div>
+            );
+          }
+
+          // 选择项消息
+          if (message.options && message.options.length > 0) {
+            // 确定状态值，如果消息中有状态则使用，否则默认为 "approval-requested"
+            const status: ToolUIPart["state"] =
+              (message.metadata?.status as ToolUIPart["state"]) ||
+              "approval-requested";
+
+            return (
+              <div key={index} className="w-full max-w-[80%]">
+                <OptionsMessage
+                  content={message.content}
+                  options={message.options}
+                  status={status}
+                  onOptionSelect={(value) => {
+                    // 在实际应用中，这里应该调用相应的处理函数
+                    console.log(`User selected: ${value}`);
+                  }}
                 />
               </div>
             );

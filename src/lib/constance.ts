@@ -309,4 +309,13 @@ export const MOCK_MESSAGE_LIST = [
       "工具正在执行中...\n\n💻当前命令: `nuclei -u http://10.97.59.142:12824 -severity medium,high,critical -ni -silent`  ⏰超时设置: `1000s`\n工具执行结果 `stdout` : \n\n工具执行结果 `stderr` : ",
     options: [],
   },
+  {
+    role: "assistant",
+    metadata: null,
+    content: "请是否执行",
+    options: [
+      { value: "Yes", label: "Yes" },
+      { value: "No", label: "No" },
+    ],
+  },
 ];
