@@ -23,11 +23,20 @@ interface OptionsMessageProps {
 export const OptionsMessage = ({
   content,
   options,
-  status = "approval-requested",
+  status,
   onOptionSelect,
 }: OptionsMessageProps) => {
+  // 设置默认状态值
+  const defaultStatus: ToolUIPart["state"] =
+    "approval-requested" as ToolUIPart["state"];
+  const actualStatus = status || defaultStatus;
+
   return (
-    <Confirmation approval={{ id: nanoid() }} state={status}>
+    <Confirmation
+      approval={{ id: nanoid() }}
+      state={actualStatus}
+      className="bg-[#27272a]"
+    >
       <ConfirmationTitle>
         <ConfirmationRequest>{content}</ConfirmationRequest>
         <ConfirmationAccepted>
@@ -46,7 +55,9 @@ export const OptionsMessage = ({
             onClick={() => {
               onOptionSelect?.(option.value);
             }}
-            disabled={status !== "approval-requested"}
+            disabled={
+              actualStatus !== ("approval-requested" as ToolUIPart["state"])
+            }
           >
             {option.label}
           </ConfirmationAction>

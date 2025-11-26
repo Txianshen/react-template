@@ -7,4 +7,5 @@ import Reasoning from "./components/Reasoning";
 import { Tool } from "./components/Tool";
 import { AgentSwitchCard } from "./components/AgentSwitchMessage";
 import OptionsMessage from "./components/OptionsMessage";
-export { Reasoning, Tool, AgentSwitchCard, OptionsMessage };
+import { ActionsMessage } from "./components/AssisActions";
+export { Reasoning, Tool, AgentSwitchCard, OptionsMessage, ActionsMessage };
