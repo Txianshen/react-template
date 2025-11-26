@@ -28,7 +28,9 @@ axiosInstance.interceptors.request.use(
 // 响应拦截器
 axiosInstance.interceptors.response.use(
   (response: AxiosResponse) => {
-    return response.data;
+    // 目前后端返回值类型并没有统一封装成code data msg这样的形式 后续优化再说
+    // return response.data;
+    return response;
   },
   (error: AxiosError) => {
     // 错误处理

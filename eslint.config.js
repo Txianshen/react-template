@@ -37,4 +37,10 @@ export default defineConfig([
       "react-refresh/only-export-components": "off", // shadcn/ui 组件允许导出 hooks
     },
   },
+  {
+    files: ["**/*.{ts,tsx}"],
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off",
+    },
+  },
 ]);

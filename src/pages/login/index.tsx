@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
-// import { toast } from "sonner";
+import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
@@ -14,11 +14,11 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-// import { loginApi } from "@/api/login";
+import { loginApi } from "@/api/login";
 
 const loginSchema = z.object({
-  username: z.string(),
-  password: z.string(),
+  username: z.string().min(1, "用户名不能为空"),
+  password: z.string().min(1, "密码不能为空"),
 });
 
 export default function LoginPage() {
@@ -33,24 +33,22 @@ export default function LoginPage() {
 
   async function onSubmit(data: z.infer<typeof loginSchema>) {
     console.log(data);
-    // 目前默认直接跳转
-    navigate("/app");
-    // 等后续登录接口有了再对接
-    // const response = await loginApi(data);
-    // if (response && response.token) {
-    //   // 保存 token 到 localStorage
-    //   localStorage.setItem("token", response.token);
-    //   localStorage.setItem("username", data.username);
-    //   toast.success("登录成功!", {
-    //     description: `欢迎回来, ${data.username}`,
-    //   });
-    //   // 跳转到主页
-    //   navigate("/app");
-    // } else {
-    //   toast.error("登录失败", {
-    //     description: response.message,
-    //   });
-    // }
+    // navigate("/app");
+    const response = await loginApi(data);
+    // 检查后端返回的数据结构
+    if (response && response.access_token) {
+      // 保存 token 到 localStorage，使用后端返回的 access_token
+      localStorage.setItem("token", response.access_token);
+      localStorage.setItem("username", response.username);
+      localStorage.setItem("role", response.role);
+      toast.success("登录成功!", {
+        description: `欢迎回来, ${response.username}`,
+      });
+      // 跳转到主页
+      navigate("/app");
+    } else {
+      toast.error("登录失败");
+    }
   }
 
   return (
@@ -72,7 +70,7 @@ export default function LoginPage() {
                 name="username"
                 control={form.control}
                 render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
+                  <Field>
                     <FieldLabel
                       htmlFor="username"
                       className="text-base font-medium"
@@ -86,7 +84,9 @@ export default function LoginPage() {
                       placeholder="Type here..."
                       aria-invalid={fieldState.invalid}
                       autoComplete="username"
-                      className="h-10 rounded-lg bg-muted/50 text-base border-none"
+                      className={`h-10 rounded-lg bg-muted/50 text-base border-none ${
+                        fieldState.invalid ? "border-destructive border-2" : ""
+                      }`}
                     />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
@@ -99,7 +99,7 @@ export default function LoginPage() {
                 name="password"
                 control={form.control}
                 render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
+                  <Field>
                     <FieldLabel
                       htmlFor="password"
                       className="text-base font-medium"
@@ -113,7 +113,9 @@ export default function LoginPage() {
                       placeholder="Type here..."
                       aria-invalid={fieldState.invalid}
                       autoComplete="current-password"
-                      className="h-10 rounded-lg bg-muted/50 text-base border-none"
+                      className={`h-10 rounded-lg bg-muted/50 text-base border-none ${
+                        fieldState.invalid ? "border-destructive border-2" : ""
+                      }`}
                     />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
