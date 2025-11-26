@@ -12,10 +12,14 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 import { MODEL_OPTIONS, type ProviderType } from "@/lib/constance";
 import WrapBox from "@/pages/home/settingsPage/components/wrapBox";
+import { logoutApi } from "@/api/login";
 
 export default function SettingsPage() {
+  const navigate = useNavigate();
+
   // 产品信息（只读）
   const productIntro =
     "本产品是一款基于AI智能体的下一代渗透测试辅助平台，深度整合攻击性安全测试与防御性安全能力，通过智能化Agent技术实现渗透测试全流程赋能。系统搭载多模态神经网络引擎，可自动完成网络空间资产测绘、脆弱性深度挖掘、攻击路径智能推导及漏洞利用链验证，为安全团队提供动态攻击面管理与实战化风险评估解决方案。";
@@ -68,6 +72,32 @@ export default function SettingsPage() {
 
     // TODO: 实际应该调用 API
     // await axios.post('/api/settings/apply', config);
+  };
+
+  // 登出功能
+  const handleLogout = async () => {
+    try {
+      // 调用后端登出接口
+      await logoutApi();
+
+      // 清除本地存储的token
+      localStorage.removeItem("token");
+      localStorage.removeItem("username");
+      localStorage.removeItem("role");
+
+      // 显示登出成功提示
+      toast.success("已成功登出");
+
+      // 跳转到登录页面
+      navigate("/login");
+    } catch (error) {
+      // 即使后端调用失败，也清除本地token并跳转到登录页
+      localStorage.removeItem("token");
+      localStorage.removeItem("username");
+      localStorage.removeItem("role");
+      toast.success("已成功登出");
+      navigate("/login");
+    }
   };
 
   return (
@@ -242,14 +272,24 @@ export default function SettingsPage() {
           </div>
         </RadioGroup>
       </WrapBox>
-      {/* 应用按钮 */}
-      <Button
-        onClick={handleApplySettings}
-        className="w-full bg-gradient-to-r from-cyan-500 to-emerald-500 hover:from-cyan-600 hover:to-emerald-600"
-        size="lg"
-      >
-        应用全局设置
-      </Button>
+
+      {/* 登出和应用按钮 */}
+      <div className="flex gap-4">
+        {/* <Button
+          onClick={handleLogout}
+          className="flex-1 bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600"
+          size="lg"
+        >
+          登出
+        </Button> */}
+        <Button
+          onClick={handleApplySettings}
+          className="flex-1 bg-gradient-to-r from-cyan-500 to-emerald-500 hover:from-cyan-600 hover:to-emerald-600"
+          size="lg"
+        >
+          应用全局设置
+        </Button>
+      </div>
     </div>
   );
 }
