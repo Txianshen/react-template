@@ -91,6 +91,7 @@ export default function SettingsPage() {
       // 跳转到登录页面
       navigate("/login");
     } catch (error) {
+      console.error("登出失败:", error);
       // 即使后端调用失败，也清除本地token并跳转到登录页
       localStorage.removeItem("token");
       localStorage.removeItem("username");
@@ -275,13 +276,13 @@ export default function SettingsPage() {
 
       {/* 登出和应用按钮 */}
       <div className="flex gap-4">
-        {/* <Button
+        <Button
           onClick={handleLogout}
           className="flex-1 bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600"
           size="lg"
         >
           登出
-        </Button> */}
+        </Button>
         <Button
           onClick={handleApplySettings}
           className="flex-1 bg-gradient-to-r from-cyan-500 to-emerald-500 hover:from-cyan-600 hover:to-emerald-600"

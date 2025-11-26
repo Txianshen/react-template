@@ -31,6 +31,8 @@ export default function LoginPage() {
     },
   });
 
+  localStorage.setItem("token", "123");
+
   async function onSubmit(data: z.infer<typeof loginSchema>) {
     console.log(data);
     // navigate("/app");
