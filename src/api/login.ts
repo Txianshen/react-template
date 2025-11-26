@@ -19,7 +19,7 @@ export interface LogoutResponse {
 }
 
 // 登录接口
-export const loginApi = async (data: LoginRequest): Promise<LoginResponse> => {
+export const loginApi = async (data: LoginRequest): Promise<any> => {
   const response = await axiosInstance.post<LoginResponse>("/auth/login", data);
   return response.data;
 };

@@ -33,22 +33,24 @@ export default function LoginPage() {
 
   async function onSubmit(data: z.infer<typeof loginSchema>) {
     console.log(data);
-    navigate("/app");
-    // const response = await loginApi(data);
+    // navigate("/app");
+    const response = await loginApi(data);
     // 检查后端返回的数据结构
-    // if (response && response.access_token) {
-    //   // 保存 token 到 localStorage，使用后端返回的 access_token
-    //   localStorage.setItem("token", response.access_token);
-    //   localStorage.setItem("username", response.username);
-    //   localStorage.setItem("role", response.role);
-    //   toast.success("登录成功!", {
-    //     description: `欢迎回来, ${response.username}`,
-    //   });
-    //   // 跳转到主页
-    //   navigate("/app");
-    // } else {
-    //   toast.error("登录失败");
-    // }
+    if (response && response.access_token) {
+      // 保存 token 到 localStorage，使用后端返回的 access_token
+      localStorage.setItem("token", response.access_token);
+      localStorage.setItem("username", response.username);
+      localStorage.setItem("role", response.role);
+      toast.success("登录成功!", {
+        description: `欢迎回来, ${response.username}`,
+      });
+      // 跳转到主页
+      navigate("/app");
+    } else {
+      toast.error("登录失败", {
+        description: response.detail || "请检查你的用户名和密码",
+      });
+    }
   }
 
   return (
