@@ -3,7 +3,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { RadioGroup } from "@/components/ui/radio-group";
 import { Input } from "@/components/ui/input";
 import { RotateCcw } from "lucide-react";
 import {
@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { type ProviderType, PRODUCT_INFO } from "@/lib/constance";
 import WrapBox from "@/pages/home/settingsPage/components/wrapBox";
+import StyledRadioItem from "@/pages/home/settingsPage/components/StyledRadioItem";
 import { logoutApi } from "@/api/login";
 // import { agentsAPI } from "@/api/agents";
 
@@ -65,10 +66,16 @@ export default function SettingsPage() {
   const [provider, setProvider] = useState<ProviderType>("");
   // 选择的模型
   const [selectedModel, setSelectedModel] = useState<string>("");
-  // 自定义模型参数（使用组件本地 state，每次进入页面时从后端获取最新值）
-  const [customModelName, setCustomModelName] = useState<string>("");
-  const [customApiKey, setCustomApiKey] = useState<string>("");
-  const [customBaseUrl, setCustomBaseUrl] = useState<string>("");
+  // 自定义模型参数(使用组件本地 state,每次进入页面时从后端获取最新值)
+  const [customModelConfig, setCustomModelConfig] = useState<{
+    model_name: string;
+    api_key: string;
+    base_url: string;
+  }>({
+    model_name: "",
+    api_key: "",
+    base_url: "",
+  });
   // 工作模式
   const [mode, setMode] = useState<"Pentest" | "CTF">("Pentest");
 
@@ -87,9 +94,13 @@ export default function SettingsPage() {
     const config = {
       turns,
       provider,
-      model: provider === "自定义模型" ? customModelName : selectedModel,
-      apiKey: provider === "自定义模型" ? customApiKey : undefined,
-      baseUrl: provider === "自定义模型" ? customBaseUrl : undefined,
+      model:
+        provider === "自定义模型"
+          ? customModelConfig.model_name
+          : selectedModel,
+      apiKey: provider === "自定义模型" ? customModelConfig.api_key : undefined,
+      baseUrl:
+        provider === "自定义模型" ? customModelConfig.base_url : undefined,
       mode,
     };
 
@@ -169,9 +180,11 @@ export default function SettingsPage() {
 
       // 更新组件本地的 state
       setDynamicModelOptions(dynamicOptions);
-      setCustomModelName(customTemplate.model_name);
-      setCustomApiKey(customTemplate.api_key);
-      setCustomBaseUrl(customTemplate.base_url);
+      setCustomModelConfig({
+        model_name: customTemplate.model_name,
+        api_key: customTemplate.api_key,
+        base_url: customTemplate.base_url,
+      });
     };
 
     fetchModels();
@@ -273,31 +286,26 @@ export default function SettingsPage() {
           title="模型提供商"
           description="请首先选择您要使用的模型提供商"
         >
-          <RadioGroup value={provider} onValueChange={handleProviderChange}>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="DeepSeek" id="provider-deepseek" />
-              <Label htmlFor="provider-deepseek" className="cursor-pointer">
-                DeepSeek
-              </Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="OpenAI" id="provider-openai" />
-              <Label htmlFor="provider-openai" className="cursor-pointer">
-                OpenAI
-              </Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="通义千问" id="provider-qwen" />
-              <Label htmlFor="provider-qwen" className="cursor-pointer">
-                通义千问
-              </Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="自定义模型" id="provider-custom" />
-              <Label htmlFor="provider-custom" className="cursor-pointer">
-                自定义模型
-              </Label>
-            </div>
+          <RadioGroup
+            value={provider}
+            onValueChange={handleProviderChange}
+            className="flex"
+          >
+            {Object.keys(dynamicModelOptions).map((providerKey) => (
+              <StyledRadioItem
+                key={providerKey}
+                value={providerKey}
+                id={`provider-${providerKey}`}
+                label={providerKey}
+                isSelected={provider === providerKey}
+              />
+            ))}
+            <StyledRadioItem
+              value="自定义模型"
+              id="provider-custom"
+              label="自定义模型"
+              isSelected={provider === "自定义模型"}
+            />
           </RadioGroup>
         </WrapBox>
       </div>
@@ -309,14 +317,19 @@ export default function SettingsPage() {
           description="请选择具体模型"
           className="border border-[#3f3f46] bg-[#27272a]"
         >
-          <RadioGroup value={selectedModel} onValueChange={setSelectedModel}>
+          <RadioGroup
+            value={selectedModel}
+            onValueChange={setSelectedModel}
+            className="flex flex-wrap"
+          >
             {dynamicModelOptions[provider].choices.map((model) => (
-              <div key={model} className="flex items-center space-x-2">
-                <RadioGroupItem value={model} id={`model-${model}`} />
-                <Label htmlFor={`model-${model}`} className="cursor-pointer">
-                  {model}
-                </Label>
-              </div>
+              <StyledRadioItem
+                key={model}
+                value={model}
+                id={`model-${model}`}
+                label={model}
+                isSelected={selectedModel === model}
+              />
             ))}
           </RadioGroup>
         </WrapBox>
@@ -338,8 +351,13 @@ export default function SettingsPage() {
                   <Input
                     id="custom-model-name"
                     placeholder="例如: gpt-4o-mini"
-                    value={customModelName}
-                    onChange={(e) => setCustomModelName(e.target.value)}
+                    value={customModelConfig.model_name}
+                    onChange={(e) =>
+                      setCustomModelConfig((prev) => ({
+                        ...prev,
+                        model_name: e.target.value,
+                      }))
+                    }
                   />
                 </div>
                 <div className="space-y-2">
@@ -348,8 +366,13 @@ export default function SettingsPage() {
                     id="custom-api-key"
                     type="password"
                     placeholder="例如: sk-..."
-                    value={customApiKey}
-                    onChange={(e) => setCustomApiKey(e.target.value)}
+                    value={customModelConfig.api_key}
+                    onChange={(e) =>
+                      setCustomModelConfig((prev) => ({
+                        ...prev,
+                        api_key: e.target.value,
+                      }))
+                    }
                   />
                 </div>
                 <div className="space-y-2">
@@ -357,8 +380,13 @@ export default function SettingsPage() {
                   <Input
                     id="custom-base-url"
                     placeholder="留空则使用默认值"
-                    value={customBaseUrl}
-                    onChange={(e) => setCustomBaseUrl(e.target.value)}
+                    value={customModelConfig.base_url}
+                    onChange={(e) =>
+                      setCustomModelConfig((prev) => ({
+                        ...prev,
+                        base_url: e.target.value,
+                      }))
+                    }
                   />
                 </div>
               </AccordionContent>
@@ -377,19 +405,20 @@ export default function SettingsPage() {
         <RadioGroup
           value={mode}
           onValueChange={(v) => setMode(v as "Pentest" | "CTF")}
+          className="flex"
         >
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="Pentest" id="mode-pentest" />
-            <Label htmlFor="mode-pentest" className="cursor-pointer">
-              Pentest
-            </Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="CTF" id="mode-ctf" />
-            <Label htmlFor="mode-ctf" className="cursor-pointer">
-              CTF
-            </Label>
-          </div>
+          <StyledRadioItem
+            value="Pentest"
+            id="mode-pentest"
+            label="Pentest"
+            isSelected={mode === "Pentest"}
+          />
+          <StyledRadioItem
+            value="CTF"
+            id="mode-ctf"
+            label="CTF"
+            isSelected={mode === "CTF"}
+          />
         </RadioGroup>
       </WrapBox>
 
