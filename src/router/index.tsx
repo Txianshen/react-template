@@ -2,8 +2,8 @@ import type { RouteObject } from "react-router-dom";
 import { Navigate, createHashRouter } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import { KeepAlive } from "react-activation";
-import AuthGuard from "../guards/AuthGuard";
-import PageLoader from "../components/PageLoader";
+import AuthGuard from "../guards/auth-guard";
+import PageLoader from "../components/page-loader";
 // 扩展路由对象类型，添加元数据
 export type ExtendedRouteObject = RouteObject & {
   meta?: {
@@ -15,40 +15,40 @@ export type ExtendedRouteObject = RouteObject & {
 };
 
 // 布局组件 - 懒加载
-const Layout = lazy(() => import("../layout/Layout"));
+const Layout = lazy(() => import("../layouts/Layout"));
 
 // 页面组件 - 懒加载
 const LoginPage = lazy(() => import("../pages/login"));
-const SettingsPage = lazy(() => import("../pages/home/settingsPage/index"));
+const SettingsPage = lazy(() => import("../pages/home/settings/index"));
 const BrowserAutomation = lazy(
-  () => import("../pages/home/browserAutomation/index")
+  () => import("../pages/home/browser-automation/index")
 );
 
 // 智能体页面 - 懒加载
 const GeneralAgent = lazy(
-  () => import("../pages/home/agents/GeneralAgent/index")
+  () => import("../pages/home/agents/general-agent/index")
 );
-const ReconAgent = lazy(() => import("../pages/home/agents/ReconAgent/index"));
+const ReconAgent = lazy(() => import("../pages/home/agents/recon-agent/index"));
 const PortScanAgent = lazy(
-  () => import("../pages/home/agents/PortScanAgent/index")
+  () => import("../pages/home/agents/port-scan-agent/index")
 );
 const WebRedteamAgent = lazy(
-  () => import("../pages/home/agents/WebRedteamAgent/index")
+  () => import("../pages/home/agents/web-redteam-agent/index")
 );
 const ApitestAgent = lazy(
-  () => import("../pages/home/agents/ApitestAgent/index")
+  () => import("../pages/home/agents/apitest-agent/index")
 );
 const VulscanAgent = lazy(
-  () => import("../pages/home/agents/VulscanAgent/index")
+  () => import("../pages/home/agents/vulscan-agent/index")
 );
 const VulexpAgent = lazy(
-  () => import("../pages/home/agents/VulexpAgent/index")
+  () => import("../pages/home/agents/vulexp-agent/index")
 );
 const CodeAuditAgent = lazy(
-  () => import("../pages/home/agents/CodeAuditAgent/index")
+  () => import("../pages/home/agents/code-audit-agent/index")
 );
 const PostPentestAgent = lazy(
-  () => import("../pages/home/agents/PostPentestAgent/index")
+  () => import("../pages/home/agents/post-pentest-agent/index")
 );
 
 // 路由配置

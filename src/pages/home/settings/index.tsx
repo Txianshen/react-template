@@ -15,8 +15,8 @@ import {
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { type ProviderType, PRODUCT_INFO } from "@/lib/constance";
-import WrapBox from "@/pages/home/settingsPage/components/wrapBox";
-import StyledRadioItem from "@/pages/home/settingsPage/components/StyledRadioItem";
+import WrapBox from "@/pages/home/settings/components/WrapBox";
+import StyledRadioItem from "@/pages/home/settings/components/StyledRadioItem";
 import { logoutApi } from "@/api/login";
 // import { agentsAPI } from "@/api/agents";
 

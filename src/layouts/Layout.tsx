@@ -1,5 +1,5 @@
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import ResponsiveTabs from "@/components/ResponsiveTabs";
+import ResponsiveTabs from "@/components/responsive-tabs";
 import { tabsConfig } from "@/router";
 import { AliveScope } from "react-activation";
 export default function Layout() {

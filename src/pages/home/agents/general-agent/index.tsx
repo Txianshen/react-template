@@ -1,5 +1,5 @@
 import ChatArea from "../components/ChatArea";
-import GeneralAgentSidebar from "./GeneralAgentSidebar";
+import GeneralAgentSidebar from "./components/GeneralAgentSidebar";
 import { AGENT_CONFIGS } from "@/lib/constance";
 
 export default function GeneralAgent() {
