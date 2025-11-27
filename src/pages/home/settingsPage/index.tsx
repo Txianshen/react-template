@@ -16,19 +16,10 @@ import { useNavigate } from "react-router-dom";
 import { type ProviderType } from "@/lib/constance";
 import WrapBox from "@/pages/home/settingsPage/components/wrapBox";
 import { logoutApi } from "@/api/login";
-// import { agentsAPI } from "@/api/agents";
-import { useAgentStore } from "@/store/agentStore";
+import { agentsAPI } from "@/api/agents";
 
 export default function SettingsPage() {
   const navigate = useNavigate();
-
-  // 从 store 中获取动态模型选项和更新方法
-  const dynamicModelOptions = useAgentStore(
-    (state) => state.dynamicModelOptions
-  );
-  const updateDynamicModelOptions = useAgentStore(
-    (state) => state.updateDynamicModelOptions
-  );
 
   // 产品信息（只读）
   const productIntro =
@@ -38,21 +29,20 @@ export default function SettingsPage() {
   const auxFunctions = "后渗透辅助、杀软查询、提权辅助、常用命令、代码审计等";
 
   // 状态管理
+  // 动态模型选项（从后端获取）
+  const [dynamicModelOptions, setDynamicModelOptions] = useState<
+    Record<string, { label: string; choices: string[] }>
+  >({});
   // 对话轮数
   const [turns, setTurns] = useState<number>(50);
   // 模型提供商
-  const [provider, setProvider] = useState<ProviderType>("DeepSeek");
+  const [provider, setProvider] = useState<ProviderType>("");
   // 选择的模型
-  const [selectedModel, setSelectedModel] = useState<string>("deepseek-v3");
-  // 自定义模型参数
-  // 自定义模型名称
-  const [customModelName, setCustomModelName] = useState<string>("ds_v31");
-  // 自定义模型API密钥
+  const [selectedModel, setSelectedModel] = useState<string>("");
+  // 自定义模型参数（使用组件本地 state，每次进入页面时从后端获取最新值）
+  const [customModelName, setCustomModelName] = useState<string>("");
   const [customApiKey, setCustomApiKey] = useState<string>("");
-  // 自定义模型基础URL
-  const [customBaseUrl, setCustomBaseUrl] = useState<string>(
-    "http://192.168.3.10:8080/v1"
-  );
+  const [customBaseUrl, setCustomBaseUrl] = useState<string>("");
   // 工作模式
   const [mode, setMode] = useState<"Pentest" | "CTF">("Pentest");
 
@@ -88,37 +78,39 @@ export default function SettingsPage() {
   useEffect(() => {
     const fetchModels = async () => {
       // const response = await agentsAPI.getModels();
-      // 假数据
+      // 设置假数据
       const response = {
-        providers: {
-          DeepSeek: ["deepseek-chat", "deepseek-reasoner"],
-          OpenAI: [
-            "gpt-4.1",
-            "gpt-4.1-mini",
-            "gpt-4o",
-            "chatgpt-4o-latest",
-            "gpt-4o-mini",
-            "o4-mini",
-            "o3-mini",
-          ],
-          通义千问: [
-            "qwen3-max",
-            "qwen3-30b-a3b-thinking-2507",
-            "qwen3-30b-a3b-instruct-2507",
-            "qwen3-235b-a22b-thinking-2507",
-            "qwen3-235b-a22b-instruct-2507",
-            "qwen2.5-32b-instruct",
-            "qwen2.5-coder-32b-instruct",
-            "qwq-32b",
-            "qwen3-32b",
-            "qwen3-coder-30b-a3b-instruct",
-          ],
-        },
-        custom_model_template: {
-          models: "自定义模型",
-          model_name: "",
-          api_key: "",
-          base_url: "",
+        data: {
+          providers: {
+            DeepSeek: ["deepseek-chat", "deepseek-reasoner"],
+            OpenAI: [
+              "gpt-4.1",
+              "gpt-4.1-mini",
+              "gpt-4o",
+              "chatgpt-4o-latest",
+              "gpt-4o-mini",
+              "o4-mini",
+              "o3-mini",
+            ],
+            通义千问: [
+              "qwen3-max",
+              "qwen3-30b-a3b-thinking-2507",
+              "qwen3-30b-a3b-instruct-2507",
+              "qwen3-235b-a22b-thinking-2507",
+              "qwen3-235b-a22b-instruct-2507",
+              "qwen2.5-32b-instruct",
+              "qwen2.5-coder-32b-instruct",
+              "qwq-32b",
+              "qwen3-32b",
+              "qwen3-coder-30b-a3b-instruct",
+            ],
+          },
+          custom_model_template: {
+            models: "自定义模型",
+            model_name: "",
+            api_key: "",
+            base_url: "",
+          },
         },
       };
 
@@ -129,7 +121,7 @@ export default function SettingsPage() {
       > = {};
 
       // 遍历提供商数据
-      Object.entries(response.providers).forEach(([provider, models]) => {
+      Object.entries(response.data.providers).forEach(([provider, models]) => {
         // 根据提供商名称设置标签
         let label = provider;
         if (provider === "DeepSeek") {
@@ -146,13 +138,18 @@ export default function SettingsPage() {
         };
       });
 
-      // 更新动态模型选项到 Zustand store
-      updateDynamicModelOptions(dynamicOptions);
-      console.log("[SettingsPage] 模型列表已更新:", dynamicOptions);
+      // 提取自定义模型模板
+      const customTemplate = response.data.custom_model_template;
+
+      // 更新组件本地的 state
+      setDynamicModelOptions(dynamicOptions);
+      setCustomModelName(customTemplate.model_name);
+      setCustomApiKey(customTemplate.api_key);
+      setCustomBaseUrl(customTemplate.base_url);
     };
 
     fetchModels();
-  }, []); // 空依赖数组，仅在组件首次挂载时执行
+  }, []); // 空依赖数组,仅在组件首次挂载时执行
 
   // 登出功能
   const handleLogout = async () => {

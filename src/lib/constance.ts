@@ -34,7 +34,7 @@ export const MODEL_OPTIONS = {
 } as const;
 
 // 模型提供商类型
-export type ProviderType = keyof typeof MODEL_OPTIONS | "自定义模型";
+export type ProviderType = keyof typeof MODEL_OPTIONS | "自定义模型" | "";
 
 // 智能体配置常量
 export const AGENT_CONFIGS = {
