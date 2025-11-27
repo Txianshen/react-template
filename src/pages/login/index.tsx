@@ -1,10 +1,10 @@
-"use client";
-
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Controller, useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
 import * as z from "zod";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import { Controller } from "react-hook-form";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -15,6 +15,10 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { loginApi } from "@/api/login";
+// import { agentsAPI } from "@/api/agents";
+
+// 引入 Zustand store
+// import { useAgentStore } from "@/store/agentStore";
 
 const loginSchema = z.object({
   username: z.string().min(1, "用户名不能为空"),
@@ -23,6 +27,12 @@ const loginSchema = z.object({
 
 export default function LoginPage() {
   const navigate = useNavigate();
+
+  // 获取 Zustand store 中的更新动态模型选项方法
+  // const updateDynamicModelOptions = useAgentStore(
+  //   (state) => state.updateDynamicModelOptions
+  // );
+
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -31,11 +41,11 @@ export default function LoginPage() {
     },
   });
 
+  // 设置一个假的 token 用于本地开发
   localStorage.setItem("token", "123");
 
   async function onSubmit(data: z.infer<typeof loginSchema>) {
     console.log(data);
-    // navigate("/app");
     const response = await loginApi(data);
     // 检查后端返回的数据结构
     if (response && response.access_token) {

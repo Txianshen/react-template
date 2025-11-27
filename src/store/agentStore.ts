@@ -21,6 +21,14 @@ interface ModelConfig {
   baseUrl?: string; // 自定义模型的 Base URL
 }
 
+// 动态模型选项类型
+interface DynamicModelOptions {
+  [provider: string]: {
+    label: string;
+    choices: string[];
+  };
+}
+
 // 全局配置类型
 interface GlobalConfig {
   turns: number; // 最大对话轮数
@@ -37,6 +45,9 @@ interface AgentState {
   // ==================== 全局配置 ====================
   globalConfig: GlobalConfig;
 
+  // ==================== 动态模型选项 ====================
+  dynamicModelOptions: DynamicModelOptions;
+
   // ==================== 综合智能体特有状态 ====================
   currentPlan: string; // 当前渗透计划（仅综合智能体）
   historyList: string[]; // 历史会话列表（仅综合智能体）
@@ -51,6 +62,9 @@ interface AgentState {
 
   // 更新全局配置
   updateGlobalConfig: (config: Partial<GlobalConfig>) => void;
+
+  // 更新动态模型选项
+  updateDynamicModelOptions: (options: DynamicModelOptions) => void;
 
   // 更新渗透计划（仅综合智能体）
   updatePlan: (plan: string) => void;
@@ -87,6 +101,22 @@ export const useAgentStore = create<AgentState>()(
             modelName: "deepseek-v3",
           },
           mode: "Pentest",
+        }, // 默认的参数配置
+
+        // 初始化动态模型选项（默认值）
+        dynamicModelOptions: {
+          DeepSeek: {
+            label: "DeepSeek 模型",
+            choices: [],
+          },
+          OpenAI: {
+            label: "OpenAI 模型",
+            choices: [],
+          },
+          通义千问: {
+            label: "千问模型",
+            choices: [],
+          },
         },
 
         currentPlan: "## 🔍 暂无渗透计划",
@@ -160,6 +190,14 @@ export const useAgentStore = create<AgentState>()(
           }));
 
           console.log("[Store] 全局配置已更新:", get().globalConfig);
+        },
+
+        /**
+         * 更新动态模型选项
+         */
+        updateDynamicModelOptions: (options) => {
+          set({ dynamicModelOptions: options });
+          console.log("[Store] 动态模型选项已更新:", options);
         },
 
         /**

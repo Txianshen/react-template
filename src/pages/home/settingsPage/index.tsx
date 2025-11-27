@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Slider } from "@/components/ui/slider";
@@ -13,12 +13,22 @@ import {
 } from "@/components/ui/accordion";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
-import { MODEL_OPTIONS, type ProviderType } from "@/lib/constance";
+import { type ProviderType } from "@/lib/constance";
 import WrapBox from "@/pages/home/settingsPage/components/wrapBox";
 import { logoutApi } from "@/api/login";
+// import { agentsAPI } from "@/api/agents";
+import { useAgentStore } from "@/store/agentStore";
 
 export default function SettingsPage() {
   const navigate = useNavigate();
+
+  // 从 store 中获取动态模型选项和更新方法
+  const dynamicModelOptions = useAgentStore(
+    (state) => state.dynamicModelOptions
+  );
+  const updateDynamicModelOptions = useAgentStore(
+    (state) => state.updateDynamicModelOptions
+  );
 
   // 产品信息（只读）
   const productIntro =
@@ -74,6 +84,76 @@ export default function SettingsPage() {
     // await axios.post('/api/settings/apply', config);
   };
 
+  // 在组件挂载时获取最新的模型列表
+  useEffect(() => {
+    const fetchModels = async () => {
+      // const response = await agentsAPI.getModels();
+      // 假数据
+      const response = {
+        providers: {
+          DeepSeek: ["deepseek-chat", "deepseek-reasoner"],
+          OpenAI: [
+            "gpt-4.1",
+            "gpt-4.1-mini",
+            "gpt-4o",
+            "chatgpt-4o-latest",
+            "gpt-4o-mini",
+            "o4-mini",
+            "o3-mini",
+          ],
+          通义千问: [
+            "qwen3-max",
+            "qwen3-30b-a3b-thinking-2507",
+            "qwen3-30b-a3b-instruct-2507",
+            "qwen3-235b-a22b-thinking-2507",
+            "qwen3-235b-a22b-instruct-2507",
+            "qwen2.5-32b-instruct",
+            "qwen2.5-coder-32b-instruct",
+            "qwq-32b",
+            "qwen3-32b",
+            "qwen3-coder-30b-a3b-instruct",
+          ],
+        },
+        custom_model_template: {
+          models: "自定义模型",
+          model_name: "",
+          api_key: "",
+          base_url: "",
+        },
+      };
+
+      // 转换后端返回的数据格式为前端需要的格式
+      const dynamicOptions: Record<
+        string,
+        { label: string; choices: string[] }
+      > = {};
+
+      // 遍历提供商数据
+      Object.entries(response.providers).forEach(([provider, models]) => {
+        // 根据提供商名称设置标签
+        let label = provider;
+        if (provider === "DeepSeek") {
+          label = "DeepSeek 模型";
+        } else if (provider === "OpenAI") {
+          label = "OpenAI 模型";
+        } else if (provider === "通义千问") {
+          label = "千问模型";
+        }
+
+        dynamicOptions[provider] = {
+          label,
+          choices: models,
+        };
+      });
+
+      // 更新动态模型选项到 Zustand store
+      updateDynamicModelOptions(dynamicOptions);
+      console.log("[SettingsPage] 模型列表已更新:", dynamicOptions);
+    };
+
+    fetchModels();
+  }, []); // 空依赖数组，仅在组件首次挂载时执行
+
   // 登出功能
   const handleLogout = async () => {
     try {
@@ -92,12 +172,6 @@ export default function SettingsPage() {
       navigate("/login");
     } catch (error) {
       console.error("登出失败:", error);
-      // 即使后端调用失败，也清除本地token并跳转到登录页
-      localStorage.removeItem("token");
-      localStorage.removeItem("username");
-      localStorage.removeItem("role");
-      toast.success("已成功登出");
-      navigate("/login");
     }
   };
 
@@ -182,23 +256,21 @@ export default function SettingsPage() {
       </div>
 
       {/* 具体模型选择 (非自定义时显示) */}
-      {provider !== "自定义模型" && provider in MODEL_OPTIONS && (
+      {provider !== "自定义模型" && provider in dynamicModelOptions && (
         <WrapBox
-          title={MODEL_OPTIONS[provider as keyof typeof MODEL_OPTIONS].label}
+          title={dynamicModelOptions[provider].label}
           description="请选择具体模型"
           className="border border-[#3f3f46] bg-[#27272a]"
         >
           <RadioGroup value={selectedModel} onValueChange={setSelectedModel}>
-            {MODEL_OPTIONS[provider as keyof typeof MODEL_OPTIONS].choices.map(
-              (model) => (
-                <div key={model} className="flex items-center space-x-2">
-                  <RadioGroupItem value={model} id={`model-${model}`} />
-                  <Label htmlFor={`model-${model}`} className="cursor-pointer">
-                    {model}
-                  </Label>
-                </div>
-              )
-            )}
+            {dynamicModelOptions[provider].choices.map((model) => (
+              <div key={model} className="flex items-center space-x-2">
+                <RadioGroupItem value={model} id={`model-${model}`} />
+                <Label htmlFor={`model-${model}`} className="cursor-pointer">
+                  {model}
+                </Label>
+              </div>
+            ))}
           </RadioGroup>
         </WrapBox>
       )}
@@ -211,7 +283,7 @@ export default function SettingsPage() {
               <AccordionTrigger className="py-0 hover:no-underline">
                 自定义模型设置
               </AccordionTrigger>
-              <AccordionContent className="space-y-4 pt-4">
+              <AccordionContent className="space-y-4 pt-4 pb-0">
                 <div className="space-y-2">
                   <Label htmlFor="custom-model-name">
                     模型名称 (Model Name)

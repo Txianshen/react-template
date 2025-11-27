@@ -33,6 +33,23 @@ export const agentsAPI = {
   },
 
   /**
+   * 获取可用模型列表
+   */
+  getModels: async () => {
+    return axios.get<{
+      providers: {
+        [key: string]: string[];
+      };
+      custom_model_template: {
+        models: string;
+        model_name: string;
+        api_key: string;
+        base_url: string;
+      };
+    }>("/models");
+  },
+
+  /**
    * 发送消息到智能体（SSE 流式）
    * @param type 智能体类型
    * @param message 用户消息
