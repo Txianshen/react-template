@@ -28,6 +28,19 @@ export default function SettingsPage() {
   >({});
   // 对话轮数
   const [turns, setTurns] = useState<number>(50);
+
+  // 重置对话轮数为默认值
+  const handleResetTurns = () => {
+    setTurns(50);
+  };
+
+  // 处理数字输入框变化
+  const handleTurnsInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseInt(e.target.value);
+    if (!isNaN(value) && value >= 20 && value <= 100) {
+      setTurns(value);
+    }
+  };
   // 模型提供商
   const [provider, setProvider] = useState<ProviderType>("");
   // 选择的模型
@@ -196,7 +209,30 @@ export default function SettingsPage() {
         </WrapBox>
 
         {/* 最大对话轮数 */}
-        <WrapBox title="最大对话轮数" description="请在20到100间选择">
+        <WrapBox
+          title="最大对话轮数"
+          description="请在20到100间选择"
+          titleExtra={
+            <>
+              <Input
+                type="number"
+                min={20}
+                max={100}
+                value={turns}
+                onChange={handleTurnsInputChange}
+                className="w-16 h-8 text-center text-sm"
+              />
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleResetTurns}
+                className="h-8 px-3 text-xs"
+              >
+                重置
+              </Button>
+            </>
+          }
+        >
           <div className="flex items-center gap-4 mt-4">
             <span className="text-sm text-muted-foreground">20</span>
             <Slider
