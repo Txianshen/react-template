@@ -397,14 +397,14 @@ export default function SettingsPage() {
       <div className="flex gap-4">
         <Button
           onClick={handleLogout}
-          className="flex-1 bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600"
+          className="text-white flex-1 bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600"
           size="lg"
         >
           登出
         </Button>
         <Button
           onClick={handleApplySettings}
-          className="flex-1 bg-gradient-to-r from-cyan-500 to-emerald-500 hover:from-cyan-600 hover:to-emerald-600"
+          className="text-white flex-1 bg-gradient-to-r from-cyan-500 to-emerald-500 hover:from-cyan-600 hover:to-emerald-600"
           size="lg"
         >
           应用全局设置
