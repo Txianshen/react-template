@@ -1,6 +1,7 @@
 import {
   Conversation,
   ConversationContent,
+  ConversationScrollButton,
 } from "@/components/ai-elements/conversation";
 import { UserMessage } from "@/components/chat/components/UserMessage";
 import { AssisMessage } from "@/components/chat/components/AssisMessage";
@@ -53,6 +54,7 @@ export default function ChatHistory() {
             />
           );
         })}
+        <ConversationScrollButton />
       </ConversationContent>
     </Conversation>
   );
