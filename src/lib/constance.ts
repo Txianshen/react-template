@@ -36,6 +36,15 @@ export const MODEL_OPTIONS = {
 // 模型提供商类型
 export type ProviderType = keyof typeof MODEL_OPTIONS | "自定义模型" | "";
 
+// 产品信息常量
+export const PRODUCT_INFO = {
+  intro:
+    "本产品是一款基于AI智能体的下一代渗透测试辅助平台，深度整合攻击性安全测试与防御性安全能力，通过智能化Agent技术实现渗透测试全流程赋能。系统搭载多模态神经网络引擎，可自动完成网络空间资产测绘、脆弱性深度挖掘、攻击路径智能推导及漏洞利用链验证，为安全团队提供动态攻击面管理与实战化风险评估解决方案。",
+  mainFunctions:
+    "域名探测、端口扫描、服务识别、Web指纹识别、目录扫描、POC验证、弱口令猜解、漏洞扫描、漏洞利用等",
+  auxFunctions: "后渗透辅助、杀软查询、提权辅助、常用命令、代码审计等",
+} as const;
+
 // 智能体配置常量
 export const AGENT_CONFIGS = {
   general: {

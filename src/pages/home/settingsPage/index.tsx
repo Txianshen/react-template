@@ -13,20 +13,13 @@ import {
 } from "@/components/ui/accordion";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
-import { type ProviderType } from "@/lib/constance";
+import { type ProviderType, PRODUCT_INFO } from "@/lib/constance";
 import WrapBox from "@/pages/home/settingsPage/components/wrapBox";
 import { logoutApi } from "@/api/login";
-import { agentsAPI } from "@/api/agents";
+// import { agentsAPI } from "@/api/agents";
 
 export default function SettingsPage() {
   const navigate = useNavigate();
-
-  // 产品信息（只读）
-  const productIntro =
-    "本产品是一款基于AI智能体的下一代渗透测试辅助平台，深度整合攻击性安全测试与防御性安全能力，通过智能化Agent技术实现渗透测试全流程赋能。系统搭载多模态神经网络引擎，可自动完成网络空间资产测绘、脆弱性深度挖掘、攻击路径智能推导及漏洞利用链验证，为安全团队提供动态攻击面管理与实战化风险评估解决方案。";
-  const mainFunctions =
-    "域名探测、端口扫描、服务识别、Web指纹识别、目录扫描、POC验证、弱口令猜解、漏洞扫描、漏洞利用等";
-  const auxFunctions = "后渗透辅助、杀软查询、提权辅助、常用命令、代码审计等";
 
   // 状态管理
   // 动态模型选项（从后端获取）
@@ -178,7 +171,7 @@ export default function SettingsPage() {
         {/* 产品简介 */}
         <WrapBox title="产品简介">
           <Textarea
-            value={productIntro}
+            value={PRODUCT_INFO.intro}
             readOnly
             className="min-h-[80px]  resize-none bg-muted focus-visible:ring-0 border-none focus-visible:outline-none !bg-[#3f3f46]"
           />
@@ -187,7 +180,7 @@ export default function SettingsPage() {
         {/* 主要功能 */}
         <WrapBox title="主要功能">
           <Textarea
-            value={mainFunctions}
+            value={PRODUCT_INFO.mainFunctions}
             readOnly
             className="min-h-[40px] resize-none bg-muted focus-visible:ring-0 border-none focus-visible:outline-none !bg-[#3f3f46]"
           />
@@ -196,7 +189,7 @@ export default function SettingsPage() {
         {/* 辅助功能 */}
         <WrapBox title="辅助功能">
           <Textarea
-            value={auxFunctions}
+            value={PRODUCT_INFO.auxFunctions}
             readOnly
             className="min-h-[40px] resize-none bg-muted focus-visible:ring-0 border-none focus-visible:outline-none !bg-[#3f3f46]"
           />
