@@ -1,17 +1,20 @@
 import { Accordion } from "@/components/ui/accordion";
-import StatusPanel from "./StatusPanel";
+import StatusPanel from "../components/StatusPanel";
+import HistoryPanel from "./components/HistoryPanel";
+import PlanPanel from "./components/PlanPanel";
+import ReportPanel from "./components/ReportPanel";
 
-interface AgentSidebarProps {
+interface GeneralAgentSidebarProps {
   agentType: string;
   agentName: string;
   description: string;
 }
 
-export default function AgentSidebar({
+export default function GeneralAgentSidebar({
   agentType,
   agentName,
   description,
-}: AgentSidebarProps) {
+}: GeneralAgentSidebarProps) {
   console.log("agentType,", agentType);
 
   return (
@@ -23,6 +26,11 @@ export default function AgentSidebar({
       >
         {/* 智能体状态面板 */}
         <StatusPanel agentName={agentName} description={description} />
+
+        {/* 综合智能体的高级功能 */}
+        <HistoryPanel />
+        <PlanPanel />
+        <ReportPanel />
       </Accordion>
     </div>
   );

@@ -10,7 +10,6 @@ interface AgentConfig {
   name: string;
   description: string;
   placeholder: string;
-  showAdvancedFeatures?: boolean;
 }
 
 /**
@@ -32,7 +31,6 @@ export default function AgentContainer({
         agentType={config.type}
         agentName={config.name}
         description={config.description}
-        showAdvancedFeatures={config.showAdvancedFeatures ?? false}
       />
 
       {/* 右侧聊天区 */}

@@ -25,20 +25,30 @@ const BrowserAutomation = lazy(
 );
 
 // 智能体页面 - 懒加载
-const GeneralAgent = lazy(() => import("../pages/home/agents/GeneralAgent"));
-const ReconAgent = lazy(() => import("../pages/home/agents/ReconAgent"));
-const PortScanAgent = lazy(() => import("../pages/home/agents/PortScanAgent"));
-const WebRedteamAgent = lazy(
-  () => import("../pages/home/agents/WebRedteamAgent")
+const GeneralAgent = lazy(
+  () => import("../pages/home/agents/GeneralAgent/index")
 );
-const ApitestAgent = lazy(() => import("../pages/home/agents/ApitestAgent"));
-const VulscanAgent = lazy(() => import("../pages/home/agents/VulscanAgent"));
-const VulexpAgent = lazy(() => import("../pages/home/agents/VulexpAgent"));
+const ReconAgent = lazy(() => import("../pages/home/agents/ReconAgent/index"));
+const PortScanAgent = lazy(
+  () => import("../pages/home/agents/PortScanAgent/index")
+);
+const WebRedteamAgent = lazy(
+  () => import("../pages/home/agents/WebRedteamAgent/index")
+);
+const ApitestAgent = lazy(
+  () => import("../pages/home/agents/ApitestAgent/index")
+);
+const VulscanAgent = lazy(
+  () => import("../pages/home/agents/VulscanAgent/index")
+);
+const VulexpAgent = lazy(
+  () => import("../pages/home/agents/VulexpAgent/index")
+);
 const CodeAuditAgent = lazy(
-  () => import("../pages/home/agents/CodeAuditAgent")
+  () => import("../pages/home/agents/CodeAuditAgent/index")
 );
 const PostPentestAgent = lazy(
-  () => import("../pages/home/agents/PostPentestAgent")
+  () => import("../pages/home/agents/PostPentestAgent/index")
 );
 
 // 路由配置
