@@ -5,6 +5,7 @@ import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Input } from "@/components/ui/input";
+import { RotateCcw } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -36,9 +37,28 @@ export default function SettingsPage() {
 
   // 处理数字输入框变化
   const handleTurnsInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseInt(e.target.value);
-    if (!isNaN(value) && value >= 20 && value <= 100) {
-      setTurns(value);
+    console.log("handleTurnsInputChange", e.target.value);
+    const value = e.target.value;
+    if (value === "") {
+      setTurns(50);
+      return;
+    }
+    const numValue = parseInt(value, 10);
+    console.log("numValue", numValue);
+    // 只要是有效数字就更新,自动限制在范围内
+    if (!isNaN(numValue)) {
+      setTurns(numValue);
+    }
+  };
+
+  // 处理输入框失去焦点时的验证
+  const handleTurnsBlur = () => {
+    // 如果当前值为空或无效,恢复为默认值50
+    if (!turns || turns < 20) {
+      setTurns(20);
+    }
+    if (turns > 100) {
+      setTurns(100);
     }
   };
   // 模型提供商
@@ -220,15 +240,16 @@ export default function SettingsPage() {
                 max={100}
                 value={turns}
                 onChange={handleTurnsInputChange}
+                onBlur={handleTurnsBlur}
                 className="w-16 h-8 text-center text-sm"
               />
               <Button
                 variant="outline"
-                size="sm"
+                size="icon"
                 onClick={handleResetTurns}
-                className="h-8 px-3 text-xs"
+                className="h-8 w-8"
               >
-                重置
+                <RotateCcw className="h-4 w-4" />
               </Button>
             </>
           }
