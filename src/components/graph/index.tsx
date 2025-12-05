@@ -141,17 +141,30 @@ export default function Graph() {
       ],
     },
     layout: {
-      type: "force",
+      type: "d3-force",
       preventOverlap: true,
-      nodeStrength: 1000,
-      edgeStrength: 200,
-      animated: true, // 启用动画
+      collide: {
+        radius: (d: any) => {
+          const size = Array.isArray(d.data.size)
+            ? d.data.size[0]
+            : d.data.size;
+          return size + 20; // 增加碰撞半径，留出更多空间
+        },
+        strength: 1.5, // 提高碰撞强度
+      },
+      manyBody: {
+        strength: -300, // 增加斥力，让节点分散
+      },
+      link: {
+        distance: 150, // 增加连线长度
+      },
     },
     // 启用交互行为
     behaviors: [
       "drag-canvas", // 拖拽画布
       "zoom-canvas", // 缩放画布
       "drag-element", // 拖拽节点
+      "drag-element-force",
     ],
     // 自动适配画布
     autoFit: "view",
