@@ -70,6 +70,14 @@ body {
 
 @import "tw-animate-css";
 
+/* 引入优设标题黑字体 */
+@font-face {
+  font-family: "YouSheTitleHei";
+  src: url("@/assets/fonts/优设标题黑.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {

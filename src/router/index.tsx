@@ -4,6 +4,8 @@ import { lazy, Suspense } from "react";
 import { KeepAlive } from "react-activation";
 import AuthGuard from "../guards/auth-guard";
 import PageLoader from "../components/page-loader";
+import CyberPage from "../pages/cyber";
+
 // 扩展路由对象类型，添加元数据
 export type ExtendedRouteObject = RouteObject & {
   meta?: {
@@ -55,7 +57,12 @@ const PostPentestAgent = lazy(
 const routesConfig: ExtendedRouteObject[] = [
   {
     path: "/",
-    element: <Navigate to="/login" replace />,
+    element: <Navigate to="/cyber" replace />,
+  },
+  // 靶场页面
+  {
+    path: "/cyber",
+    element: <CyberPage />,
   },
   {
     path: "/login",

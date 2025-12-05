@@ -11,7 +11,11 @@ createRoot(document.getElementById("root")!).render(
   //     <App />
   //   </ThemeProvider>
   // </AliveScope>
-  <ThemeProvider attribute="class" defaultTheme="dark" forcedTheme="dark">
+  <ThemeProvider
+    attribute="class"
+    defaultTheme="dark"
+    forcedTheme="enableSystem"
+  >
     <App />
   </ThemeProvider>
 );
