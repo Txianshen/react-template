@@ -2,14 +2,16 @@
 import { useState, useEffect } from "react";
 import { Rnd } from "react-rnd";
 import { motion, AnimatePresence } from "framer-motion";
+import { Minus } from "lucide-react";
 import BoxHeader from "@/components/box-wrap/components/boxHeader";
+import { useWindowStore } from "@/store/windowStore";
 
 interface WindowPanelProps {
   id: string;
   title: string;
   layoutBounds: string | HTMLElement;
-  activeId: string | null;
-  setActiveId: (id: string) => void;
+  showHeader?: boolean; // 控制是否显示头部
+  headerComponent?: React.ReactNode; // 允许传入自定义头部组件
   children?: React.ReactNode;
 }
 
@@ -17,14 +19,15 @@ export default function WindowPanel({
   id,
   title,
   layoutBounds,
-  activeId,
-  setActiveId,
+  showHeader = true, // 默认显示头部
+  headerComponent, // 自定义头部组件
   children,
 }: WindowPanelProps) {
   // const saved = JSON.parse(localStorage.getItem("win-" + id) || "null");
 
-  const [minimized, setMinimized] = useState(false);
-  // const [maximized, setMaximized] = useState(false);
+  const { activeId, setActiveId, minimizeWindow } = useWindowStore();
+  const windowState = useWindowStore((state) => state.windows[id]);
+  const isMinimized = windowState ? windowState.minimized : false;
 
   const [pos, setPos] = useState({
     x: 0,
@@ -55,15 +58,30 @@ export default function WindowPanel({
   //   }
   // };
 
+  // 处理最小化逻辑
+  const handleMinimize = () => {
+    minimizeWindow(id);
+  };
+
   useEffect(() => {
     // if (!maximized && saved) {
     //   setPos({ x: saved.x, y: saved.y, w: saved.w, h: saved.h });
     // }
   }, []);
 
+  useEffect(() => {
+    // 注册窗口
+    useWindowStore.getState().registerWindow(id, title);
+
+    // 组件卸载时注销窗口
+    return () => {
+      useWindowStore.getState().unregisterWindow(id);
+    };
+  }, [id, title]);
+
   return (
     <AnimatePresence>
-      {!minimized && (
+      {!isMinimized && (
         <motion.div
           className="w-full h-full"
           initial={{ opacity: 0, scale: 0.95 }}
@@ -93,26 +111,29 @@ export default function WindowPanel({
           >
             <div className="window-drag cursor-move relative">
               {/* 窗口标题将在此处显示 */}
-              <BoxHeader title={title} />
+              {showHeader && (
+                <>
+                  {headerComponent ? (
+                    headerComponent
+                  ) : (
+                    <BoxHeader title={title} />
+                  )}
+                </>
+              )}
               <button
-                onClick={() => setMinimized(true)}
-                className="absolute top-3 right-3 text-white hover:text-gray-300 transition-colors"
+                onClick={(e) => {
+                  console.log("Minimizing window:", id);
+                  e.stopPropagation();
+                  handleMinimize();
+                }}
+                onMouseDown={(e) => {
+                  console.log("Minimizing window:", id);
+                  e.stopPropagation();
+                }}
+                className="absolute top-3 right-3 text-white hover:text-gray-300 transition-colors "
                 aria-label="Minimize"
               >
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 16 16"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M3 8H13"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                  />
-                </svg>
+                <Minus size={32} />
               </button>
             </div>
             <div className="absolute bottom-0 left-0 w-4 h-4 border-b-[3px] border-l-[3px] border-[#00D9FF]" />

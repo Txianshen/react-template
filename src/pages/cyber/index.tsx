@@ -1,10 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import autofit from "autofit.js";
 import Header from "./components/header";
 import DraggableWindow from "@/components/window-panel";
-// import Graph from "@/components/graph";
+import Graph from "@/components/graph";
 import LeftTop from "./components/left-top";
-
+import LeftBottom from "./components/left-bottom";
+import RightBottom from "./components/right-bottom";
+import RightCenter from "./components/right-center";
+import RightTop from "./components/right-top";
+import Dock from "@/components/dock";
 function CyberPage() {
   useEffect(() => {
     // 只在 Cyber 大屏页面启用 autofit
@@ -21,16 +25,7 @@ function CyberPage() {
       autofit.off();
     };
   }, []);
-  const [activeId, setActiveId] = useState<string | null>(null);
-  //   const [minimized, setMinimized] = useState([]);
 
-  //   const minimize = (id) => {
-  //     setMinimized((m) => [...m, { id }]);
-  //   };
-
-  //   const restore = (id) => {
-  //     setMinimized((m) => m.filter((x) => x.id !== id));
-  //   };
   return (
     <div
       id="cyber-screen"
@@ -46,30 +41,37 @@ function CyberPage() {
               id="left-top"
               title="语音指令"
               layoutBounds="#cyber-screen"
-              activeId={activeId}
-              setActiveId={setActiveId}
             >
               <LeftTop />
             </DraggableWindow>
           </div>
           <div className="flex-1 relative rounded-lg p-0">
             {/* <LeftBottom /> */}
-
             <DraggableWindow
               id="left-bottom"
               title="AI决策推理"
               layoutBounds="#cyber-screen"
-              activeId={activeId}
-              setActiveId={setActiveId}
-            />
+            >
+              <LeftBottom />
+            </DraggableWindow>
           </div>
         </div>
 
         {/* 中间列 */}
-        <div className="p-4 flex flex-col">
-          <Header />
+        <div className="my-4 p-4 flex flex-col relative">
+          {/* <Header /> */}
           {/* 网络关系拓扑图graph */}
-          <div className="flex-1 mt-4">{/* <Graph /> */}</div>
+          <div className="flex-1 mt-4 ">
+            <DraggableWindow
+              id="graph"
+              title="网络关系拓扑图"
+              showHeader={true}
+              layoutBounds="#cyber-screen"
+              headerComponent={<Header />}
+            >
+              <Graph />
+            </DraggableWindow>
+          </div>
         </div>
 
         {/* 右侧列 - 上中下 1:1:1 布局 */}
@@ -79,9 +81,9 @@ function CyberPage() {
               id="right-top"
               title="后台终端"
               layoutBounds="#cyber-screen"
-              activeId={activeId}
-              setActiveId={setActiveId}
-            />
+            >
+              <RightTop />
+            </DraggableWindow>
           </div>
           <div className="flex-1 relative rounded-lg p-0">
             {/* <RightCenter /> */}
@@ -89,9 +91,9 @@ function CyberPage() {
               id="right-center"
               title="漏洞POC"
               layoutBounds="#cyber-screen"
-              activeId={activeId}
-              setActiveId={setActiveId}
-            />
+            >
+              <RightCenter />
+            </DraggableWindow>
           </div>
           <div className="flex-1 relative rounded-lg p-0">
             {/* <RightBottom /> */}
@@ -99,12 +101,14 @@ function CyberPage() {
               id="right-bottom"
               title="浏览器自动化"
               layoutBounds="#cyber-screen"
-              activeId={activeId}
-              setActiveId={setActiveId}
-            />
+            >
+              <RightBottom />
+            </DraggableWindow>
           </div>
         </div>
       </div>
+      {/* fixed布局任务栏 -- 最小化的窗口 */}
+      <Dock />
     </div>
   );
 }
