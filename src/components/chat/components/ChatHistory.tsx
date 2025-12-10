@@ -5,54 +5,43 @@ import {
 } from "@/components/ai-elements/conversation";
 import { UserMessage } from "@/components/chat/components/UserMessage";
 import { AssisMessage } from "@/components/chat/components/AssisMessage";
-import { useMemo } from "react";
-import { MOCK_MESSAGE_LIST } from "@/lib/constance";
-import { createMessagesList } from "@/lib/utils";
+import { useHistoryStore } from "@/store/history";
 // import { nanoid } from "nanoid";
 
 // 定义 ChatHistory 组件
 export default function ChatHistory() {
   // 获取当前对话的消息列表
-  const messageList = useMemo(() => {
-    // 使用 createMessagesList 方法从 history 结构中提取消息列表
-    const messages = createMessagesList(
-      MOCK_MESSAGE_LIST,
-      MOCK_MESSAGE_LIST.currentId
-    );
-    console.log(messages);
-    return messages;
-  }, []);
+  const messages = useHistoryStore((state) => state.messages);
 
   return (
     <Conversation className="h-full ">
       <ConversationContent className="gap-4">
-        {/* 添加 Reasoning 组件demo示例
-        <Reasoning
-          isStreaming={false}
-          content="This is a sample reasoning content to demonstrate the component. Let me think through this step by step..."
-        /> */}
-        {messageList.map((message, index) => {
-          // 用户消息
-          if (message.role === "user") {
+        {messages.map((message, index) => {
+          // 用户消息 - 使用type字段判断
+          if (message.type === "user_message") {
             return (
               <UserMessage
                 key={index}
                 message={message}
                 index={index}
-                messageId="msg-history"
+                messageId={message.data?.id}
               />
             );
           }
 
-          // 系统消息，使用 AssisMessage 组件处理
-          return (
-            <AssisMessage
-              key={index}
-              message={message}
-              index={index}
-              messageId="msg-history"
-            />
-          );
+          // 系统消息/助手消息 - 使用type字段判断
+          if (message.type === "agent_message") {
+            return (
+              <AssisMessage
+                key={index}
+                message={message}
+                index={index}
+                messageId={message.data?.id}
+              />
+            );
+          }
+          // 其他类型的消息默认使用AssisMessage处理
+          return <></>;
         })}
         <ConversationScrollButton />
       </ConversationContent>

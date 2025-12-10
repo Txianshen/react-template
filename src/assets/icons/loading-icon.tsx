@@ -7,7 +7,7 @@ interface LoadingIconProps {
 const LoadingIcon = ({
   className = "",
   size = 64,
-  color = "#10b981",
+  color = "#fff",
 }: LoadingIconProps) => {
   return (
     <svg
