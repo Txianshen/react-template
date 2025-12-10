@@ -45,7 +45,7 @@ function CyberPage() {
               <LeftTop />
             </DraggableWindow>
           </div>
-          <div className="flex-1 relative rounded-lg p-0">
+          <div className="flex-3 relative rounded-lg p-0">
             {/* <LeftBottom /> */}
             <DraggableWindow
               id="left-bottom"

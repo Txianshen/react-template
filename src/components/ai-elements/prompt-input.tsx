@@ -1078,12 +1078,16 @@ export type PromptInputSpeechButtonProps = ComponentProps<
 > & {
   textareaRef?: RefObject<HTMLTextAreaElement | null>;
   onTranscriptionChange?: (text: string) => void;
+  // +++ 新增以下回调 +++
+  onListeningChange?: (isListening: boolean) => void;
 };
 
 export const PromptInputSpeechButton = ({
   className,
   textareaRef,
   onTranscriptionChange,
+  onListeningChange, // 新增属性
+
   ...props
 }: PromptInputSpeechButtonProps) => {
   const [isListening, setIsListening] = useState(false);
@@ -1103,14 +1107,17 @@ export const PromptInputSpeechButton = ({
 
       speechRecognition.continuous = true;
       speechRecognition.interimResults = true;
-      speechRecognition.lang = "en-US";
+      // speechRecognition.lang = "en-US";
+      speechRecognition.lang = "zh-CN";
 
       speechRecognition.onstart = () => {
         setIsListening(true);
+        onListeningChange?.(true); // 通知外部组件
       };
 
       speechRecognition.onend = () => {
         setIsListening(false);
+        onListeningChange?.(false); // 通知外部组件
       };
 
       speechRecognition.onresult = (event) => {
@@ -1138,6 +1145,7 @@ export const PromptInputSpeechButton = ({
       speechRecognition.onerror = (event) => {
         console.error("Speech recognition error:", event.error);
         setIsListening(false);
+        onListeningChange?.(false); // 通知外部组件
       };
 
       recognitionRef.current = speechRecognition;
@@ -1149,7 +1157,7 @@ export const PromptInputSpeechButton = ({
         recognitionRef.current.stop();
       }
     };
-  }, [textareaRef, onTranscriptionChange]);
+  }, [textareaRef, onTranscriptionChange, onListeningChange]);
 
   const toggleListening = useCallback(() => {
     if (!recognition) {

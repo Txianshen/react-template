@@ -83,7 +83,7 @@ export default function WindowPanel({
     <AnimatePresence>
       {!isMinimized && (
         <motion.div
-          className="w-full h-full"
+          className="w-full h-full bg-[#050d24]"
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.9 }}
@@ -107,7 +107,7 @@ export default function WindowPanel({
               setPos({ x: newPos.x, y: newPos.y, w, h });
               savePosition();
             }}
-            className=" overflow-hidden border border-zinc-700 border border-[#536FA9]/60 relative before:absolute before:top-0 before:left-0 before:w-4 before:h-4 before:border-t-[3px] before:border-l-[3px] before:border-[#00D9FF] after:absolute after:top-0 after:right-0 after:w-4 after:h-4 after:border-t-[3px] after:border-r-[3px] after:border-[#00D9FF]"
+            className=" overflow-hidden !flex flex-col border border-zinc-700 border border-[#536FA9]/60 relative before:absolute before:top-0 before:left-0 before:w-4 before:h-4 before:border-t-[3px] before:border-l-[3px] before:border-[#00D9FF] after:absolute after:top-0 after:right-0 after:w-4 after:h-4 after:border-t-[3px] after:border-r-[3px] after:border-[#00D9FF]"
           >
             <div className="window-drag cursor-move relative">
               {/* 窗口标题将在此处显示 */}
@@ -139,7 +139,7 @@ export default function WindowPanel({
             <div className="absolute bottom-0 left-0 w-4 h-4 border-b-[3px] border-l-[3px] border-[#00D9FF]" />
             <div className="absolute bottom-0 right-0 w-4 h-4 border-b-[3px] border-r-[3px] border-[#00D9FF]" />
             {/* 内容区域应该在这里插入 */}
-            <div className="p-4 h-full overflow-auto">
+            <div className=" p-4 flex-1 overflow-auto">
               {/* 窗口内容将在此处渲染 */}
               {children}
             </div>
