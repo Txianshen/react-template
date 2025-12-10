@@ -1,5 +1,11 @@
+// import { mockMessages } from "@/lib/mockMessage";
+import { ChatHistory } from "@/components/chat/index";
+// Mock messages来渲染模型输出
 export default function RightTop() {
-  return (
-    <div className="text-white text-[28px] font-[YouSheTitleHei]">内容区域</div>
-  );
+  return <ChatHistory />;
+  // return (
+  //   <div className="text-white">
+  //     <ChatHistory />
+  //   </div>
+  // );
 }

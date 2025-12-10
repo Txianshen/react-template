@@ -23,7 +23,7 @@ export function AssisMessage({
 }: AssisMessageProps) {
   return (
     <Message key={`${messageId}-${index}`} from="assistant" className="">
-      <MessageContent>
+      <MessageContent className="text-white">
         {messages &&
           messages.map((message, messageIndex) => {
             // 智能体切换提示卡片
@@ -53,26 +53,26 @@ export function AssisMessage({
             }
 
             // 选择项消息
-            if (message.options && message.options.length > 0) {
-              // 确定状态值，如果消息中有状态则使用，否则默认为 "approval-requested"
-              const status: ToolUIPart["state"] =
-                (message.metadata?.status as ToolUIPart["state"]) ||
-                "approval-requested";
+            // if (message.options && message.options.length > 0) {
+            //   // 确定状态值，如果消息中有状态则使用，否则默认为 "approval-requested"
+            //   const status: ToolUIPart["state"] =
+            //     (message.metadata?.status as ToolUIPart["state"]) ||
+            //     "approval-requested";
 
-              return (
-                <div key={`${messageId}-${index}-${messageIndex}`}>
-                  <OptionsMessage
-                    content={message.content}
-                    options={message.options}
-                    status={status}
-                    onOptionSelect={(value) => {
-                      // 在实际应用中，这里应该调用相应的处理函数
-                      console.log(`User selected: ${value}`);
-                    }}
-                  />
-                </div>
-              );
-            }
+            //   return (
+            //     <div key={`${messageId}-${index}-${messageIndex}`}>
+            //       <OptionsMessage
+            //         content={message.content}
+            //         options={message.options}
+            //         status={status}
+            //         onOptionSelect={(value) => {
+            //           // 在实际应用中，这里应该调用相应的处理函数
+            //           console.log(`User selected: ${value}`);
+            //         }}
+            //       />
+            //     </div>
+            //   );
+            // }
 
             // 普通消息
             return (

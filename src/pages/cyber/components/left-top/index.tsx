@@ -67,7 +67,7 @@ function LeftTop() {
   // };
 
   return (
-    <div className="flex flex-col h-full text-white text-[28px] font-[YouSheTitleHei]">
+    <div className="flex flex-col h-full text-white text-[28px] ">
       <div className="flex-1 flex items-center justify-center ">
         {/* 波形区域 */}
         <div className="w-full h-40 rounded-md overflow-hidden relative">

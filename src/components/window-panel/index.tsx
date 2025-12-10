@@ -83,7 +83,7 @@ export default function WindowPanel({
     <AnimatePresence>
       {!isMinimized && (
         <motion.div
-          className="w-full h-full bg-[#050d24]"
+          className="w-full h-full "
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.9 }}
@@ -128,7 +128,7 @@ export default function WindowPanel({
                 }}
                 onMouseDown={(e) => {
                   console.log("Minimizing window:", id);
-                  e.stopPropagation();
+                  // e.stopPropagation();
                 }}
                 className="absolute top-3 right-3 text-white hover:text-gray-300 transition-colors "
                 aria-label="Minimize"
