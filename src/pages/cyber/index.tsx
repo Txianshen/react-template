@@ -68,6 +68,7 @@ function CyberPage() {
               showHeader={true}
               layoutBounds="#cyber-screen"
               headerComponent={<Header />}
+              className="bg-[transparent]"
             >
               <Graph />
             </DraggableWindow>

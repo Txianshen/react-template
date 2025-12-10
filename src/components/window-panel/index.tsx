@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Minus } from "lucide-react";
 import BoxHeader from "@/components/box-wrap/components/boxHeader";
 import { useWindowStore } from "@/store/windowStore";
+import { cn } from "@/lib/utils";
 
 interface WindowPanelProps {
   id: string;
@@ -13,6 +14,7 @@ interface WindowPanelProps {
   showHeader?: boolean; // 控制是否显示头部
   headerComponent?: React.ReactNode; // 允许传入自定义头部组件
   children?: React.ReactNode;
+  className?: string;
 }
 
 export default function WindowPanel({
@@ -22,6 +24,7 @@ export default function WindowPanel({
   showHeader = true, // 默认显示头部
   headerComponent, // 自定义头部组件
   children,
+  className,
 }: WindowPanelProps) {
   // const saved = JSON.parse(localStorage.getItem("win-" + id) || "null");
 
@@ -107,7 +110,10 @@ export default function WindowPanel({
               setPos({ x: newPos.x, y: newPos.y, w, h });
               savePosition();
             }}
-            className="bg-[#0e1e3bfa] overflow-hidden !flex flex-col border border-zinc-700 border border-[#536FA9]/60 relative before:absolute before:top-0 before:left-0 before:w-4 before:h-4 before:border-t-[3px] before:border-l-[3px] before:border-[#00D9FF] after:absolute after:top-0 after:right-0 after:w-4 after:h-4 after:border-t-[3px] after:border-r-[3px] after:border-[#00D9FF]"
+            className={cn(
+              "bg-[#0e1e3bfa] overflow-hidden !flex flex-col border border-zinc-700 border border-[#536FA9]/60 relative before:absolute before:top-0 before:left-0 before:w-4 before:h-4 before:border-t-[3px] before:border-l-[3px] before:border-[#00D9FF] after:absolute after:top-0 after:right-0 after:w-4 after:h-4 after:border-t-[3px] after:border-r-[3px] after:border-[#00D9FF]",
+              className
+            )}
           >
             <div className="window-drag cursor-move relative">
               {/* 窗口标题将在此处显示 */}
