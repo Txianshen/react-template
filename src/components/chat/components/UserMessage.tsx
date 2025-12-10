@@ -3,32 +3,29 @@ import {
   MessageContent,
   MessageResponse,
 } from "@/components/ai-elements/message";
-import { ActionsMessage as UserActions } from "./UserActions";
-import type { MessageData } from "@/types/chat";
+// import { ActionsMessage as UserActions } from "./UserActions";
+import type { Message as MessageType } from "@/lib/mockMessage";
 
 export interface UserMessageProps {
-  messages: MessageData[];
+  message: MessageType;
   index: number;
   messageId: string;
 }
 
 export const UserMessage = ({
-  messages,
+  message,
   index,
   messageId,
 }: UserMessageProps) => {
-  console.log(messages);
+  console.log(message);
   return (
     <Message key={`${messageId}-${index}`} from="user" className="ml-auto">
       <MessageContent>
-        {messages &&
-          messages.map((message, messageIndex) => (
-            <MessageResponse key={`${messageId}-${index}-${messageIndex}`}>
-              {message.content}
-            </MessageResponse>
-          ))}
+        <MessageResponse key={`${messageId}-${index}`}>
+          {message.data?.content}
+        </MessageResponse>
       </MessageContent>
-      <UserActions />
+      {/* <UserActions /> */}
     </Message>
   );
 };

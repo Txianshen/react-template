@@ -14,7 +14,7 @@ export interface ToolProps {
   content: string;
   className?: string;
   defaultOpen?: boolean;
-  status: "pending" | "done";
+  status?: "pending" | "done";
   duration?: number;
 }
 
@@ -40,17 +40,21 @@ export function Tool({
               <span className="text-sm font-medium">{title}</span>
             </div>
             <div className="flex items-center">
-              {status === "pending" ? (
-                <Loader2 className="size-4 text-gray-500 animate-spin" />
+              {status ? (
+                status === "pending" ? (
+                  <Loader2 className="size-4 text-gray-500 animate-spin" />
+                ) : (
+                  <>
+                    <CheckCircle className="size-4 text-green-500 mr-1" />
+                    {duration !== undefined && (
+                      <span className="text-xs text-gray-500">
+                        {duration.toFixed(2)}s
+                      </span>
+                    )}
+                  </>
+                )
               ) : (
-                <>
-                  <CheckCircle className="size-4 text-green-500 mr-1" />
-                  {duration !== undefined && (
-                    <span className="text-xs text-gray-500">
-                      {duration.toFixed(2)}s
-                    </span>
-                  )}
-                </>
+                <></>
               )}
             </div>
           </div>

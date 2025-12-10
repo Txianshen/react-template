@@ -37,7 +37,7 @@ export default function ChatHistory() {
             return (
               <UserMessage
                 key={index}
-                messages={message.data}
+                message={message}
                 index={index}
                 messageId="msg-history"
               />
@@ -48,7 +48,7 @@ export default function ChatHistory() {
           return (
             <AssisMessage
               key={index}
-              messages={message.data}
+              message={message}
               index={index}
               messageId="msg-history"
             />
