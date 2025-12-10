@@ -13,19 +13,18 @@ export type CyberInputProps = {
   placeholder?: string;
   onSubmit: (data: { text: string; files: FileUIPart[] }) => void;
   onSpeechButtonListeningChange?: (isListening: boolean) => void; // 新增属性
+  currentRunId?: string | null; // 添加 currentRunId 属性
 };
-
 export default function CyberInput({
   placeholder,
   onSubmit,
+  currentRunId,
   onSpeechButtonListeningChange,
 }: CyberInputProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [status, setStatus] = useState<
     "submitted" | "streaming" | "ready" | "error"
-  >("ready");
-
-  // 根据status状态决定显示什么图标
+  >("ready"); // 根据status状态决定显示什么图标
   const getSubmitIcon = () => {
     switch (status) {
       case "submitted":
@@ -39,15 +38,39 @@ export default function CyberInput({
     }
   };
 
-  const handleSubmit = (data: { text: string; files: FileUIPart[] }) => {
+  const handleSubmit = async (data: { text: string; files: FileUIPart[] }) => {
+    // 如果当前状态是 streaming，则触发暂停
+    if (status === "streaming") {
+      console.log("暂停功能触发");
+      try {
+        // 调用暂停API
+        const response = await fetch("http://47.98.234.82:8009/api/interrupt", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            run_id: currentRunId,
+          }),
+        });
+
+        if (response.ok) {
+          console.log("暂停成功，状态重置为 ready");
+          setStatus("ready");
+        } else {
+          console.error("暂停失败");
+          setStatus("error");
+        }
+      } catch (error) {
+        console.error("暂停请求出错:", error);
+        setStatus("error");
+      }
+      return;
+    }
+    console.log("handleSubmit");
     // 更新状态为提交中
     setStatus("submitted");
     setTimeout(() => {
       setStatus("streaming");
-    }, 1000);
-    setTimeout(() => {
-      setStatus("ready");
-    }, 2000);
+    }, 100);
 
     // 调用外部传入的onSubmit处理函数
     onSubmit(data);
