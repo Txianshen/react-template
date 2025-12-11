@@ -22,7 +22,7 @@ export default defineConfig({
     port: 5173,
     proxy: {
       "/api": {
-        target: "http://47.98.234.82:8009/", // 后端服务地址
+        target: "http://47.98.234.82:8009/api", // 后端服务地址
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ""),
       },

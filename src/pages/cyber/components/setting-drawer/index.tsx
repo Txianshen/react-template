@@ -31,7 +31,7 @@ export default function ModelSettingsDrawer({
   const [availableConfig, setAvailableConfig] = useState<{
     avail_models: Record<string, string[]>;
     avail_run_modes: string[];
-    "avail max iters": number[];
+    avail_max_iters: number[];
   } | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -54,7 +54,7 @@ export default function ModelSettingsDrawer({
             data: {
               avail_models: Record<string, string[]>;
               avail_run_modes: string[];
-              "avail max iters": number[];
+              avail_max_iters: number[];
             };
           };
           setAvailableConfig(availableResponse.data);
@@ -62,18 +62,17 @@ export default function ModelSettingsDrawer({
           // 获取当前配置
           const currentResponse = (await getCurrentConfig()) as {
             data: {
-              "model name": string;
-              "run mode": string;
-              "max iters": number;
+              model_name: string;
+              run_mode: string;
+              max_iters: number;
             };
           };
-
           // 设置表单初始值
           if (currentResponse.data) {
             const {
-              "model name": modelName,
-              "run mode": runMode,
-              "max iters": maxIters,
+              model_name: modelName,
+              run_mode: runMode,
+              max_iters: maxIters,
             } = currentResponse.data;
             // 根据模型名称查找对应的提供商
             let provider = "";
@@ -128,9 +127,9 @@ export default function ModelSettingsDrawer({
 
   // 获取最大轮数范围
   const getMaxItersRange = () => {
-    if (!availableConfig || !availableConfig["avail max iters"])
+    if (!availableConfig || !availableConfig["avail_max_iters"])
       return [50, 100];
-    return availableConfig["avail max iters"];
+    return availableConfig["avail_max_iters"];
   };
 
   // 处理表单值变化
@@ -168,9 +167,9 @@ export default function ModelSettingsDrawer({
     setLoading(true);
     try {
       const config = {
-        "model name": formValues.model,
-        "run mode": formValues.mode,
-        "max iters": formValues.maxIters,
+        model_name: formValues.model,
+        run_mode: formValues.mode,
+        max_iters: formValues.maxIters,
       };
 
       await setConfig(config);
