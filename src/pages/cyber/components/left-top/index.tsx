@@ -33,7 +33,7 @@ function LeftTop() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        agent_type: "apitest",
+        // agent_type: "apitest",
         message: data.text,
         run_id: runId,
       }),
