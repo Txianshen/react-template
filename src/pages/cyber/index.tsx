@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import autofit from "autofit.js";
 import Header from "./components/header";
 import DraggableWindow from "@/components/window-panel";
@@ -9,7 +9,10 @@ import RightBottom from "./components/right-bottom";
 import RightCenter from "./components/right-center";
 import RightTop from "./components/right-top";
 import Dock from "@/components/dock";
+import GlowSettingsButton from "./components/setting-btn";
+import ModelSettingsDrawer from "./components/setting-drawer";
 function CyberPage() {
+  const [open, setOpen] = useState(false);
   useEffect(() => {
     // 只在 Cyber 大屏页面启用 autofit
     autofit.init(
@@ -77,6 +80,8 @@ function CyberPage() {
 
         {/* 右侧列 - 上中下 1:1:1 布局 */}
         <div className="p-4 flex flex-col gap-4">
+          <GlowSettingsButton onClick={() => setOpen(true)} />
+          <ModelSettingsDrawer open={open} setOpen={setOpen} />
           <div className="flex-1 relative rounded-lg p-0">
             <DraggableWindow
               id="right-top"
