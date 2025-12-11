@@ -7,11 +7,12 @@ import { UserMessage } from "@/components/chat/components/UserMessage";
 import { AssisMessage } from "@/components/chat/components/AssisMessage";
 import { useHistoryStore } from "@/store/history";
 // import { nanoid } from "nanoid";
-
+import { mockMessages } from "@/lib/mockMessage";
 // 定义 ChatHistory 组件
 export default function ChatHistory() {
   // 获取当前对话的消息列表
-  const messages = useHistoryStore((state) => state.messages);
+  // const messages = useHistoryStore((state) => state.messages);
+  const messages = mockMessages;
 
   return (
     <Conversation className="h-full ">

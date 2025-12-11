@@ -134,7 +134,7 @@ export default function WindowPanel({
                 }}
                 onMouseDown={(e) => {
                   console.log("Minimizing window:", id);
-                  // e.stopPropagation();
+                  e.stopPropagation();
                 }}
                 className="absolute top-3 right-3 text-white hover:text-gray-300 transition-colors "
                 aria-label="Minimize"
