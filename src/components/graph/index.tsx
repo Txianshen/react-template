@@ -1,7 +1,11 @@
 import { Graphin } from "@antv/graphin";
-
+// import routerSVG from "@/assets/icons/cyber/router.svg";
 // import "@antv/graphin/dist/index.css";
 // import "@antv/graphin-components/dist/index.css";
+import routerSVG from "@/assets/icons/cyber/router.svg";
+import bgpSvg from "@/assets/icons/cyber/bgp.svg";
+import hostSvg from "@/assets/icons/cyber/host.svg";
+import networkSvg from "@/assets/icons/cyber/network.svg";
 
 export default function Graph() {
   const options = {
@@ -9,101 +13,130 @@ export default function Graph() {
       nodes: [
         {
           id: "router-center",
+          style: {
+            src: routerSVG,
+          },
           data: {
             label: "wlx100\n10.100.0.150/24",
             type: "router",
-            nodeType: "star",
-            size: 60,
-            color: "#5B8FF9",
+            nodeType: "image",
           },
         },
         {
           id: "host-1",
+          style: {
+            src: hostSvg,
+          },
           data: {
             label: "152\nrouter0\n10.100.0.152/24",
             type: "host",
-            nodeType: "circle",
             size: 50,
             color: "#61DDAA",
+            nodeType: "image",
           },
         },
         {
           id: "router-1",
+          style: {
+            src: routerSVG,
+          },
           data: {
             label: "151\nrouter0\nTS1-0.254",
             type: "router",
-            nodeType: "circle",
             size: 50,
             color: "#D580FF",
+            nodeType: "image",
           },
         },
         {
           id: "router-2",
+          style: {
+            src: routerSVG,
+          },
           data: {
             label: "150\nrouter0\n10.150.0.254/24",
             type: "router",
-            nodeType: "circle",
+            nodeType: "image",
             size: 50,
             color: "#FF9580",
           },
         },
         {
           id: "host-vulnerable-1",
+          style: {
+            src: hostSvg,
+          },
           data: {
             label: "150\nvulnerable_brute",
             type: "vulnerable",
-            nodeType: "hexagon",
+            nodeType: "image",
             size: 45,
             color: "#FF7875",
           },
         },
         {
           id: "host-2",
+          style: {
+            src: hostSvg,
+          },
           data: {
             label: "100\ntx100",
             type: "host",
-            nodeType: "hexagon",
+            nodeType: "image",
             size: 45,
             color: "#5B8FF9",
           },
         },
         {
           id: "firewall",
+          style: {
+            src: bgpSvg,
+          },
           data: {
             label: "150\nnet0\n10.150.0.10\n10.150.0.71/24",
             type: "firewall",
-            nodeType: "diamond",
+            nodeType: "image",
             size: 50,
             color: "#FF7875",
           },
         },
         {
           id: "host-vulnerable-2",
+          style: {
+            src: hostSvg,
+          },
           data: {
             label: "150\nvulnerable_cmdinjection",
             type: "vulnerable",
-            nodeType: "hexagon",
+            nodeType: "image",
             size: 45,
             color: "#5B8FF9",
           },
         },
         {
           id: "host-3",
+          style: {
+            src: hostSvg,
+          },
           data: {
             label: "152",
             type: "host",
-            nodeType: "hexagon",
+            nodeType: "image",
             size: 40,
             color: "#FF7875",
           },
         },
         {
           id: "network-1",
+          style: {
+            src: networkSvg,
+          },
           data: {
             label: "152.0.0.0/8.2.254/24",
             type: "network",
-            nodeType: "rect",
-            size: [80, 30],
+
+            nodeType: "image",
+            size: 50,
             color: "#4A90E2", // 改为深蓝色，更协调
           },
         },
