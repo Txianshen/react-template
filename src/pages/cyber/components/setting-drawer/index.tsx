@@ -7,7 +7,7 @@ import {
   SheetTitle,
   SheetFooter,
 } from "@/components/ui/sheet";
-
+import { toast } from "sonner";
 import {
   Select,
   SelectContent,
@@ -173,7 +173,8 @@ export default function ModelSettingsDrawer({
       };
 
       await setConfig(config);
-      console.log("配置保存成功:", config);
+      //   console.log("配置保存成功:", config);
+      toast.success("配置保存成功！");
       // 关闭抽屉
       setOpen(false);
     } catch (error) {
