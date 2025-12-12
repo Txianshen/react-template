@@ -54,6 +54,42 @@ body {
   min-height: 100vh;
 }
 
+/* 全局滚动条样式 - 符合Cyber大屏风格 */
+::-webkit-scrollbar {
+  width: 6px; /* 增加滚动条宽度 */
+  height: 12px; /* 增加滚动条高度 */
+}
+
+::-webkit-scrollbar-track {
+  /* background: rgba(11, 18, 32, 0.7); 加深轨道背景 */
+  background: transparent;
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #0088cc, #004488); /* 加深滑块颜色 */
+  border-radius: 6px;
+  box-shadow: 0 0 3px rgba(0, 136, 204, 0.7); /* 调整发光效果 */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #00aaff, #0066aa); /* 悬停时稍亮的渐变 */
+  box-shadow: 0 0 6px rgba(0, 136, 204, 0.9); /* 增强发光效果 */
+}
+
+/* 分别定义垂直和水平滚动条的样式以确保兼容性 */
+::-webkit-scrollbar:vertical {
+  width: 6px;
+}
+
+::-webkit-scrollbar:horizontal {
+  height: 6px;
+}
+pre code {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
 @media (prefers-color-scheme: light) {
   /* :root {
     color: #213547;

@@ -10,6 +10,8 @@ import { useHistoryStore } from "@/store/history";
 function LeftTop() {
   const { canvasRef, setIsActive } = useAudioVisualization();
   const addMessage = useHistoryStore((state) => state.addMessage);
+  // const addMessageToMap = useHistoryStore((state) => state.addMessageToMap);
+
   const [currentRunId, setCurrentRunId] = useState<string | null>(null);
   const [isSimulating, setIsSimulating] = useState(false);
   const [cyberInputStatus, setCyberInputStatus] = useState<
@@ -111,7 +113,7 @@ function LeftTop() {
 
             // 将消息添加到全局历史记录中
             addMessage(data);
-
+            // addMessageToMap(data);
             // 如果消息类型为 "agent_message_done"，则停止模拟并重置按钮状态
             if (data.type === "agent_message_done") {
               // agent_message_done表示 对话结束 需要重置CyberInput的按钮状态

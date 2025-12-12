@@ -9,6 +9,8 @@ import { AgentSwitchCard } from "./components/AgentSwitchMessage";
 import OptionsMessage from "./components/OptionsMessage";
 import { ActionsMessage } from "./components/AssisActions";
 import ChatHistory from "./components/ChatHistory";
+import { UserMessageList } from "./components/UserMessageList";
+
 // import NewChatHistory from "./components/ChatHistory";
 export {
   Reasoning,
@@ -17,5 +19,6 @@ export {
   OptionsMessage,
   ActionsMessage,
   ChatHistory,
+  UserMessageList,
   //   NewChatHistory,
 };

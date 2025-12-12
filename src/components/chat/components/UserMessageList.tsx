@@ -4,28 +4,28 @@ import {
   MessageResponse,
 } from "@/components/ai-elements/message";
 // import { ActionsMessage as UserActions } from "./UserActions";
-import type { Message as MessageType } from "@/lib/mockMessage";
-
+import type { MessageData } from "@/types/chat";
 export interface UserMessageProps {
-  message: MessageType;
+  messages: MessageData[];
   index: number;
   messageId: string;
 }
 
-export const UserMessage = ({
-  message,
+export const UserMessageList = ({
+  messages,
   index,
   messageId,
 }: UserMessageProps) => {
-  console.log(message);
+  console.log(messages);
   return (
     <Message key={`${messageId}-${index}`} from="user" className="ml-auto">
       {/* "group-[.is-assistant]:border-none", "!text-white", "!bg-[transparent]", */}
-      {/* group-[.is-assistant]:border-none text-xl !bg-cyan-500/10 !border-cyan-400/40 !text-cyan-200 */}
-      <MessageContent className="">
-        <MessageResponse key={`${messageId}-${index}`}>
-          {message.data?.content}
-        </MessageResponse>
+      <MessageContent className="group-[.is-assistant]:border-none text-xl !bg-cyan-500/10 !border-cyan-400/40 !text-cyan-200">
+        {messages.map((message) => (
+          <MessageResponse key={`${messageId}-${index}`}>
+            {message?.content}
+          </MessageResponse>
+        ))}
       </MessageContent>
       {/* <UserActions /> */}
     </Message>
