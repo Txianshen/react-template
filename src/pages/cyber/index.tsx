@@ -51,11 +51,11 @@ function CyberPage() {
           <div className="flex-3 relative rounded-lg p-0">
             {/* <LeftBottom /> */}
             <DraggableWindow
-              id="left-bottom"
-              title="AI决策推理"
+              id="right-top"
+              title="后台终端"
               layoutBounds="#cyber-screen"
             >
-              <LeftBottom />
+              <RightTop />
             </DraggableWindow>
           </div>
         </div>
@@ -84,11 +84,11 @@ function CyberPage() {
           <ModelSettingsDrawer open={open} setOpen={setOpen} />
           <div className="flex-1 relative rounded-lg p-0">
             <DraggableWindow
-              id="right-top"
-              title="后台终端"
+              id="left-bottom"
+              title="AI决策推理"
               layoutBounds="#cyber-screen"
             >
-              <RightTop />
+              <LeftBottom />
             </DraggableWindow>
           </div>
           <div className="flex-1 relative rounded-lg p-0">
