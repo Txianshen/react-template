@@ -26,6 +26,9 @@ function LeftTop() {
 
   const handleSubmit = async (data: { text: string; files: FileUIPart[] }) => {
     console.log("handleSubmit", data.text);
+    if (!data.text.trim()) {
+      return;
+    }
     // 生成新的 run_id 并保存
     const runId = uuidv4();
     setCurrentRunId(runId);
