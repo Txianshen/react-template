@@ -7,24 +7,35 @@ import {
 } from "@/components/ai-elements/prompt-input";
 import type { FileUIPart } from "ai";
 import { SendHorizontal, Square, X, Loader2 } from "lucide-react";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 export type CyberInputProps = {
   placeholder?: string;
   onSubmit: (data: { text: string; files: FileUIPart[] }) => void;
   onSpeechButtonListeningChange?: (isListening: boolean) => void; // 新增属性
   currentRunId?: string | null; // 添加 currentRunId 属性
+  externalStatus?: "ready" | "streaming" | "submitted" | "error"; // 添加外部控制状态的属性
 };
+
 export default function CyberInput({
   placeholder,
   onSubmit,
   currentRunId,
   onSpeechButtonListeningChange,
+  externalStatus,
 }: CyberInputProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [status, setStatus] = useState<
     "submitted" | "streaming" | "ready" | "error"
-  >("ready"); // 根据status状态决定显示什么图标
+  >("ready");
+
+  // 当外部状态变化时，更新内部状态
+  useEffect(() => {
+    if (externalStatus) {
+      setStatus(externalStatus);
+    }
+  }, [externalStatus]);
+
   const getSubmitIcon = () => {
     switch (status) {
       case "submitted":
@@ -66,11 +77,11 @@ export default function CyberInput({
       return;
     }
     console.log("handleSubmit");
-    // 更新状态为提交中
-    setStatus("submitted");
-    setTimeout(() => {
-      setStatus("streaming");
-    }, 100);
+    // // 更新状态为提交中
+    // setStatus("submitted");
+    // setTimeout(() => {
+    //   setStatus("streaming");
+    // }, 100);
 
     // 调用外部传入的onSubmit处理函数
     onSubmit(data);
