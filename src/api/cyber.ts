@@ -7,7 +7,7 @@ export function getAvaliableConfig() {
 
 // 获取当前设置的模型配置信息
 export function getCurrentConfig() {
-  return axios.post("/api/getConfig");
+  return axios.get("/api/getCurrentConfig");
 }
 
 // 设置模型配置信息
