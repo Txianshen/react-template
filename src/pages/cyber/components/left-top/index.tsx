@@ -39,7 +39,7 @@ function LeftTop() {
     setTimeout(() => {
       setCyberInputStatus("streaming");
     }, 100);
-
+    const controller = new AbortController();
     await fetchEventSource("http://47.98.234.82:8009/api/chat", {
       method: "POST",
       headers: {
@@ -50,6 +50,7 @@ function LeftTop() {
         message: data.text,
         run_id: runId,
       }),
+      signal: controller.signal,
       onmessage(msg) {
         // 处理接收到的消息
         console.log("onmessage", msg);
@@ -63,6 +64,8 @@ function LeftTop() {
           // 如果消息类型为 "agent_message_done"，则重置按钮状态
           if (data.type === "agent_message_done") {
             setCyberInputStatus("ready");
+            // 主动断开
+            controller.abort(); // 主动结束
           }
         } catch (error) {
           console.error("解析SSE消息失败:", error);
@@ -81,8 +84,8 @@ function LeftTop() {
       onerror(err) {
         console.error("发生错误", err);
         setCyberInputStatus("ready");
-        // 不重连，返回null阻止自动重连
-        return null;
+        // 不重连，返回err阻止自动重连
+        throw err;
       },
     });
   };
