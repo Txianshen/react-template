@@ -15,6 +15,7 @@ interface WindowPanelProps {
   headerComponent?: React.ReactNode; // 允许传入自定义头部组件
   children?: React.ReactNode;
   className?: string;
+  scale?: number;
 }
 
 export default function WindowPanel({
@@ -25,9 +26,18 @@ export default function WindowPanel({
   headerComponent, // 自定义头部组件
   children,
   className,
+  scale,
 }: WindowPanelProps) {
   // const saved = JSON.parse(localStorage.getItem("win-" + id) || "null");
+  console.log("scale", scale);
+  const [RndScale, setRndScale] = useState(scale);
 
+  useEffect(() => {
+    console.log("scale", scale);
+    if (scale) {
+      setRndScale(scale);
+    }
+  }, [scale]);
   const { activeId, setActiveId, minimizeWindow } = useWindowStore();
   const windowState = useWindowStore((state) => state.windows[id]);
   const isMinimized = windowState ? windowState.minimized : false;
@@ -96,6 +106,7 @@ export default function WindowPanel({
             onMouseDown={() => setActiveId(id)}
             bounds={layoutBounds}
             dragHandleClassName="window-drag"
+            scale={RndScale}
             enableResizing
             default={{ x: pos.x, y: pos.y, width: pos.w, height: pos.h }}
             size={{ width: pos.w, height: pos.h }}

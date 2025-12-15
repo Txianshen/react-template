@@ -28,6 +28,21 @@ function CyberPage() {
       autofit.off();
     };
   }, []);
+  const [scale, setScale] = useState(1);
+  function getAutofitScale() {
+    const scaleX = window.innerWidth / 3840;
+    const scaleY = window.innerHeight / 1080;
+    return Math.min(scaleX, scaleY);
+  }
+
+  useEffect(() => {
+    const update = () => {
+      setScale(getAutofitScale());
+    };
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
 
   return (
     <div
@@ -44,6 +59,7 @@ function CyberPage() {
               id="left-top"
               title="语音指令"
               layoutBounds="#cyber-screen"
+              scale={scale}
             >
               <LeftTop />
             </DraggableWindow>
@@ -54,6 +70,7 @@ function CyberPage() {
               id="right-top"
               title="后台终端"
               layoutBounds="#cyber-screen"
+              scale={scale}
             >
               <RightTop />
             </DraggableWindow>
@@ -72,6 +89,7 @@ function CyberPage() {
               layoutBounds="#cyber-screen"
               headerComponent={<Header />}
               className="bg-[transparent]"
+              scale={scale}
             >
               <Graph />
             </DraggableWindow>
@@ -87,6 +105,7 @@ function CyberPage() {
               id="left-bottom"
               title="AI决策推理"
               layoutBounds="#cyber-screen"
+              scale={scale}
             >
               <LeftBottom />
             </DraggableWindow>
@@ -97,6 +116,7 @@ function CyberPage() {
               id="right-center"
               title="漏洞POC"
               layoutBounds="#cyber-screen"
+              scale={scale}
             >
               <RightCenter />
             </DraggableWindow>
@@ -107,6 +127,7 @@ function CyberPage() {
               id="right-bottom"
               title="浏览器自动化"
               layoutBounds="#cyber-screen"
+              scale={scale}
             >
               <RightBottom />
             </DraggableWindow>
