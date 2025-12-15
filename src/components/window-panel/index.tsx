@@ -107,7 +107,12 @@ export default function WindowPanel({
             bounds={layoutBounds}
             dragHandleClassName="window-drag"
             scale={RndScale}
-            enableResizing
+            enableResizing={true}
+            // enableResizing={{
+            //   bottom: true,
+            //   right: true,
+            //   bottomRight: true,
+            // }}
             default={{ x: pos.x, y: pos.y, width: pos.w, height: pos.h }}
             size={{ width: pos.w, height: pos.h }}
             position={{ x: pos.x, y: pos.y }}
@@ -126,6 +131,7 @@ export default function WindowPanel({
               className
             )}
           >
+            {/* Header / Drag Area */}
             <div className="window-drag cursor-move relative">
               {/* 窗口标题将在此处显示 */}
               {showHeader && (
@@ -155,10 +161,18 @@ export default function WindowPanel({
             </div>
             <div className="absolute bottom-0 left-0 w-4 h-4 border-b-[3px] border-l-[3px] border-[#00D9FF]" />
             <div className="absolute bottom-0 right-0 w-4 h-4 border-b-[3px] border-r-[3px] border-[#00D9FF]" />
-            {/* 内容区域应该在这里插入 */}
-            <div className=" p-4 flex-1 overflow-auto">
-              {/* 窗口内容将在此处渲染 */}
-              {children}
+            {/* Content Area (关键隔离层) */}
+            <div className=" p-4 flex-1 min-h-0 overflow-auto">
+              <div
+                className="h-full overflow-auto"
+                onMouseDown={(e) => e.stopPropagation()}
+                onPointerDown={(e) => e.stopPropagation()}
+                style={{
+                  contain: "layout size",
+                }}
+              >
+                {children}
+              </div>
             </div>
           </Rnd>
         </motion.div>

@@ -152,13 +152,13 @@ function LeftTop() {
         externalStatus={cyberInputStatus}
       />
       {/* 添加模拟按钮 */}
-      {/* <button
+      <button
         onClick={simulateSSEStream}
         disabled={isSimulating}
         className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:bg-gray-400"
       >
         {isSimulating ? "模拟中..." : "模拟SSE流数据"}
-      </button> */}
+      </button>
     </div>
   );
 }
