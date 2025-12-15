@@ -6,7 +6,8 @@ import {
 // import { UserMessage } from "@/components/chat/components/UserMessage";
 import { UserMessageList } from "@/components/chat/components/UserMessageList";
 
-import { AssisMessage } from "@/components/chat/components/AssisMessage";
+// import { AssisMessage } from "@/components/chat/components/AssisMessage";
+import { AssisMessageList } from "@/components/chat/components/AssisMessageList";
 import { useHistoryStore } from "@/store/history";
 import { createMessagesList } from "@/lib/utils";
 // import { nanoid } from "nanoid";
@@ -23,7 +24,7 @@ export default function ChatHistoryMap() {
       <ConversationContent className="gap-4">
         {messages.map((message, index) => {
           // 用户消息 - 使用type字段判断
-          if (message.role === "user") {
+          if (message.type === "user_message") {
             return (
               <UserMessageList
                 key={index}
@@ -35,13 +36,13 @@ export default function ChatHistoryMap() {
           }
 
           // 系统消息/助手消息 - 使用type字段判断
-          if (message.role === "assistant") {
+          if (message.type === "agent_message") {
             return (
-              <AssisMessage
+              <AssisMessageList
                 key={index}
-                message={message}
+                messages={message.data || []}
                 index={index}
-                messageId={message.data?.id}
+                messageId={message.id}
               />
             );
           }

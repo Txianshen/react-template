@@ -22,6 +22,7 @@ export interface MessageData {
 export type MessageItem = {
   id: string;
   role?: "user" | "assistant";
+  type?: "user_message" | "agent_message" | "agent_message_done";
   parentId: string | null;
   childrenIds: string[];
   data: MessageData[];

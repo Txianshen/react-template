@@ -20,7 +20,8 @@ export const UserMessageList = ({
   return (
     <Message key={`${messageId}-${index}`} from="user" className="ml-auto">
       {/* "group-[.is-assistant]:border-none", "!text-white", "!bg-[transparent]", */}
-      <MessageContent className="group-[.is-assistant]:border-none text-xl !bg-cyan-500/10 !border-cyan-400/40 !text-cyan-200">
+      {/* !bg-cyan-500/10 !border-cyan-400/40 */}
+      <MessageContent className="text-2xl !bg-cyan-700/10 !border-cyan-400/40  text-white">
         {messages.map((message) => (
           <MessageResponse key={`${messageId}-${index}`}>
             {message?.content}

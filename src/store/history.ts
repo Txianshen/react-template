@@ -7,6 +7,7 @@ import type { MessageData } from "../types/chat";
 interface MessageItem {
   id: string;
   role?: "user" | "assistant";
+  type: "user_message" | "agent_message" | "agent_message_done";
   parentId: string | null;
   childrenIds: string[];
   data: MessageData[];
@@ -118,7 +119,11 @@ export const useHistoryStore = create<HistoryState>((set) => ({
         // 如果 key 不存在，创建新条目
         const newMessageItem: MessageItem = {
           id: key,
-          role: message.data.role as "user" | "assistant" | undefined,
+          //   role: message.data.role as "user" | "assistant" | undefined,
+          type: message.type as
+            | "user_message"
+            | "agent_message"
+            | "agent_message_done",
           parentId: state.history.currentId,
           childrenIds: [],
           data: [

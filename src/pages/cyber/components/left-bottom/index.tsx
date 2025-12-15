@@ -35,7 +35,7 @@ export default function LeftBottom() {
             from="assistant"
             className=""
           >
-            <MessageContent className="text-white">
+            <MessageContent className=" message-content text-white text-2xl">
               <MessageResponse
                 key={`${lastMessage.data?.id}-${messages.length - 1}`}
               >
