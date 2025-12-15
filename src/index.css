@@ -225,3 +225,19 @@ pre code {
 .cyber-toast [data-icon][data-type="success"] {
   color: #00d9ff !important; /* 成功图标青色 */
 }
+
+.message-content code {
+  @apply text-2xl;
+  /* @apply bg-[#3c3c3c]; */
+  /* @apply text-white; */
+  @apply text-black;
+}
+
+.message-content a {
+  @apply text-2xl;
+  @apply text-white;
+}
+
+.message-content pre {
+  @apply text-xl;
+}

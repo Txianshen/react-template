@@ -10,7 +10,7 @@ import { useHistoryStore } from "@/store/history";
 function LeftTop() {
   const { canvasRef, setIsActive } = useAudioVisualization();
   const addMessage = useHistoryStore((state) => state.addMessage);
-  // const addMessageToMap = useHistoryStore((state) => state.addMessageToMap);
+  const addMessageToMap = useHistoryStore((state) => state.addMessageToMap);
 
   const [currentRunId, setCurrentRunId] = useState<string | null>(null);
   const [isSimulating, setIsSimulating] = useState(false);
@@ -113,7 +113,7 @@ function LeftTop() {
 
             // 将消息添加到全局历史记录中
             addMessage(data);
-            // addMessageToMap(data);
+            addMessageToMap(data);
             // 如果消息类型为 "agent_message_done"，则停止模拟并重置按钮状态
             if (data.type === "agent_message_done") {
               // agent_message_done表示 对话结束 需要重置CyberInput的按钮状态
@@ -151,13 +151,13 @@ function LeftTop() {
         externalStatus={cyberInputStatus}
       />
       {/* 添加模拟按钮 */}
-      {/* <button
+      <button
         onClick={simulateSSEStream}
         disabled={isSimulating}
         className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:bg-gray-400"
       >
         {isSimulating ? "模拟中..." : "模拟SSE流数据"}
-      </button> */}
+      </button>
     </div>
   );
 }

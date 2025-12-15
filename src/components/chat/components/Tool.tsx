@@ -31,13 +31,13 @@ export function Tool({
       type="single"
       defaultValue={defaultOpen ? "item-1" : undefined}
       collapsible
-      className={cn("rounded-lg", className)}
+      className={cn("rounded-lg ", className)}
     >
       <AccordionItem value="item-1" className="border">
         <AccordionTrigger className="p-3 hover:no-underline [&[data-state=open]>svg]:rotate-180">
-          <div className="flex items-center justify-between w-full">
+          <div className="flex items-center  justify-between w-full">
             <div className="flex items-center">
-              <span className="text-sm font-medium">{title}</span>
+              <span className="text-2xl font-medium">{title}</span>
             </div>
             <div className="flex items-center">
               {status ? (
@@ -59,7 +59,7 @@ export function Tool({
             </div>
           </div>
         </AccordionTrigger>
-        <AccordionContent className="pb-0">
+        <AccordionContent className="pb-0 text-2xl ">
           <div className="p-3 pt-0">
             <MessageResponse>{content}</MessageResponse>
           </div>
