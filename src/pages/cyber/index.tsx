@@ -58,7 +58,7 @@ function CyberPage() {
             <DraggableWindow
               id="left-top"
               title="语音指令"
-              layoutBounds="#cyber-screen"
+              layoutBounds="window"
               scale={scale}
             >
               <LeftTop />
@@ -69,7 +69,7 @@ function CyberPage() {
             <DraggableWindow
               id="right-top"
               title="后台终端"
-              layoutBounds="#cyber-screen"
+              layoutBounds="window"
               scale={scale}
             >
               <RightTop />
@@ -86,7 +86,7 @@ function CyberPage() {
               id="graph"
               title="网络关系拓扑图"
               showHeader={true}
-              layoutBounds="#cyber-screen"
+              layoutBounds="window"
               headerComponent={<Header />}
               className="bg-[transparent]"
               scale={scale}
@@ -104,7 +104,7 @@ function CyberPage() {
             <DraggableWindow
               id="left-bottom"
               title="AI决策推理"
-              layoutBounds="#cyber-screen"
+              layoutBounds="window"
               scale={scale}
             >
               <LeftBottom />
@@ -115,7 +115,7 @@ function CyberPage() {
             <DraggableWindow
               id="right-center"
               title="漏洞POC"
-              layoutBounds="#cyber-screen"
+              layoutBounds="window"
               scale={scale}
             >
               <RightCenter />
@@ -126,7 +126,7 @@ function CyberPage() {
             <DraggableWindow
               id="right-bottom"
               title="浏览器自动化"
-              layoutBounds="#cyber-screen"
+              layoutBounds="window"
               scale={scale}
             >
               <RightBottom />

@@ -40,15 +40,25 @@ function LeftTop() {
       setCyberInputStatus("streaming");
     }, 100);
     const controller = new AbortController();
-    await fetchEventSource("http://47.98.234.82:8009/api/chat", {
+    await fetchEventSource("http://47.98.234.82:8009/process", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
+      // body: JSON.stringify({
+      //   // agent_type: "apitest",
+      //   message: data.text,
+      //   run_id: runId,
+      // }),
       body: JSON.stringify({
-        // agent_type: "apitest",
-        message: data.text,
-        run_id: runId,
+        input: [
+          {
+            role: "user",
+            content: [{ type: "text", text: data.text }],
+          },
+        ],
+        session_id: runId,
+        // user_id: "可选，便于区分多用户",
       }),
       signal: controller.signal,
       onmessage(msg) {
