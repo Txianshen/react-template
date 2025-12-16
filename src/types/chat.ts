@@ -14,6 +14,7 @@ export interface MessageData {
   id: string;
   name: string;
   role: string;
+  type?: string; // 添加 type 字段
   content: any;
   metadata: any;
   timestamp: string;

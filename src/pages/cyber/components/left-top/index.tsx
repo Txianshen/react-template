@@ -3,21 +3,30 @@ import CyberInput from "@/components/cyber-input";
 import type { FileUIPart } from "ai";
 import { fetchEventSource } from "@microsoft/fetch-event-source";
 import { useAudioVisualization } from "@/hooks/use-auto-visualization";
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { useHistoryStore } from "@/store/history";
+// import { useHistoryStore } from "@/store/history";
+import { useStreamingStore } from "@/store/streamingStoreState";
 
 function LeftTop() {
   const { canvasRef, setIsActive } = useAudioVisualization();
-  const addMessage = useHistoryStore((state) => state.addMessage);
-  const addMessageToMap = useHistoryStore((state) => state.addMessageToMap);
+  // const addMessage = useHistoryStore((state) => state.addMessage);
+  // const addMessageToMap = useHistoryStore((state) => state.addMessageToMap);
 
   const [currentRunId, setCurrentRunId] = useState<string | null>(null);
   const [isSimulating, setIsSimulating] = useState(false);
   const [cyberInputStatus, setCyberInputStatus] = useState<
     "ready" | "streaming" | "submitted" | "error"
   >("ready");
+  // const responses = useStreamingStore((s) => s.responses);
+  const apply = useStreamingStore.getState().applySSEEvent;
+  const applyUserMessage = useStreamingStore.getState().applyUserMessage;
 
+  // 初始化时创建 sessionId 并保存
+  useEffect(() => {
+    const sessionId = uuidv4();
+    setCurrentRunId(sessionId);
+  }, []);
   // 当语音识别按钮的状态改变时，同步控制音频可视化
   const handleSpeechButtonListeningChange = useCallback(
     (isListening: boolean) => {
@@ -31,9 +40,14 @@ function LeftTop() {
     if (!data.text.trim()) {
       return;
     }
-    // 生成新的 run_id 并保存
-    const runId = uuidv4();
-    setCurrentRunId(runId);
+
+    // 使用已存在的 sessionId 而不是每次都创建新的 run_id
+    if (!currentRunId) {
+      console.error("Session ID is not initialized");
+      return;
+    }
+
+    applyUserMessage(data.text, currentRunId);
 
     setCyberInputStatus("submitted");
     setTimeout(() => {
@@ -57,8 +71,8 @@ function LeftTop() {
             content: [{ type: "text", text: data.text }],
           },
         ],
-        session_id: runId,
-        // user_id: "可选，便于区分多用户",
+        session_id: currentRunId,
+        user_id: "", // 可选，便于区分多用户
       }),
       signal: controller.signal,
       onmessage(msg) {
@@ -68,11 +82,12 @@ function LeftTop() {
           const data = JSON.parse(msg.data);
           console.log("onmessage--data", data);
           // 将消息添加到全局历史记录中
-          addMessage(data);
-          addMessageToMap(data);
+          // addMessage(data);
+          // addMessageToMap(data);
+          apply(data);
 
           // 如果消息类型为 "agent_message_done"，则重置按钮状态
-          if (data.type === "agent_message_done") {
+          if (data.object === "response" && data.status === "completed") {
             setCyberInputStatus("ready");
             // 主动断开
             controller.abort(); // 主动结束
@@ -100,7 +115,57 @@ function LeftTop() {
     });
   };
   // 模拟SSE流数据
-  const simulateSSEStream = async () => {
+  // const simulateSSEStream = async () => {
+  //   if (isSimulating) return;
+
+  //   setIsSimulating(true);
+  //   setCyberInputStatus("submitted");
+  //   setTimeout(() => {
+  //     setCyberInputStatus("streaming");
+  //   }, 100);
+  //   try {
+  //     // 读取chat_message.txt文件内容
+  //     const response = await fetch("/src/lib/chat_message.txt");
+  //     const text = await response.text();
+
+  //     // 按行分割内容
+  //     const lines = text.split("\n").filter((line) => line.trim() !== "");
+
+  //     // 逐行处理数据
+  //     for (const line of lines) {
+  //       if (line.startsWith("data: ")) {
+  //         try {
+  //           // 提取JSON部分
+  //           const jsonData = line.substring(6); // 移除 "data: " 前缀
+  //           const data = JSON.parse(jsonData);
+  //           console.log("模拟接收数据:", data);
+
+  //           // 将消息添加到全局历史记录中
+  //           addMessage(data);
+  //           addMessageToMap(data);
+  //           // 如果消息类型为 "agent_message_done"，则停止模拟并重置按钮状态
+  //           if (data.type === "agent_message_done") {
+  //             // agent_message_done表示 对话结束 需要重置CyberInput的按钮状态
+  //             setCyberInputStatus("ready");
+  //             break;
+  //           }
+  //         } catch (error) {
+  //           console.error("解析模拟SSE消息失败:", error);
+  //         }
+  //       }
+
+  //       // 添加延迟以模拟流式接收
+  //       await new Promise((resolve) => setTimeout(resolve, 300));
+  //     }
+  //   } catch (error) {
+  //     console.error("模拟SSE流数据时出错:", error);
+  //     setCyberInputStatus("ready");
+  //   } finally {
+  //     setIsSimulating(false);
+  //   }
+  // };
+
+  const simulateSSEStream2 = async () => {
     if (isSimulating) return;
 
     setIsSimulating(true);
@@ -108,32 +173,26 @@ function LeftTop() {
     setTimeout(() => {
       setCyberInputStatus("streaming");
     }, 100);
+
     try {
-      // 读取chat_message.txt文件内容
-      const response = await fetch("/src/lib/chat_message.txt");
+      // 读取chat_mes_scope.txt文件内容
+      const response = await fetch("/src/lib/chat_mes_scope.txt");
       const text = await response.text();
 
-      // 按行分割内容
+      // 按行分割内容并过滤空行
       const lines = text.split("\n").filter((line) => line.trim() !== "");
 
       // 逐行处理数据
       for (const line of lines) {
         if (line.startsWith("data: ")) {
           try {
+            // 解析JSON数据
             // 提取JSON部分
             const jsonData = line.substring(6); // 移除 "data: " 前缀
             const data = JSON.parse(jsonData);
             console.log("模拟接收数据:", data);
 
-            // 将消息添加到全局历史记录中
-            addMessage(data);
-            addMessageToMap(data);
-            // 如果消息类型为 "agent_message_done"，则停止模拟并重置按钮状态
-            if (data.type === "agent_message_done") {
-              // agent_message_done表示 对话结束 需要重置CyberInput的按钮状态
-              setCyberInputStatus("ready");
-              break;
-            }
+            apply(data);
           } catch (error) {
             console.error("解析模拟SSE消息失败:", error);
           }
@@ -167,6 +226,13 @@ function LeftTop() {
       {/* 添加模拟按钮 */}
       {/* <button
         onClick={simulateSSEStream}
+        disabled={isSimulating}
+        className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:bg-gray-400"
+      >
+        {isSimulating ? "模拟中..." : "模拟SSE流数据"}
+      </button> */}
+      {/* <button
+        onClick={simulateSSEStream2}
         disabled={isSimulating}
         className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:bg-gray-400"
       >

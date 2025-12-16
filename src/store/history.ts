@@ -25,13 +25,47 @@ interface History {
   messages: MessageMap;
 }
 
+// type StableResponse = {
+//   id: string;
+//   role: "assistant";
+//   status: "created" | "completed";
+//   session_id?: string;
+//   content: Message[];
+// };
+
+// type Message = {
+//   id: string;
+//   object: "message";
+//   type: "message";
+//   role: "assistant";
+//   status: "created" | "completed";
+//   content: ContentItem[];
+// };
+
+// type ContentItem = {
+//   object: "content";
+//   type: "text";
+//   index: number;
+//   status: "in_progress" | "completed";
+//   text: string;
+// };
+
 interface HistoryState {
   messages: Message[];
   history: History; // 修改为 History 对象
   addMessage: (message: Message) => void;
+
   addMessageToMap: (message: Message) => void; // 修改此方法以符合新结构
   setCurrentId: (id: string | null) => void; // 添加设置 currentId 的方法
   clearMessages: () => void;
+  // state?: {
+  //   responses: StableResponse[];
+  //   current?: {
+  //     responseId: string;
+  //     messageId?: string;
+  //   };
+  // };
+  // applyTextSSE?: (event: any, state: any) => void; // 添加针对于agentScope特有的addMessage方法
 }
 
 export const useHistoryStore = create<HistoryState>((set) => ({
@@ -153,6 +187,87 @@ export const useHistoryStore = create<HistoryState>((set) => ({
         },
       };
     }),
+  // // 最新chatMessage
+  // applyTextSSE(event: any) {
+  //   /** ---------- response ---------- */
+  //   if (event.object === "response") {
+  //     if (event.status === "created") {
+  //       state.responses.push({
+  //         id: event.id,
+  //         role: "assistant",
+  //         status: "created",
+  //         content: [],
+  //       });
+  //       state.current = { responseId: event.id };
+  //     }
+
+  //     if (event.status === "completed" && state.current) {
+  //       const r = state.responses.find(
+  //         (r) => r.id === state.current!.responseId
+  //       );
+  //       if (r) r.status = "completed";
+  //     }
+  //     return;
+  //   }
+
+  //   const response = state.responses.at(-1);
+  //   if (!response) return;
+
+  //   /** ---------- message ---------- */
+  //   if (event.object === "message" && event.type === "assistant") {
+  //     if (event.status === "created") {
+  //       response.content.push({
+  //         id: event.id,
+  //         object: "message",
+  //         type: "message",
+  //         role: "assistant",
+  //         status: "created",
+  //         content: [],
+  //       });
+  //       state.current!.messageId = event.id;
+  //     }
+
+  //     if (event.status === "completed") {
+  //       const msg = response.content.find((m) => m.id === event.id);
+  //       if (msg) msg.status = "completed";
+  //     }
+  //     return;
+  //   }
+
+  //   /** ---------- content (text) ---------- */
+  //   if (event.object === "content" && event.type === "text") {
+  //     const msg = response.content.find((m) => m.id === event.msg_id);
+  //     if (!msg) return;
+
+  //     const index = event.index ?? 0;
+
+  //     let content = msg.content.find((c) => c.index === index);
+  //     if (!content) {
+  //       content = {
+  //         object: "content",
+  //         type: "text",
+  //         index,
+  //         status: "in_progress",
+  //         text: "",
+  //       };
+  //       msg.content.push(content);
+  //     }
+
+  //     // delta
+  //     if (event.delta === true) {
+  //       content.text += event.text ?? "";
+  //     }
+
+  //     // completed
+  //     if (event.status === "completed") {
+  //       content.status = "completed";
+  //       if (event.delta === false && event.text) {
+  //         content.text = event.text;
+  //       }
+  //     }
+  //   }
+  // },
+
   setCurrentId: (id) =>
     set((state) => ({
       history: {

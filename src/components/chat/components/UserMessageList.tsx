@@ -24,7 +24,7 @@ export const UserMessageList = ({
       <MessageContent className="text-2xl !bg-cyan-700/10 !border-cyan-400/40  text-white">
         {messages.map((message) => (
           <MessageResponse key={`${messageId}-${index}`}>
-            {message?.content}
+            {message?.text}
           </MessageResponse>
         ))}
       </MessageContent>
