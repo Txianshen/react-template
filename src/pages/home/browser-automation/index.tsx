@@ -56,7 +56,7 @@ export default function BrowserAutomation() {
     const intervalId = setInterval(() => {
       setKey((prevKey) => prevKey + 1); // 改变 key 值强制重新渲染 iframe
       setLoading(true); // 显示加载状态
-    }, 10000);
+    }, 100000);
 
     // 清理函数
     return () => {
