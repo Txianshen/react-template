@@ -28,3 +28,10 @@ export function getSandboxUrl(user_id: string, session_id: string) {
     `/api/getSandboxUrl?user_id=${user_id}&session_id=${session_id}`
   );
 }
+
+// 中断ai对话
+export function interruptAgent(user_id: string, session_id: string) {
+  return axios.get(
+    `/api/interruptAgent?user_id=${user_id}&session_id=${session_id}`
+  );
+}
