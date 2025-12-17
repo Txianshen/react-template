@@ -16,15 +16,15 @@ export function setConfig(config: Record<string, any>) {
 }
 
 // 获取AI决策推理结果
-export function getCurrentPlan(user_Id: string, session_id: string) {
+export function getCurrentPlan(user_id: string, session_id: string) {
   return axios.get(
-    `/api/getCurrentPlan?user_Id=${user_Id}&session_id=${session_id}`
+    `/api/getCurrentPlan?user_id=${user_id}&session_id=${session_id}`
   );
 }
 
 // 获取浏览器自动化沙箱url
-export function getSandboxUrl(user_Id: string, session_id: string) {
+export function getSandboxUrl(user_id: string, session_id: string) {
   return axios.get(
-    `/api/getSandboxUrl?user_Id=${user_Id}&session_id=${session_id}`
+    `/api/getSandboxUrl?user_id=${user_id}&session_id=${session_id}`
   );
 }
