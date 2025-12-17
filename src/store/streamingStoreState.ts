@@ -6,6 +6,7 @@ type StableResponse = {
   id: string;
   role: "assistant" | "user";
   status: "created" | "in_progress" | "completed";
+  isLoading?: boolean;
   session_id?: string;
   content: Message[];
 };
@@ -44,9 +45,21 @@ export function applyTextSSE(event: any, state: StreamingStoreState) {
       cursor.messageId = undefined;
     }
 
+    // response in_progress 增加会话加载loading效果
+    if (event.status === "in_progress" && cursor.responseId) {
+      const r = responses.find((r) => r.id === cursor.responseId);
+      if (r) {
+        r.status = "in_progress";
+        r.isLoading = true;
+      }
+    }
+
     if (event.status === "completed" && cursor.responseId) {
       const r = responses.find((r) => r.id === cursor.responseId);
-      if (r) r.status = "completed";
+      if (r) {
+        r.status = "completed";
+        r.isLoading = false;
+      }
     }
     return;
   }
@@ -56,6 +69,12 @@ export function applyTextSSE(event: any, state: StreamingStoreState) {
 
   /** ---------- message ---------- */
   if (event.object === "message" && event.role === "assistant") {
+    // 一旦有message消息 需要将isLoading状态重置为false
+    const r = responses.find((r) => r.id === cursor.responseId);
+    if (r && r.isLoading) {
+      r.isLoading = false;
+    }
+
     if (event.status === "in_progress" && event.id) {
       response.content.push({
         id: event.id,

@@ -167,7 +167,7 @@ function LeftTop() {
 
   const simulateSSEStream2 = async () => {
     if (isSimulating) return;
-
+    applyUserMessage("开始", "222");
     setIsSimulating(true);
     setCyberInputStatus("submitted");
     setTimeout(() => {
@@ -193,6 +193,11 @@ function LeftTop() {
             console.log("模拟接收数据:", data);
 
             apply(data);
+            if (data.object === "response" && data.status === "completed") {
+              setCyberInputStatus("ready");
+              // 主动断开
+              // controller.abort(); // 主动结束
+            }
           } catch (error) {
             console.error("解析模拟SSE消息失败:", error);
           }
