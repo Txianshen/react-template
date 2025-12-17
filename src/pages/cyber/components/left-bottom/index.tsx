@@ -14,7 +14,7 @@ import { useEffect } from "react";
 
 // 定义 LeftBottom 组件
 export default function LeftBottom() {
-  const { userId, sessionId, setCurrentPlan } = useCyberStore();
+  const { userId, sessionId, currentPlan, setCurrentPlan } = useCyberStore();
 
   useEffect(() => {
     // 检查 userId 和 sessionId 是否存在
@@ -30,6 +30,8 @@ export default function LeftBottom() {
         }
       } catch (error) {
         console.error("获取当前计划失败:", error);
+        // 如果获取失败，清空当前计划
+        setCurrentPlan(null);
       }
     };
 
@@ -48,7 +50,7 @@ export default function LeftBottom() {
       <ConversationContent className="gap-4">
         <Message from="assistant" className="">
           <MessageContent className=" message-content text-white text-2xl">
-            <MessageResponse></MessageResponse>
+            <MessageResponse>{currentPlan || "暂无计划数据"}</MessageResponse>
           </MessageContent>
         </Message>
         <ConversationScrollButton />

@@ -7,7 +7,7 @@ interface CyberStoreState {
   currentPlan: string | null;
   setUserId: (userId: string) => void;
   setSessionId: (sessionId: string) => void;
-  setCurrentPlan: (plan: string) => void;
+  setCurrentPlan: (plan: string | null) => void;
   clearCyberData: () => void;
 }
 

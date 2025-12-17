@@ -14,7 +14,6 @@ function LeftTop() {
   // const addMessage = useHistoryStore((state) => state.addMessage);
   // const addMessageToMap = useHistoryStore((state) => state.addMessageToMap);
 
-  const [currentRunId, setCurrentRunId] = useState<string | null>(null);
   const [isSimulating, setIsSimulating] = useState(false);
   const [cyberInputStatus, setCyberInputStatus] = useState<
     "ready" | "streaming" | "submitted" | "error"
@@ -22,14 +21,13 @@ function LeftTop() {
   // const responses = useStreamingStore((s) => s.responses);
   const apply = useStreamingStore.getState().applySSEEvent;
   const applyUserMessage = useStreamingStore.getState().applyUserMessage;
-  const { setUserId, setSessionId } = useCyberStore();
+  const { userId, sessionId, setUserId, setSessionId } = useCyberStore();
 
   // 初始化时创建 sessionId 并保存
   useEffect(() => {
-    const sessionId = uuidv4();
+    const newSessionId = uuidv4();
     const userId = "mock_user"; // 这里可以替换为实际的用户ID获取逻辑
-    setCurrentRunId(sessionId);
-    setSessionId(sessionId);
+    setSessionId(newSessionId);
     setUserId(userId);
   }, []);
   // 当语音识别按钮的状态改变时，同步控制音频可视化
@@ -47,12 +45,12 @@ function LeftTop() {
     }
 
     // 使用已存在的 sessionId 而不是每次都创建新的 run_id
-    if (!currentRunId) {
+    if (!sessionId) {
       console.error("Session ID is not initialized");
       return;
     }
 
-    applyUserMessage(data.text, currentRunId);
+    applyUserMessage(data.text, sessionId);
 
     setCyberInputStatus("submitted");
     setTimeout(() => {
@@ -76,7 +74,7 @@ function LeftTop() {
             content: [{ type: "text", text: data.text }],
           },
         ],
-        session_id: currentRunId,
+        session_id: sessionId,
         user_id: "mock_user", // 可选，便于区分多用户
       }),
       signal: controller.signal,
@@ -229,7 +227,7 @@ function LeftTop() {
       <CyberInput
         onSubmit={(data) => handleSubmit(data)}
         placeholder="请输入指令"
-        currentRunId={currentRunId}
+        currentRunId={sessionId}
         onSpeechButtonListeningChange={handleSpeechButtonListeningChange}
         externalStatus={cyberInputStatus}
       />
