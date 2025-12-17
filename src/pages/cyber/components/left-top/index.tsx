@@ -7,6 +7,7 @@ import { useCallback, useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 // import { useHistoryStore } from "@/store/history";
 import { useStreamingStore } from "@/store/streamingStoreState";
+import { useCyberStore } from "@/store/cyberStore";
 
 function LeftTop() {
   const { canvasRef, setIsActive } = useAudioVisualization();
@@ -21,11 +22,15 @@ function LeftTop() {
   // const responses = useStreamingStore((s) => s.responses);
   const apply = useStreamingStore.getState().applySSEEvent;
   const applyUserMessage = useStreamingStore.getState().applyUserMessage;
+  const { setUserId, setSessionId } = useCyberStore();
 
   // 初始化时创建 sessionId 并保存
   useEffect(() => {
     const sessionId = uuidv4();
+    const userId = "mock_user"; // 这里可以替换为实际的用户ID获取逻辑
     setCurrentRunId(sessionId);
+    setSessionId(sessionId);
+    setUserId(userId);
   }, []);
   // 当语音识别按钮的状态改变时，同步控制音频可视化
   const handleSpeechButtonListeningChange = useCallback(

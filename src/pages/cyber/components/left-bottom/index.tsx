@@ -3,47 +3,54 @@ import {
   ConversationContent,
   ConversationScrollButton,
 } from "@/components/ai-elements/conversation";
-import { useHistoryStore } from "@/store/history";
 import {
   Message,
   MessageContent,
   MessageResponse,
 } from "@/components/ai-elements/message";
-// import { nanoid } from "nanoid";
+import { useCyberStore } from "@/store/cyberStore";
+import { getCurrentPlan } from "@/api/cyber";
+import { useEffect } from "react";
 
 // 定义 LeftBottom 组件
 export default function LeftBottom() {
-  // 获取当前对话的消息列表
-  const messages = useHistoryStore((state) => state.messages);
+  const { userId, sessionId, setCurrentPlan } = useCyberStore();
 
-  // 只获取最后一条符合条件的消息
-  const lastMessage = [...messages].reverse().find((message) => {
-    return (
-      message.type === "agent_message" &&
-      typeof message.data?.content === "string" &&
-      message.data?.content &&
-      !message.data?.metadata
-    );
-  });
+  useEffect(() => {
+    // 检查 userId 和 sessionId 是否存在
+    if (!userId || !sessionId) return;
+
+    // 定义获取计划的函数
+    const fetchCurrentPlan = async () => {
+      try {
+        const response = await getCurrentPlan(userId, sessionId);
+        // 假设响应数据在 response.data 中
+        if (response.data) {
+          setCurrentPlan(response.data);
+        }
+      } catch (error) {
+        console.error("获取当前计划失败:", error);
+      }
+    };
+
+    // 立即调用一次
+    fetchCurrentPlan();
+
+    // 每5秒调用一次
+    const intervalId = setInterval(fetchCurrentPlan, 5000);
+
+    // 清理函数
+    return () => clearInterval(intervalId);
+  }, [userId, sessionId]);
 
   return (
     <Conversation className="h-full ">
       <ConversationContent className="gap-4">
-        {lastMessage && (
-          <Message
-            key={`${lastMessage.data?.id}-${messages.length - 1}`}
-            from="assistant"
-            className=""
-          >
-            <MessageContent className=" message-content text-white text-2xl">
-              <MessageResponse
-                key={`${lastMessage.data?.id}-${messages.length - 1}`}
-              >
-                {lastMessage.data?.content as string}
-              </MessageResponse>
-            </MessageContent>
-          </Message>
-        )}
+        <Message from="assistant" className="">
+          <MessageContent className=" message-content text-white text-2xl">
+            <MessageResponse></MessageResponse>
+          </MessageContent>
+        </Message>
         <ConversationScrollButton />
       </ConversationContent>
     </Conversation>
