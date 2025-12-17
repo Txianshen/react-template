@@ -72,7 +72,7 @@ function LeftTop() {
           },
         ],
         session_id: currentRunId,
-        user_id: "", // 可选，便于区分多用户
+        user_id: "mock_user", // 可选，便于区分多用户
       }),
       signal: controller.signal,
       onmessage(msg) {
