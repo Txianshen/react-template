@@ -39,7 +39,7 @@ export default function LeftBottom() {
     fetchCurrentPlan();
 
     // 每5秒调用一次
-    const intervalId = setInterval(fetchCurrentPlan, 5000);
+    // const intervalId = setInterval(fetchCurrentPlan, 5000);
 
     // 清理函数
     return () => clearInterval(intervalId);
