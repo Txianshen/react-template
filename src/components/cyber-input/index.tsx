@@ -8,6 +8,8 @@ import {
 import type { FileUIPart } from "ai";
 import { SendHorizontal, Square, X, Loader2 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
+import { useCyberStore } from "@/store/cyberStore";
+import { interruptAgent } from "@/api/cyber";
 
 export type CyberInputProps = {
   placeholder?: string;
@@ -28,6 +30,9 @@ export default function CyberInput({
   const [status, setStatus] = useState<
     "submitted" | "streaming" | "ready" | "error"
   >("ready");
+
+  // 从 cyberStore 获取 userId 和 sessionId
+  const { userId, sessionId } = useCyberStore();
 
   // 当外部状态变化时，更新内部状态
   useEffect(() => {
@@ -50,19 +55,17 @@ export default function CyberInput({
   };
   const handlePause = async () => {
     try {
-      // 调用暂停API
-      const response = await fetch(
-        `${import.meta.env.VITE_API_SERVICE_URL}/api/interrupt`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            run_id: currentRunId,
-          }),
-        }
-      );
+      // 检查 userId 和 sessionId 是否存在
+      if (!userId || !sessionId) {
+        console.error("缺少 userId 或 sessionId");
+        // setStatus("error");
+        return;
+      }
 
-      if (response.ok) {
+      // 调用新的暂停API
+      const response = await interruptAgent(userId, sessionId);
+
+      if (response) {
         console.log("暂停成功，状态重置为 ready");
         setStatus("ready");
       } else {
