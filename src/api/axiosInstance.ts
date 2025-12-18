@@ -36,6 +36,7 @@ axiosInstance.interceptors.response.use(
     return response.data;
   },
   (error: AxiosError) => {
+    console.log("响应拦截器:", error);
     // 错误处理
     if (error.response) {
       const status = error.response.status;

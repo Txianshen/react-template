@@ -47,7 +47,7 @@ function CyberPage() {
   return (
     <div
       id="cyber-screen"
-      className="h-[1080px] w-[3840px] bg-cover bg-center bg-no-repeat bg-[url('@/assets/icons/cyber/cyber-bg2.svg')]"
+      className="h-[1080px] w-[3840px] bg-cover bg-center bg-no-repeat bg-[url('@/assets/icons/cyber/cyber-bg.svg')]"
     >
       {/* 左中右三列布局 */}
       <div className="grid h-full grid-cols-[1.2fr_3fr_1.2fr] gap-4">
