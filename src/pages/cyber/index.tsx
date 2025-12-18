@@ -55,25 +55,25 @@ function CyberPage() {
         <div className="p-4 flex flex-col gap-4">
           <div className="flex-1  rounded-lg p-0 relative">
             {/* <LeftTop /> */}
-            <DraggableWindow
+            {/* <DraggableWindow
               id="left-top"
               title="语音指令"
               layoutBounds="window"
               scale={scale}
             >
               <LeftTop />
-            </DraggableWindow>
+            </DraggableWindow> */}
           </div>
           <div className="flex-3 relative rounded-lg p-0">
             {/* <LeftBottom /> */}
-            <DraggableWindow
+            {/* <DraggableWindow
               id="right-top"
               title="后台终端"
               layoutBounds="window"
               scale={scale}
             >
               <RightTop />
-            </DraggableWindow>
+            </DraggableWindow> */}
           </div>
         </div>
 
@@ -101,36 +101,36 @@ function CyberPage() {
           <GlowSettingsButton onClick={() => setOpen(true)} />
           <ModelSettingsDrawer open={open} setOpen={setOpen} />
           <div className="flex-1 relative rounded-lg p-0">
-            <DraggableWindow
+            {/* <DraggableWindow
               id="left-bottom"
               title="AI决策推理"
               layoutBounds="window"
               scale={scale}
             >
               <LeftBottom />
-            </DraggableWindow>
+            </DraggableWindow> */}
           </div>
           <div className="flex-1 relative rounded-lg p-0">
             {/* <RightCenter /> */}
-            <DraggableWindow
+            {/* <DraggableWindow
               id="right-center"
               title="漏洞POC"
               layoutBounds="window"
               scale={scale}
             >
               <RightCenter />
-            </DraggableWindow>
+            </DraggableWindow> */}
           </div>
           <div className="flex-1 relative rounded-lg p-0">
             {/* <RightBottom /> */}
-            <DraggableWindow
+            {/* <DraggableWindow
               id="right-bottom"
               title="浏览器自动化"
               layoutBounds="window"
               scale={scale}
             >
               <RightBottom />
-            </DraggableWindow>
+            </DraggableWindow> */}
           </div>
         </div>
       </div>

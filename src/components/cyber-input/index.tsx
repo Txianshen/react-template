@@ -51,13 +51,16 @@ export default function CyberInput({
   const handlePause = async () => {
     try {
       // 调用暂停API
-      const response = await fetch("http://47.98.234.82:8009/api/interrupt", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          run_id: currentRunId,
-        }),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_SERVICE_URL}/api/interrupt`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            run_id: currentRunId,
+          }),
+        }
+      );
 
       if (response.ok) {
         console.log("暂停成功，状态重置为 ready");

@@ -53,22 +53,25 @@ function LeftTop() {
     }, 100);
     // 使用普通的 fetch 请求替代 fetchEventSource
     try {
-      const response = await fetch("http://47.98.234.82:8009/process", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          input: [
-            {
-              role: "user",
-              content: [{ type: "text", text: data.text }],
-            },
-          ],
-          session_id: sessionId,
-          user_id: "mock_user", // 可选，便于区分多用户
-        }),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_SERVICE_URL}/process`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            input: [
+              {
+                role: "user",
+                content: [{ type: "text", text: data.text }],
+              },
+            ],
+            session_id: sessionId,
+            user_id: "mock_user", // 可选，便于区分多用户
+          }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);

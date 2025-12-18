@@ -2,8 +2,13 @@ import axios, { type AxiosError, type AxiosResponse } from "axios";
 import { toast } from "sonner";
 
 // 创建 axios 实例
+// 根据环境变量决定是否使用代理
+const baseURL = import.meta.env.VITE_API_SERVICE_URL
+  ? `${import.meta.env.VITE_API_SERVICE_URL}/${import.meta.env.VITE_API_BASE_URL}`
+  : import.meta.env.VITE_API_BASE_URL;
+
 const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL,
+  baseURL: baseURL,
   timeout: 30000,
   headers: {
     "Content-Type": "application/json",
