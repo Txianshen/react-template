@@ -1,24 +1,19 @@
 // 左上角内容区域- 语音输入/文本输入
 import CyberInput from "@/components/cyber-input";
 import type { FileUIPart } from "ai";
-import { fetchEventSource } from "@microsoft/fetch-event-source";
 import { useAudioVisualization } from "@/hooks/use-auto-visualization";
 import { useCallback, useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
-// import { useHistoryStore } from "@/store/history";
 import { useStreamingStore } from "@/store/streamingStoreState";
 import { useCyberStore } from "@/store/cyberStore";
 
 function LeftTop() {
   const { canvasRef, setIsActive } = useAudioVisualization();
-  // const addMessage = useHistoryStore((state) => state.addMessage);
-  // const addMessageToMap = useHistoryStore((state) => state.addMessageToMap);
-
   const [isSimulating, setIsSimulating] = useState(false);
   const [cyberInputStatus, setCyberInputStatus] = useState<
     "ready" | "streaming" | "submitted" | "error"
   >("ready");
-  // const responses = useStreamingStore((s) => s.responses);
+
   const apply = useStreamingStore.getState().applySSEEvent;
   const applyUserMessage = useStreamingStore.getState().applyUserMessage;
   const { userId, sessionId, setUserId, setSessionId } = useCyberStore();
@@ -56,66 +51,72 @@ function LeftTop() {
     setTimeout(() => {
       setCyberInputStatus("streaming");
     }, 100);
-    const controller = new AbortController();
-    await fetchEventSource("http://47.98.234.82:8009/process", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      // body: JSON.stringify({
-      //   // agent_type: "apitest",
-      //   message: data.text,
-      //   run_id: runId,
-      // }),
-      body: JSON.stringify({
-        input: [
-          {
-            role: "user",
-            content: [{ type: "text", text: data.text }],
-          },
-        ],
-        session_id: sessionId,
-        user_id: "mock_user", // 可选，便于区分多用户
-      }),
-      signal: controller.signal,
-      onmessage(msg) {
-        // 处理接收到的消息
-        console.log("onmessage", msg);
-        try {
-          const data = JSON.parse(msg.data);
-          console.log("onmessage--data", data);
-          // 将消息添加到全局历史记录中
-          // addMessage(data);
-          // addMessageToMap(data);
-          apply(data);
+    // 使用普通的 fetch 请求替代 fetchEventSource
+    try {
+      const response = await fetch("http://47.98.234.82:8009/process", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          input: [
+            {
+              role: "user",
+              content: [{ type: "text", text: data.text }],
+            },
+          ],
+          session_id: sessionId,
+          user_id: "mock_user", // 可选，便于区分多用户
+        }),
+      });
 
-          // 如果消息类型为 "agent_message_done"，则重置按钮状态
-          if (data.object === "response" && data.status === "completed") {
-            setCyberInputStatus("ready");
-            // 主动断开
-            controller.abort(); // 主动结束
-          }
-        } catch (error) {
-          console.error("解析SSE消息失败:", error);
-        }
-      },
-      onopen: async (response) => {
-        if (response.ok) {
-          console.log("连接成功");
-          return; // 正常连接
-        } else {
-          // 处理 4xx 或 5xx 错误
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      if (!response.body) {
+        throw new Error("ReadableStream not supported in this browser.");
+      }
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder("utf-8");
+      let buffer = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+
+        if (done) {
           setCyberInputStatus("ready");
-          throw new Error();
+          break;
         }
-      },
-      onerror(err) {
-        console.error("发生错误", err);
-        setCyberInputStatus("ready");
-        // 不重连，返回err阻止自动重连
-        throw err;
-      },
-    });
+
+        buffer += decoder.decode(value, { stream: true });
+
+        // 处理完整的事件
+        const lines = buffer.split("\n\n");
+        buffer = lines.pop() || ""; // 保留最后一个不完整的事件
+
+        for (const line of lines) {
+          if (line.startsWith("data: ")) {
+            try {
+              const jsonData = line.substring(6); // 移除 "data: " 前缀
+              const data = JSON.parse(jsonData);
+              console.log("onmessage--data", data);
+              apply(data);
+
+              if (data.object === "response" && data.status === "completed") {
+                setCyberInputStatus("ready");
+              }
+            } catch (error) {
+              console.error("解析SSE消息失败:", error);
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.error("请求失败:", error);
+      setCyberInputStatus("error");
+    }
   };
   // 模拟SSE流数据
   // const simulateSSEStream = async () => {
