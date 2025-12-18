@@ -103,7 +103,7 @@ export default function CyberInput({
           <PromptInputTextarea
             placeholder={placeholder}
             ref={textareaRef}
-            className="flex-1 bg-muted rounded-lg border min-h-0"
+            className="flex-1 bg-muted rounded-lg border min-h-0 placeholder:text-[24px] !text-[24px]"
           />
           <PromptInputSubmit className="rounded-full ml-2" status={status}>
             {getSubmitIcon()}
