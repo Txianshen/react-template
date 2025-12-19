@@ -61,25 +61,25 @@ const parseSeedEmuToTopology = (jsonArray) => {
       src: routerSVG,
     },
     Host: {
-      color: "#74B9FF",
+      color: "#FF7675",
       size: size,
       badge: "H",
       src: hostSvg,
     },
     "Route Server": {
-      color: "#FFEAA7",
+      color: "#FF7675",
       size: size,
       badge: "S",
       src: hostSvg,
     },
     Network: {
-      color: "#55EFC4",
+      color: "#FF7675",
       size: size,
       badge: "",
       src: networkSvg,
     },
     IX: {
-      color: "#A29BFE",
+      color: "#FF7675",
       size: size,
       badge: "IX",
       src: bgpSvg,
@@ -108,15 +108,20 @@ const parseSeedEmuToTopology = (jsonArray) => {
           isNetwork,
         },
         style: {
+          // 节点图片样式设置
           zIndex: 1,
           // BaseShapeStyleProps
-          size: styleConfig.size,
-          fill: styleConfig.color,
-          // stroke: styleConfig.color,
-          // lineWidth: 2,
-          fillOpacity: 0.4,
+          size: styleConfig.size, // 控制节点大小
 
-          // NodeLabelStyleProps
+          fill: "orange", // 点击selected光晕效果
+          // stroke: styleConfig.color,
+
+          // 3. 图片配置
+          icon: styleConfig.src, // 自定义icon图片路径属性
+          iconSize: 60, // <--- 完美控制图片大小，可以比 r 大，也可以比 r 小
+
+          fillOpacity: 0.4,
+          // NodeLabelStyleProps---节点文本样式设置
           labelText: displayLabel,
           labelPlacement: "bottom",
           labelFill: "#e6e6e6",
@@ -125,7 +130,7 @@ const parseSeedEmuToTopology = (jsonArray) => {
           labelWordWrap: true,
           labelMaxWidth: 120,
 
-          // BadgeStyleProps
+          // BadgeStyleProps--徽标样式设置
           badges: styleConfig.badge
             ? [
                 {
@@ -145,8 +150,6 @@ const parseSeedEmuToTopology = (jsonArray) => {
                 },
               ]
             : [],
-          icon: styleConfig.src, // 自定义icon图片路径属性
-          iconSize: 60, // <--- 完美控制图片大小，可以比 r 大，也可以比 r 小
         },
       });
     }
@@ -256,19 +259,13 @@ export default function Graph() {
       "zoom-canvas", // 缩放画布
       "drag-element", // 拖拽节点
       "drag-element-force",
+      "click-select",
+      "hover-activate",
     ],
     // 自动适配画布
     autoFit: "view",
     // 主题设置
     theme: "dark",
-    // node: {
-    //   style: {
-    //     halo: true,
-    //     haloStroke: "orange",
-    //     haloLineWidth: 6,
-    //     haloStrokeOpacity: 0.5,
-    //   },
-    // },
   };
 
   return (
