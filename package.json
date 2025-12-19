@@ -11,6 +11,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@antv/g6": "^5.0.50",
     "@antv/graphin": "^3.0.5",
     "@antv/graphin-components": "^2.4.1",
     "@antv/graphin-icons": "^1.0.0",

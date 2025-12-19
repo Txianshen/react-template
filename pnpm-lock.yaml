@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@antv/g6':
+        specifier: ^5.0.50
+        version: 5.0.50(workerize-loader@2.0.2(webpack@5.103.0))
       '@antv/graphin':
         specifier: ^3.0.5
         version: 3.0.5(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(workerize-loader@2.0.2(webpack@5.103.0))

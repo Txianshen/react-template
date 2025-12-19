@@ -1,32 +1,89 @@
 import { Graphin } from "@antv/graphin";
-// import routerSVG from "@/assets/icons/cyber/router.svg";
-// import bgpSvg from "@/assets/icons/cyber/bgp.svg";
-// import hostSvg from "@/assets/icons/cyber/host.svg";
-// import networkSvg from "@/assets/icons/cyber/network.svg";
+import routerSVG from "@/assets/icons/cyber/router.svg";
+import bgpSvg from "@/assets/icons/cyber/bgp.svg";
+import hostSvg from "@/assets/icons/cyber/host.svg";
+import networkSvg from "@/assets/icons/cyber/network.svg";
 import { container } from "@/lib/container";
-console.log(container); // Log the container object for debugging purposes
+import { useRef } from "react";
+import { Circle, register, ExtensionCategory } from "@antv/g6";
+
+// 1. 定义一个类，继承内置的 Circle 节点
+class CircleImageNode extends Circle {
+  /**
+   * 重写 render 方法
+   * @param attributes 经过映射后的节点样式属性（包含 x, y, r, fill, 以及我们自定义的 icon, iconSize 等）
+   * @param container 图形容器
+   */
+  render(attributes, container) {
+    // 1. 调用父类 render，绘制最底层的圆形 (keyShape)
+    // 这一步保证了选中框是圆的，连线也是连到圆边上
+    super.render(attributes, container);
+
+    // 2. 从属性中获取我们需要的数据
+    // 注意：这里的数据通常来自你在 data.nodes[i].style 中配置的字段
+    const {
+      icon, // 图片地址
+      iconSize = 20, // 图片大小，给一个默认值
+      r = 15, // 圆的半径，用于计算居中
+    } = attributes;
+
+    // 3. 使用 upsert 方法添加或更新图片图形
+    // upsert(图形ID, 图形类型, 图形样式, 容器)
+    this.upsert(
+      "icon-image", // 给这个图片图形起个唯一的内部 ID
+      "image", // 图形类型是 image
+      {
+        x: -iconSize / 2, // 居中定位：向左偏移一半宽度
+        y: -iconSize / 2, // 居中定位：向上偏移一半高度
+        width: iconSize,
+        height: iconSize,
+        src: icon, // 图片 URL
+        cursor: "pointer", // 鼠标放上去变小手
+      },
+      container
+    );
+  }
+}
+
+// 2. 注册这个自定义节点
+register(ExtensionCategory.NODE, "circle-image", CircleImageNode);
 
 // 数据处理
 const parseSeedEmuToTopology = (jsonArray) => {
   const nodesMap = new Map();
   const edges = [];
-
+  const size = 60;
   const config = {
     BorderRouter: {
       color: "#FF7675",
-      size: 60,
+      size: size,
       badge: "R",
-      type: "graphin-circle",
+      src: routerSVG,
     },
-    Host: { color: "#74B9FF", size: 60, badge: "H", type: "graphin-rect" },
+    Host: {
+      color: "#74B9FF",
+      size: size,
+      badge: "H",
+      src: hostSvg,
+    },
     "Route Server": {
       color: "#FFEAA7",
-      size: 60,
+      size: size,
       badge: "S",
-      type: "graphin-circle",
+      src: hostSvg,
     },
-    Network: { color: "#55EFC4", size: 60, badge: "", type: "graphin-circle" },
-    IX: { color: "#A29BFE", size: 60, badge: "IX", type: "graphin-circle" },
+    Network: {
+      color: "#55EFC4",
+      size: size,
+      badge: "",
+      src: networkSvg,
+    },
+    IX: {
+      color: "#A29BFE",
+      size: size,
+      badge: "IX",
+      src: bgpSvg,
+    },
   };
 
   const addNode = (id, label, role, meta = {}, isNetwork = false) => {
@@ -44,14 +101,19 @@ const parseSeedEmuToTopology = (jsonArray) => {
 
       nodesMap.set(id, {
         id: id,
-        data: { ...meta, role, isNetwork },
+        type: "circle-image", // 自定义cirle-image
+        data: {
+          ...meta,
+          role,
+          isNetwork,
+        },
         style: {
           zIndex: 1,
           // BaseShapeStyleProps
           size: styleConfig.size,
           fill: styleConfig.color,
-          stroke: styleConfig.color,
-          lineWidth: 2,
+          // stroke: styleConfig.color,
+          // lineWidth: 2,
           fillOpacity: 0.4,
 
           // NodeLabelStyleProps
@@ -68,17 +130,24 @@ const parseSeedEmuToTopology = (jsonArray) => {
             ? [
                 {
                   text: styleConfig.badge,
-                  placement: "right-top",
+                  placement: "right",
                   backgroundFill: styleConfig.color,
                   fill: "#fff",
                   fontSize: 9,
-                  // padding: [1, 3],
-                  // radius: ,
+                  // padding: [3, 4, 1, 4],
+                  backgroundRadius: 10,
+                  backgroundStroke: "#fff",
+                  textAlign: "center",
+                  textBaseline: "middle",
+                  lineHeight: 15,
+                  offsetY: -18,
+                  offsetX: -6,
                 },
               ]
             : [],
+          icon: styleConfig.src, // 自定义icon图片路径属性
+          iconSize: 60, // <--- 完美控制图片大小，可以比 r 大，也可以比 r 小
         },
-        states: ["focus"],
       });
     }
   };
@@ -148,6 +217,7 @@ console.log(
 
 export default function Graph() {
   const { nodes, edges } = parseSeedEmuToTopology(container);
+  const graphRef = useRef();
   const options = {
     data: {
       nodes: nodes,
@@ -203,7 +273,7 @@ export default function Graph() {
 
   return (
     <div className="h-full w-full">
-      <Graphin options={options as any} />
+      <Graphin ref={graphRef} options={options} />
     </div>
   );
 }
