@@ -191,25 +191,25 @@ export default function ModelSettingsDrawer({
         className="w-[380px] bg-[#0b1220]/95 backdrop-blur-xl border-l border-cyan-400/30 text-cyan-100 flex flex-col"
       >
         <SheetHeader>
-          <SheetTitle className="text-cyan-300 tracking-wide">
+          <SheetTitle className="text-cyan-300 tracking-wide text-2xl">
             模型设置
           </SheetTitle>
         </SheetHeader>
 
         <div className="mt-6 space-y-6 px-4 flex-1 overflow-y-auto">
           {/* 1. 模型提供商 */}
-          <div className="space-y-2">
-            <p className="text-sm text-cyan-200">模型提供商</p>
+          <div className="space-y-4">
+            <p className="text-sm text-cyan-200 text-xl">模型提供商</p>
             <Select
               value={formValues.provider}
               onValueChange={handleProviderChange}
               disabled={loading}
             >
-              <SelectTrigger className="bg-[#0f1a2e] border-cyan-400/20 w-full">
+              <SelectTrigger className="bg-[#0f1a2e] border-cyan-400/20 w-full text-lg">
                 <SelectValue placeholder="选择提供商" />
               </SelectTrigger>
 
-              <SelectContent className="bg-[#0f1a2e] border-cyan-400/20 text-cyan-100">
+              <SelectContent className="bg-[#0f1a2e] border-cyan-400/20 text-cyan-100 text-lg">
                 {getModelProviders().map((provider) => (
                   <SelectItem key={provider} value={provider}>
                     {provider}
@@ -220,18 +220,18 @@ export default function ModelSettingsDrawer({
           </div>
 
           {/* 2. 模型 */}
-          <div className="space-y-2">
-            <p className="text-sm text-cyan-200">具体模型</p>
+          <div className="space-y-4">
+            <p className="text-sm text-cyan-200 text-xl">具体模型</p>
             <Select
               value={formValues.model}
               onValueChange={handleModelChange}
               disabled={loading || !formValues.provider}
             >
-              <SelectTrigger className="bg-[#0f1a2e] border-cyan-400/20 w-full">
+              <SelectTrigger className="bg-[#0f1a2e] border-cyan-400/20 w-full text-lg">
                 <SelectValue placeholder="选择模型" />
               </SelectTrigger>
 
-              <SelectContent className="bg-[#0f1a2e] border-cyan-400/20 text-cyan-100">
+              <SelectContent className="bg-[#0f1a2e] border-cyan-400/20 text-cyan-100 text-lg">
                 {getModelsByProvider(formValues.provider).map(
                   (model: string) => (
                     <SelectItem key={model} value={model}>
@@ -244,18 +244,18 @@ export default function ModelSettingsDrawer({
           </div>
 
           {/* 3. 工作模式 */}
-          <div className="space-y-2">
-            <p className="text-sm text-cyan-200">工作模式</p>
+          <div className="space-y-4">
+            <p className="text-sm text-cyan-200 text-xl">工作模式</p>
             <Select
               value={formValues.mode}
               onValueChange={handleModeChange}
               disabled={loading}
             >
-              <SelectTrigger className="bg-[#0f1a2e] border-cyan-400/20 w-full">
+              <SelectTrigger className="bg-[#0f1a2e] border-cyan-400/20 w-full text-lg">
                 <SelectValue placeholder="运行模式" />
               </SelectTrigger>
 
-              <SelectContent className="bg-[#0f1a2e] border-cyan-400/20 text-cyan-100">
+              <SelectContent className="bg-[#0f1a2e] border-cyan-400/20 text-cyan-100 text-lg">
                 {getRunModes().map((mode: string) => (
                   <SelectItem key={mode} value={mode}>
                     {mode}
@@ -266,8 +266,8 @@ export default function ModelSettingsDrawer({
           </div>
 
           {/* 4. 最大轮数 */}
-          <div className="space-y-2">
-            <p className="text-sm text-cyan-200">最大轮数</p>
+          <div className="space-y-4">
+            <p className="text-sm text-cyan-200 text-xl">最大轮数</p>
             <div className="px-2">
               <Slider
                 value={[formValues.maxIters]}
@@ -278,7 +278,7 @@ export default function ModelSettingsDrawer({
                 disabled={loading}
                 className="w-full [&_[data-slot=slider-track]]:bg-[#0f1a2e] [&_[data-slot=slider-track]]:border [&_[data-slot=slider-track]]:border-cyan-400/20 [&_[data-slot=slider-range]]:bg-cyan-500 [&_[data-slot=slider-thumb]]:border-cyan-500 [&_[data-slot=slider-thumb]]:bg-cyan-500 [&_[data-slot=slider-thumb]]:shadow-[0_0_4px_rgba(0,217,255,0.5)]"
               />
-              <div className="flex justify-between mt-2 text-sm text-cyan-200">
+              <div className="flex justify-between mt-2  text-lg text-cyan-200">
                 <span>{getMaxItersRange()[0]}</span>
                 <span>当前值: {formValues.maxIters}</span>
                 <span>{getMaxItersRange()[1]}</span>
@@ -291,7 +291,7 @@ export default function ModelSettingsDrawer({
           <Button
             onClick={handleSave}
             disabled={loading}
-            className="w-full bg-cyan-500 hover:bg-cyan-600"
+            className="w-full bg-cyan-500 hover:bg-cyan-600  text-lg"
           >
             {loading ? "保存中..." : "保存配置"}
           </Button>

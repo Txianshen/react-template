@@ -9,14 +9,14 @@ import { useCyberStore } from "@/store/cyberStore";
 
 function LeftTop() {
   const { canvasRef, setIsActive } = useAudioVisualization();
-  const [isSimulating, setIsSimulating] = useState(false);
+  // const [isSimulating, setIsSimulating] = useState(false);
   const [cyberInputStatus, setCyberInputStatus] = useState<
     "ready" | "streaming" | "submitted" | "error"
   >("ready");
 
   const apply = useStreamingStore.getState().applySSEEvent;
   const applyUserMessage = useStreamingStore.getState().applyUserMessage;
-  const { userId, sessionId, setUserId, setSessionId } = useCyberStore();
+  const { sessionId, setUserId, setSessionId } = useCyberStore();
 
   // 初始化时创建 sessionId 并保存
   useEffect(() => {
@@ -172,54 +172,54 @@ function LeftTop() {
   //   }
   // };
 
-  const simulateSSEStream2 = async () => {
-    if (isSimulating) return;
-    applyUserMessage("开始", "222");
-    setIsSimulating(true);
-    setCyberInputStatus("submitted");
-    setTimeout(() => {
-      setCyberInputStatus("streaming");
-    }, 100);
+  // const simulateSSEStream2 = async () => {
+  //   if (isSimulating) return;
+  //   applyUserMessage("开始", "222");
+  //   setIsSimulating(true);
+  //   setCyberInputStatus("submitted");
+  //   setTimeout(() => {
+  //     setCyberInputStatus("streaming");
+  //   }, 100);
 
-    try {
-      // 读取chat_mes_scope.txt文件内容
-      const response = await fetch("/src/lib/chat_mes_scope.txt");
-      const text = await response.text();
+  //   try {
+  //     // 读取chat_mes_scope.txt文件内容
+  //     const response = await fetch("/src/lib/chat_mes_scope.txt");
+  //     const text = await response.text();
 
-      // 按行分割内容并过滤空行
-      const lines = text.split("\n").filter((line) => line.trim() !== "");
+  //     // 按行分割内容并过滤空行
+  //     const lines = text.split("\n").filter((line) => line.trim() !== "");
 
-      // 逐行处理数据
-      for (const line of lines) {
-        if (line.startsWith("data: ")) {
-          try {
-            // 解析JSON数据
-            // 提取JSON部分
-            const jsonData = line.substring(6); // 移除 "data: " 前缀
-            const data = JSON.parse(jsonData);
-            console.log("模拟接收数据:", data);
+  //     // 逐行处理数据
+  //     for (const line of lines) {
+  //       if (line.startsWith("data: ")) {
+  //         try {
+  //           // 解析JSON数据
+  //           // 提取JSON部分
+  //           const jsonData = line.substring(6); // 移除 "data: " 前缀
+  //           const data = JSON.parse(jsonData);
+  //           console.log("模拟接收数据:", data);
 
-            apply(data);
-            if (data.object === "response" && data.status === "completed") {
-              setCyberInputStatus("ready");
-              // 主动断开
-              // controller.abort(); // 主动结束
-            }
-          } catch (error) {
-            console.error("解析模拟SSE消息失败:", error);
-          }
-        }
+  //           apply(data);
+  //           if (data.object === "response" && data.status === "completed") {
+  //             setCyberInputStatus("ready");
+  //             // 主动断开
+  //             // controller.abort(); // 主动结束
+  //           }
+  //         } catch (error) {
+  //           console.error("解析模拟SSE消息失败:", error);
+  //         }
+  //       }
 
-        // 添加延迟以模拟流式接收
-        await new Promise((resolve) => setTimeout(resolve, 300));
-      }
-    } catch (error) {
-      console.error("模拟SSE流数据时出错:", error);
-      setCyberInputStatus("ready");
-    } finally {
-      setIsSimulating(false);
-    }
-  };
+  //       // 添加延迟以模拟流式接收
+  //       await new Promise((resolve) => setTimeout(resolve, 300));
+  //     }
+  //   } catch (error) {
+  //     console.error("模拟SSE流数据时出错:", error);
+  //     setCyberInputStatus("ready");
+  //   } finally {
+  //     setIsSimulating(false);
+  //   }
+  // };
   return (
     <div className="flex flex-col h-full text-white text-[28px] ">
       <div className="flex-1 flex items-center justify-center ">
