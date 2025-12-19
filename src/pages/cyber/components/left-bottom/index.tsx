@@ -10,29 +10,18 @@ import {
 } from "@/components/ai-elements/message";
 import { useCyberStore } from "@/store/cyberStore";
 import { getCurrentPlan } from "@/api/cyber";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 
 // 定义 LeftBottom 组件
 export default function LeftBottom() {
   const { userId, sessionId, currentPlan, setCurrentPlan } = useCyberStore();
 
-  // 使用 ref 来跟踪是否应该继续轮询
-  const shouldContinuePolling = useRef(true);
-
   useEffect(() => {
     // 检查 userId 和 sessionId 是否存在
     if (!userId || !sessionId) return;
 
-    // 重置轮询标志
-    shouldContinuePolling.current = true;
-
     // 定义获取计划的函数
     const fetchCurrentPlan = async () => {
-      // 如果不应该继续轮询，则清除定时器
-      if (!shouldContinuePolling.current) {
-        return;
-      }
-
       try {
         const response = await getCurrentPlan(userId, sessionId);
         // 假设响应数据在 response.data 中
@@ -43,8 +32,7 @@ export default function LeftBottom() {
         console.error("获取当前计划失败:", error);
         // 如果获取失败，清空当前计划
         setCurrentPlan("获取当前计划失败");
-        // 停止继续轮询
-        shouldContinuePolling.current = false;
+        // 注意：即使失败也继续轮询
       }
     };
 
@@ -57,7 +45,6 @@ export default function LeftBottom() {
     // 清理函数
     return () => {
       clearInterval(intervalId);
-      shouldContinuePolling.current = false;
     };
   }, [userId, sessionId]);
 

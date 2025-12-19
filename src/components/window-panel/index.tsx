@@ -153,7 +153,7 @@ export default function WindowPanel({
                   console.log("Minimizing window:", id);
                   e.stopPropagation();
                 }}
-                className="absolute top-3 right-3 text-white hover:text-gray-300 transition-colors "
+                className="absolute cursor-pointer top-3 right-3 text-white hover:text-gray-300 transition-colors "
                 aria-label="Minimize"
               >
                 <Minus size={32} />
