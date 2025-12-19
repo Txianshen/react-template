@@ -10,7 +10,7 @@ import { useStreamingStore } from "@/store/streamingStoreState";
 
 // 定义 ChatHistory 组件
 export default function ChatHistoryMap() {
-  const responses: any = useStreamingStore((s) => s.responses);
+  const responses = useStreamingStore((s) => s.responses);
   return (
     <Conversation className="h-full ">
       <ConversationContent className="gap-4">

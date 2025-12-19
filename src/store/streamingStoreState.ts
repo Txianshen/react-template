@@ -1,34 +1,7 @@
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import { v4 as uuidv4 } from "uuid";
-
-type StableResponse = {
-  id: string;
-  role: "assistant" | "user";
-  status: "created" | "in_progress" | "completed";
-  isLoading?: boolean;
-  session_id?: string;
-  content: Message[];
-};
-
-type Message = {
-  id: string;
-  object: "message";
-  type: "message" | "text";
-  role: "assistant";
-  status: "created" | "completed";
-  content: ContentItem[];
-  text?: string;
-};
-
-type ContentItem = {
-  object: "content";
-  type: "text" | "data";
-  index: number;
-  status: "in_progress" | "completed";
-  data?: any;
-  text?: string;
-};
+import type { StableResponse, Message, ContentItem } from "@/types/chat";
 export function applyTextSSE(event: any, state: StreamingStoreState) {
   const { responses, cursor } = state;
 
@@ -191,7 +164,7 @@ export interface StreamingStoreState {
 
 export const useStreamingStore = create(
   immer<StreamingStoreState>((set) => ({
-    responses: [],
+    responses: [] as StableResponse[],
     cursor: {},
 
     applySSEEvent: (event) => {

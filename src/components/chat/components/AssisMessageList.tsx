@@ -1,16 +1,13 @@
-// import { AgentSwitchCard } from "./AgentSwitchMessage";
 import { Tool } from "./Tool";
 import {
   Message,
   MessageContent,
   MessageResponse,
 } from "@/components/ai-elements/message";
-// import { ActionsMessage as AssisActions } from "./AssisActions";
-// import type { Message as MessageType } from "@/lib/mockMessage";
-import type { MessageData } from "@/types/chat";
+import type { Message as MessageType } from "@/types/chat";
 
 export interface AssisMessageProps {
-  messages: MessageData[];
+  messages: MessageType[];
   index: number;
   messageId: string;
 }

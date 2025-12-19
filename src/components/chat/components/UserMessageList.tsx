@@ -3,9 +3,9 @@ import {
   MessageContent,
   MessageResponse,
 } from "@/components/ai-elements/message";
-import type { MessageData } from "@/types/chat";
+import type { Message as MessageType } from "@/types/chat";
 export interface UserMessageProps {
-  messages: MessageData[];
+  messages: MessageType[];
   index: number;
   messageId: string;
 }
