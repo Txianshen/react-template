@@ -42,7 +42,7 @@ axiosInstance.interceptors.response.use(
       const code = error.response.code;
       const message = (error.response.data as { message?: string })?.message;
 
-      switch (status) {
+      switch (code) {
         case 401:
           toast.error("未授权，请重新登录");
           localStorage.removeItem("token");
