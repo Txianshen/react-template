@@ -36,9 +36,10 @@ axiosInstance.interceptors.response.use(
     return response.data;
   },
   (error: AxiosError) => {
+    console.log("响应拦截器:", error, error.response);
     // 错误处理
     if (error.response) {
-      const status = error.response.status;
+      const code = error.response.code;
       const message = (error.response.data as { message?: string })?.message;
 
       switch (status) {
@@ -48,13 +49,13 @@ axiosInstance.interceptors.response.use(
           window.location.href = "/#/login";
           break;
         case 403:
-          toast.error("没有权限访问该资源");
+          toast.error(message || "没有权限访问该资源");
           break;
         case 404:
-          toast.error("请求的资源不存在");
+          toast.error(message || "请求的资源不存在");
           break;
         case 500:
-          toast.error("服务器错误");
+          toast.error(message || "服务器错误");
           break;
         default:
           toast.error(message || "请求失败");
