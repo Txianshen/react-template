@@ -260,7 +260,16 @@ export default function Graph() {
       "drag-element", // 拖拽节点
       "drag-element-force",
       "click-select",
-      "hover-activate",
+      // "focus-element", // 聚焦特定元素，自动调整视图
+      "auto-adapt-label",
+      {
+        type: "hover-activate",
+        key: "click-select-1",
+        state: "active", // 选中的状态
+        //⚠️ 注意，这里需要同时设置节点和画布，否则用户点击画布时将不会监听到事件
+        enable: (event) =>
+          ["node", "edge", "canvas"].includes(event.targetType),
+      },
     ],
     // 自动适配画布
     autoFit: "view",
