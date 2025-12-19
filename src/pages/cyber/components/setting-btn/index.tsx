@@ -11,7 +11,7 @@ export default function GlowSettingsButton({
       <button
         onClick={onClick}
         className={cn(
-          "fixed top-6 right-6 z-100000 px-5 py-2 rounded-full flex items-center gap-2",
+          "fixed top-6 right-20 z-100000 px-5 py-2 rounded-full flex items-center gap-2",
           "border border-cyan-400/60 text-cyan-300 backdrop-blur-md",
           "shadow-[0_0_12px_rgba(0,255,255,0.6)]",
           "animate-glowPulse"
