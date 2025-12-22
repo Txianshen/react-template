@@ -142,9 +142,10 @@ export function applyEdgeStyles(rawEdges: RawEdge[]): any[] {
       labelBackgroundStrokeOpacity: 1,
       labelPadding: [4, 8],
       labelBackgroundLineWidth: 1,
-      endArrow: true,
-      endArrowType: "vee",
-      endArrowSize: 10,
+      // 网络关系图连线应该是无向的（双向的）
+      //   endArrow: true,
+      //   endArrowType: "vee",
+      //   endArrowSize: 10,
     },
   }));
 }
