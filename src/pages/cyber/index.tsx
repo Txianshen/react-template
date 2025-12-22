@@ -1,13 +1,20 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense, lazy } from "react";
 import autofit from "autofit.js";
 import Header from "./components/header";
 import DraggableWindow from "@/components/window-panel";
-import Graph from "@/components/graph";
-import LeftTop from "./components/left-top";
-import LeftBottom from "./components/left-bottom";
-import RightBottom from "./components/right-bottom";
-import RightCenter from "./components/right-center";
-import RightTop from "./components/right-top";
+// import Graph from "@/components/graph";
+// import LeftTop from "./components/left-top";
+// import LeftBottom from "./components/left-bottom";
+// import RightBottom from "./components/right-bottom";
+// import RightCenter from "./components/right-center";
+// import RightTop from "./components/right-top";
+// --- 关键修改：将重型子组件改为懒加载 ---
+const Graph = lazy(() => import("@/components/graph"));
+const LeftTop = lazy(() => import("./components/left-top"));
+const LeftBottom = lazy(() => import("./components/left-bottom"));
+const RightBottom = lazy(() => import("./components/right-bottom"));
+const RightCenter = lazy(() => import("./components/right-center"));
+const RightTop = lazy(() => import("./components/right-top"));
 import Dock from "@/components/dock";
 import GlowSettingsButton from "./components/setting-btn";
 import ModelSettingsDrawer from "./components/setting-drawer";
@@ -55,25 +62,32 @@ function CyberPage() {
         <div className="p-4 flex flex-col gap-4">
           <div className="flex-1  rounded-lg p-0 relative">
             {/* <LeftTop /> */}
-            {/* <DraggableWindow
+            <DraggableWindow
               id="left-top"
               title="语音指令"
               layoutBounds="window"
               scale={scale}
             >
-              <LeftTop />
-            </DraggableWindow> */}
+              {/* <LeftTop /> */}
+              {/* 关键修改：用 Suspense 包裹内容 */}
+              <Suspense fallback={null}>
+                <LeftTop />
+              </Suspense>
+            </DraggableWindow>
           </div>
           <div className="flex-3 relative rounded-lg p-0">
             {/* <LeftBottom /> */}
-            {/* <DraggableWindow
+            <DraggableWindow
               id="right-top"
               title="后台终端"
               layoutBounds="window"
               scale={scale}
             >
-              <RightTop />
-            </DraggableWindow> */}
+              {/* <RightTop /> */}
+              <Suspense fallback={null}>
+                <RightTop />
+              </Suspense>
+            </DraggableWindow>
           </div>
         </div>
 
@@ -91,7 +105,10 @@ function CyberPage() {
               className="bg-[transparent]"
               scale={scale}
             >
-              <Graph />
+              {/* <Graph /> */}
+              <Suspense fallback={null}>
+                <Graph />
+              </Suspense>
             </DraggableWindow>
           </div>
         </div>
@@ -101,14 +118,17 @@ function CyberPage() {
           <GlowSettingsButton onClick={() => setOpen(true)} />
           <ModelSettingsDrawer open={open} setOpen={setOpen} />
           <div className="flex-1 relative rounded-lg p-0">
-            {/* <DraggableWindow
+            <DraggableWindow
               id="left-bottom"
               title="AI决策推理"
               layoutBounds="window"
               scale={scale}
             >
-              <LeftBottom />
-            </DraggableWindow> */}
+              {/* <LeftBottom /> */}
+              <Suspense fallback={null}>
+                <LeftBottom />
+              </Suspense>
+            </DraggableWindow>
           </div>
           <div className="flex-1 relative rounded-lg p-0">
             {/* <RightCenter /> */}
@@ -118,19 +138,25 @@ function CyberPage() {
               layoutBounds="window"
               scale={scale}
             >
-              <RightCenter />
+              {/* <RightCenter /> */}
+              <Suspense fallback={null}>
+                <RightCenter />
+              </Suspense>
             </DraggableWindow>
           </div>
           <div className="flex-1 relative rounded-lg p-0">
             {/* <RightBottom /> */}
-            {/* <DraggableWindow
+            <DraggableWindow
               id="right-bottom"
               title="浏览器自动化"
               layoutBounds="window"
               scale={scale}
             >
-              <RightBottom />
-            </DraggableWindow> */}
+              {/* <RightBottom /> */}
+              <Suspense fallback={null}>
+                <RightBottom />
+              </Suspense>
+            </DraggableWindow>
           </div>
         </div>
       </div>

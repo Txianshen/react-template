@@ -1,7 +1,8 @@
+import { lazy, Suspense } from "react";
 import type { RouteObject } from "react-router-dom";
 import { Navigate, createHashRouter } from "react-router-dom";
 
-import CyberPage from "../pages/cyber";
+const CyberPage = lazy(() => import("../pages/cyber"));
 
 // 扩展路由对象类型，添加元数据
 export type ExtendedRouteObject = RouteObject & {
@@ -22,7 +23,11 @@ const routesConfig: ExtendedRouteObject[] = [
   // 靶场页面
   {
     path: "/cyber",
-    element: <CyberPage />,
+    element: (
+      <Suspense fallback={null}>
+        <CyberPage />
+      </Suspense>
+    ),
   },
 ];
 
