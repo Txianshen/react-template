@@ -5,6 +5,11 @@ import networkSvg from "@/assets/icons/cyber/network.svg";
 import type { RawNode, RawEdge } from "./dataParser";
 
 /**
+ * 攻击状态类型
+ */
+export type AttackState = "normal" | "attacking" | "compromised";
+
+/**
  * 节点角色样式配置
  */
 interface NodeStyleConfig {
@@ -49,6 +54,83 @@ const NODE_STYLE_CONFIG: Record<string, NodeStyleConfig> = {
     src: bgpSvg,
   },
 };
+
+/**
+ * 攻击状态样式配置
+ */
+export const ATTACK_STATE_STYLES = {
+  // 已被攻破 - 深红色背景 + 骷髅图标效果
+  compromised: {
+    fill: "#c0392b",
+    fillOpacity: 0.8,
+    stroke: "#e74c3c",
+    lineWidth: 3,
+    halo: false,
+    // 添加危险标志
+    badgeText: "☠",
+    badgeBackgroundFill: "#c0392b",
+  },
+  // 正常状态
+  normal: {
+    halo: false,
+    fill: "orange",
+    fillOpacity: 0.4,
+  },
+};
+
+/**
+ * 涟漪动画帧配置
+ * 每一帧对应不同的涟漪扩散状态
+ */
+export const RIPPLE_ANIMATION_FRAMES = [
+  // 第1层涟漪 - 最内层，最亮
+  {
+    halo: true,
+    haloStroke: "#ff4757",
+    haloStrokeWidth: 2,
+    haloLineWidth: 8,
+    haloStrokeOpacity: 0.9,
+  },
+  // 第2层涟漪
+  {
+    halo: true,
+    haloStroke: "#ff4757",
+    haloStrokeWidth: 2,
+    haloLineWidth: 16,
+    haloStrokeOpacity: 0.7,
+  },
+  // 第3层涟漪
+  {
+    halo: true,
+    haloStroke: "#ff4757",
+    haloStrokeWidth: 2,
+    haloLineWidth: 24,
+    haloStrokeOpacity: 0.5,
+  },
+  // 第4层涟漪
+  {
+    halo: true,
+    haloStroke: "#ff4757",
+    haloStrokeWidth: 2,
+    haloLineWidth: 32,
+    haloStrokeOpacity: 0.3,
+  },
+  // 第5层涟漪 - 最外层，最淡
+  {
+    halo: true,
+    haloStroke: "#ff4757",
+    haloStrokeWidth: 2,
+    haloLineWidth: 40,
+    haloStrokeOpacity: 0.1,
+  },
+];
+
+/**
+ * 获取攻击状态对应的节点样式补丁
+ */
+export function getAttackStateStyle(state: AttackState): Record<string, any> {
+  return ATTACK_STATE_STYLES[state] || ATTACK_STATE_STYLES.normal;
+}
 
 /**
  * 获取节点的样式配置
