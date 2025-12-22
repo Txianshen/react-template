@@ -1,7 +1,7 @@
 import { Graphin } from "@antv/graphin";
 import { useRef } from "react";
-import { container } from "@/lib/container"; // 模拟数据源，后续替换为真实接口
 import type { Graph as G6Graph } from "@antv/g6";
+import { getPlaygroundInfo } from "@/api/cyber";
 
 // 模块化导入
 import { registerCustomNodes } from "./customNodes";
@@ -16,15 +16,11 @@ registerCustomNodes();
 const initialOptions = createGraphOptions([], []);
 
 /**
- * 模拟异步获取容器数据
- * TODO: 后续替换为真实 API 调用
+ * 获取容器数据
  */
-const fetchContainerData = (): Promise<any[]> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(container); // 模拟接口返回 container 数据
-    }, 100); // 模拟 1 秒延迟
-  });
+const fetchContainerData = async (): Promise<any[]> => {
+  const res = await getPlaygroundInfo();
+  return res.data?.result || [];
 };
 
 /**

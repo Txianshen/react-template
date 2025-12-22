@@ -33,3 +33,8 @@ export function getSandboxUrl(user_id: string, session_id: string) {
 export function interruptAgent(user_id: string, session_id: string) {
   return axios.post(`/interruptAgent`, { user_id, session_id });
 }
+
+// 获取网络关系container --/api/getPlaygroundInfo
+export function getPlaygroundInfo() {
+  return axios.get(`/getPlaygroundInfo`);
+}
