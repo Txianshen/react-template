@@ -10,6 +10,7 @@ export function createGraphOptions(nodes: any[], edges: any[]) {
     layout: {
       type: "d3-force",
       preventOverlap: true,
+      // 优化碰撞参数
       collide: {
         radius: (d: any) => {
           const size = Array.isArray(d.data?.size)
@@ -17,22 +18,24 @@ export function createGraphOptions(nodes: any[], edges: any[]) {
             : d.data?.size;
           return size + 10; // 增加碰撞半径，留出更多空间
         },
-        strength: 4, // 提高碰撞强度
+        // strength: 8, // 提高碰撞强度
       },
       manyBody: {
-        strength: -800, // 增加斥力，让节点分散
+        strength: -1000, // 增加斥力，让节点更分散
       },
       link: {
         distance: 200, // 增加连线长度
       },
+      // 增加迭代次数，让布局更稳定
+      maxIteration: 1000,
       // 减小阻尼，增加"晃动感" (0.1-1.0, 越小越晃)
-      damping: 0.4,
+      damping: 0.2,
       // 减小刚度，让连线更软，更容易被拖拽拉动
-      stiffness: 100,
+      stiffness: 30,
       // 增加斥力，保证节点散开
-      repulsion: 1200,
+      repulsion: 3000,
       // 防止重叠
-      minNodeSpacing: 30,
+      minNodeSpacing: 60,
     },
     // 启用交互行为
     behaviors: [
