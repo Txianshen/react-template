@@ -59,22 +59,24 @@ const NODE_STYLE_CONFIG: Record<string, NodeStyleConfig> = {
  * 攻击状态样式配置
  */
 export const ATTACK_STATE_STYLES = {
-  // 已被攻破 - 深红色背景 + 骷髅图标效果
+  // 已被攻破 - 蒙层效果：在图片上方叠加半透明红色圆形，像被"血洗/感染"
   compromised: {
-    fill: "#c0392b",
-    fillOpacity: 0.8,
+    halo: false,
+    // 开启蒙层
+    overlay: true,
+    overlayFill: "#c0392b", // 深红色
+    overlayOpacity: 0.55, // 半透明，既能看到蒙层又能隐约看到原图
+    // 外圈也变红，增强视觉冲击
     stroke: "#e74c3c",
     lineWidth: 3,
-    halo: false,
-    // 添加危险标志
-    badgeText: "☠",
-    badgeBackgroundFill: "#c0392b",
   },
   // 正常状态
   normal: {
     halo: false,
     fill: "orange",
     fillOpacity: 0.4,
+    // 关闭蒙层
+    overlay: false,
   },
 };
 

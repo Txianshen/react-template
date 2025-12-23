@@ -14,13 +14,13 @@ import {
 } from "./styleConfig";
 import { createGraphOptions } from "./graphOptions";
 import {
-  createAttackWebSocket,
-  type AttackWebSocket,
+  createAttackSSE,
+  type AttackSSE,
   type AttackStatus,
-} from "./attackWebSocket";
+} from "./attackSSE";
 
 // ============ 测试模式开关 ============
-const TEST_MODE = true; // 设为 false 使用真实接口
+const TEST_MODE = false; // 设为 false 使用真实接口
 // =====================================
 
 // 注册自定义节点（只需执行一次）
@@ -84,10 +84,10 @@ const RIPPLE_FRAME_DURATION = 150; // 每帧持续时间(ms)
 export default function Graph() {
   const graphRef = useRef();
   const graphInstanceRef = useRef<G6Graph | null>(null);
-  const wsRef = useRef<AttackWebSocket | null>(null);
+  const sseRef = useRef<AttackSSE | null>(null);
   // 保存当前攻击状态，用于跟踪哪些节点需要恢复
   const attackStatusRef = useRef<AttackStatus>({
-    compromised_ips: [],
+    compromosed_ips: [],
     current_attack_ip: "",
   });
 
@@ -124,6 +124,7 @@ export default function Graph() {
    */
   const handleAttackStatusUpdate = useCallback(
     (status: AttackStatus) => {
+      console.log("handleAttackStatusUpdate:", status);
       const graph = graphInstanceRef.current;
       if (!graph) return;
 
@@ -134,7 +135,7 @@ export default function Graph() {
         const prevNodeId = findNodeIdByIp(graph, prevStatus.current_attack_ip);
         if (prevNodeId) {
           // 检查是否已被攻破
-          const isCompromised = status.compromised_ips.includes(
+          const isCompromised = status.compromosed_ips.includes(
             prevStatus.current_attack_ip
           );
           updateNodeAttackStyle(
@@ -146,7 +147,7 @@ export default function Graph() {
       }
 
       // 2. 处理已被攻破的节点
-      status.compromised_ips.forEach((ip) => {
+      status.compromosed_ips.forEach((ip) => {
         const nodeId = findNodeIdByIp(graph, ip);
         if (nodeId) {
           updateNodeAttackStyle(nodeId, "compromised", false);
@@ -311,7 +312,7 @@ export default function Graph() {
 
       // 模拟数据
       const mockStatus: AttackStatus = {
-        compromised_ips: [...compromisedIps],
+        compromosed_ips: [...compromisedIps],
         current_attack_ip: currentAttackIp,
       };
 
@@ -325,7 +326,7 @@ export default function Graph() {
 
         // 发送攻破状态（无当前攻击）
         const afterStatus: AttackStatus = {
-          compromised_ips: [...compromisedIps],
+          compromosed_ips: [...compromisedIps],
           current_attack_ip:
             currentIndex < allIps.length ? allIps[currentIndex] : "",
         };
@@ -338,9 +339,9 @@ export default function Graph() {
   }, [handleAttackStatusUpdate]);
 
   /**
-   * 初始化 WebSocket 连接
+   * 初始化 SSE 连接
    */
-  const initWebSocket = useCallback(() => {
+  const initSSE = useCallback(() => {
     if (TEST_MODE) {
       // 测试模式：使用模拟数据
       console.log("测试模式：启动模拟攻击动画");
@@ -348,27 +349,27 @@ export default function Graph() {
       return;
     }
 
-    // 真实模式：连接 WebSocket
-    const ws = createAttackWebSocket();
+    // 真实模式：连接 SSE
+    const sse = createAttackSSE();
 
-    ws.onMessage((data) => {
+    sse.onMessage((data) => {
       console.log("收到攻击状态:", data);
       handleAttackStatusUpdate(data);
     });
 
-    ws.onStatusChange((connected) => {
-      console.log("WebSocket 连接状态:", connected ? "已连接" : "已断开");
+    sse.onStatusChange((connected) => {
+      console.log("SSE 连接状态:", connected ? "已连接" : "已断开");
     });
 
-    ws.connect();
-    wsRef.current = ws;
+    sse.connect();
+    sseRef.current = sse;
   }, [handleAttackStatusUpdate, startMockAttackSimulation]);
 
   // 组件卸载时清理
   useEffect(() => {
     return () => {
-      // 断开 WebSocket
-      wsRef.current?.disconnect();
+      // 断开 SSE
+      sseRef.current?.disconnect();
       // 停止涟漪动画
       stopRippleAnimation();
     };
@@ -385,8 +386,8 @@ export default function Graph() {
 
           // 实例初始化后，异步加载数据
           loadGraphData().then(() => {
-            // 数据加载完成后，初始化 WebSocket
-            initWebSocket();
+            // 数据加载完成后，初始化 SSE
+            initSSE();
           });
         }}
       />

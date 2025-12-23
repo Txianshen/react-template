@@ -125,9 +125,7 @@ function CyberPage() {
               scale={scale}
             >
               {/* <LeftBottom /> */}
-              <Suspense fallback={null}>
-                <LeftBottom />
-              </Suspense>
+              <Suspense fallback={null}>{/* <LeftBottom /> */}</Suspense>
             </DraggableWindow>
           </div>
           <div className="flex-1 relative rounded-lg p-0">
@@ -153,9 +151,7 @@ function CyberPage() {
               scale={scale}
             >
               {/* <RightBottom /> */}
-              <Suspense fallback={null}>
-                <RightBottom />
-              </Suspense>
+              <Suspense fallback={null}>{/* <RightBottom /> */}</Suspense>
             </DraggableWindow>
           </div>
         </div>
