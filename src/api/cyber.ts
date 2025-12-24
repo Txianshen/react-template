@@ -38,3 +38,8 @@ export function interruptAgent(user_id: string, session_id: string) {
 export function getPlaygroundInfo() {
   return axios.get(`/getPlaygroundInfo`);
 }
+
+// 获取漏洞列表
+export function getPoc(user_id: string, session_id: string) {
+  return axios.get(`/getPoc?user_id=${user_id}&session_id=${session_id}`);
+}

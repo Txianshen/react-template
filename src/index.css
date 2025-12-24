@@ -241,3 +241,16 @@ pre code {
 .message-content pre {
   @apply text-xl;
 }
+
+.message-poc table {
+  @apply text-2xl;
+}
+.message-poc table tr th {
+  @apply text-lg;
+}
+.message-poc table tr td {
+  @apply text-lg;
+}
+.message-poc h3 {
+  @apply text-2xl;
+}
