@@ -4,10 +4,24 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/matrix.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>%VITE_APP_TITLE%</title>
+    <title>Matrix</title>
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      const fixedTitle = "Matrix";
+      Object.defineProperty(document, "title", {
+        get: function () {
+          return fixedTitle; // 读取时永远返回这个值
+        },
+        set: function () {
+          // 写入时什么都不做，或者打印警告
+          console.warn("尝试修改标题已被拦截！");
+          return fixedTitle;
+        },
+        configurable: false, // 禁止再次修改此属性的描述符
+      });
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
