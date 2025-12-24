@@ -5,6 +5,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { MessageResponse } from "@/components/ai-elements/message";
+import DOMPurify from "dompurify";
 
 import { cn } from "@/lib/utils";
 import { Loader2, CheckCircle } from "lucide-react";
@@ -26,6 +27,20 @@ export function Tool({
   status,
   duration,
 }: ToolProps) {
+  const safeContent = DOMPurify.sanitize(content, {
+    FORBID_TAGS: [
+      "script",
+      "title",
+      "meta",
+      "link",
+      "base",
+      "head",
+      "html",
+      "body",
+      "iframe",
+    ],
+    FORBID_ATTR: ["onerror", "onload", "onclick", "onmouseover"],
+  });
   return (
     <Accordion
       type="single"
@@ -61,7 +76,7 @@ export function Tool({
         </AccordionTrigger>
         <AccordionContent className="pb-0 text-2xl ">
           <div className="p-3 pt-0">
-            <MessageResponse>{content}</MessageResponse>
+            <MessageResponse>{safeContent}</MessageResponse>
           </div>
         </AccordionContent>
       </AccordionItem>

@@ -241,6 +241,11 @@ pre code {
 .message-content pre {
   @apply text-xl;
 }
+/* 
+.message-content code {
+  white-space: pre-wrap;
+  word-break: break-word;
+} */
 
 .message-poc table {
   @apply text-2xl;
