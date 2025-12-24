@@ -9,7 +9,7 @@ import {
   MessageResponse,
 } from "@/components/ai-elements/message";
 import { useCyberStore } from "@/store/cyberStore";
-import { getCurrentPlan } from "@/api/cyber";
+import { GenericSSE } from "@/lib/sse";
 import { useEffect } from "react";
 
 // 定义 LeftBottom 组件
@@ -20,31 +20,29 @@ export default function LeftBottom() {
     // 检查 userId 和 sessionId 是否存在
     if (!userId || !sessionId) return;
 
-    // 定义获取计划的函数
-    const fetchCurrentPlan = async () => {
-      try {
-        const response = await getCurrentPlan(userId, sessionId);
-        // 假设响应数据在 response.data 中
-        if (response.data) {
-          setCurrentPlan(response.data);
-        }
-      } catch (error) {
-        console.error("获取当前计划失败:", error);
-        // 如果获取失败，清空当前计划
-        setCurrentPlan("获取当前计划失败");
-        // 注意：即使失败也继续轮询
-      }
-    };
+    // 构建 SSE URL
+    const sseUrl = `/getCurrentPlana?user_id=${userId}&session_id=${sessionId}`;
 
-    // 立即调用一次
-    fetchCurrentPlan();
+    // 创建计划 SSE 实例
+    const sse = new GenericSSE<string>(sseUrl);
 
-    // 每5秒调用一次
-    const intervalId = setInterval(fetchCurrentPlan, 5000);
+    // 设置消息回调
+    sse.onMessage((data) => {
+      setCurrentPlan(data);
+    });
+
+    // 设置错误回调
+    sse.onError((error) => {
+      console.error("获取当前计划 SSE 连接错误:", error);
+      setCurrentPlan("获取当前计划失败");
+    });
+
+    // 连接 SSE
+    sse.connect();
 
     // 清理函数
     return () => {
-      clearInterval(intervalId);
+      sse.disconnect();
     };
   }, [userId, sessionId]);
 
