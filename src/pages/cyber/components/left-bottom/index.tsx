@@ -21,7 +21,7 @@ export default function LeftBottom() {
     if (!userId || !sessionId) return;
 
     // 构建 SSE URL
-    const sseUrl = `/getCurrentPlana?user_id=${userId}&session_id=${sessionId}`;
+    const sseUrl = `/getCurrentPlan?user_id=${userId}&session_id=${sessionId}`;
 
     // 创建计划 SSE 实例
     const sse = new GenericSSE<string>(sseUrl);

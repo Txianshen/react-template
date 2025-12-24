@@ -13,12 +13,7 @@ export interface AttackStatus {
  */
 class AttackSSE extends GenericSSE<AttackStatus> {
   constructor(url: string) {
-    // 根据环境变量拼接完整 URL
-    const baseURL = import.meta.env.VITE_API_SERVICE_URL
-      ? `${import.meta.env.VITE_API_SERVICE_URL}${import.meta.env.VITE_API_BASE_URL}`
-      : import.meta.env.VITE_API_BASE_URL;
-    const fullUrl = `${baseURL}${url}`;
-    super(fullUrl);
+    super(url);
   }
 }
 
