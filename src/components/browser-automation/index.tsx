@@ -17,8 +17,60 @@ export default function BrowserAutomation() {
 
   // 创建 ref 来保存 iframe 的引用
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const handleIframeLoad = () => {
+    setLoading(false);
+
+    const iframe = iframeRef.current;
+    if (!iframe) return;
+    try {
+      const doc = iframe.contentDocument;
+      const win = iframe.contentWindow;
+      if (!doc || !win) return;
+
+      /* ① 干掉 iframe 内部滚动条 */
+      doc.documentElement.style.overflow = "hidden";
+      doc.body.style.overflow = "hidden";
+      doc.body.style.margin = "0";
+      doc.body.style.padding = "0";
+      doc.body.style.width = "100vw";
+      doc.body.style.height = "100vh";
+
+      /* ② canvas 适配（🔥 你问的代码就在这） */
+      const resizeCanvas = () => {
+        const canvas = doc.querySelector("canvas");
+        // if (!(canvas instanceof HTMLCanvasElement)) return;
+        if (!canvas) return;
+        canvas.style.maxWidth = "100%"; // Changed from width to maxWidth
+        canvas.style.maxHeight = "100%"; // Changed from height to maxHeight
+        // canvas.style.display = "block"; // Display property remains the same
+        // canvas.style.aspectRatio = "unset"; // 🔥 关键
+      };
+
+      resizeCanvas();
+
+      /* ③ noVNC 的 canvas 是延迟创建的，必须兜底 */
+      const timer = setInterval(() => {
+        if (doc.querySelector("canvas")) {
+          resizeCanvas();
+          clearInterval(timer);
+        }
+      }, 300);
+
+      /* ④ 窗口 resize 时同步 canvas */
+      win.addEventListener("resize", resizeCanvas);
+
+      /* 清理 */
+      return () => {
+        clearInterval(timer);
+        win.removeEventListener("resize", resizeCanvas);
+      };
+    } catch (e) {
+      console.warn("iframe canvas adapt failed:", e);
+    }
+  };
 
   const handleLoad = () => {
+    handleIframeLoad();
     setLoading(false);
   };
 
@@ -35,8 +87,15 @@ export default function BrowserAutomation() {
       const response = await getSandboxUrl(userId, sessionId);
       // 假设响应数据在 response.data 中
       if (response.data) {
-        setSteelHost(response.data);
-        console.log("沙箱 URL 更新为:", response.data);
+        // 在开发环境中，将完整URL转换为代理路径
+        let processedUrl = response.data;
+        if (process.env.NODE_ENV === "development") {
+          // 将完整的外部URL转换为相对路径，以便通过代理访问
+          // 例如将 http://47.98.234.82:8000/desktop/... 转换为 /desktop/...
+          processedUrl = response.data.replace(/^https?:\/\/[\w\.:\d-]+/, "");
+        }
+        setSteelHost(processedUrl);
+        console.log("沙箱 URL 更新为:", processedUrl);
       }
     } catch (error) {
       console.error("获取沙箱 URL 失败:", error);

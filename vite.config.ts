@@ -21,11 +21,12 @@ export default defineConfig({
     host: true, // 或者使用 '0.0.0.0'
     port: 5173,
     proxy: {
-      // "/api": {
-      //   target: "http://47.98.234.82:8009/api", // 后端服务地址
-      //   changeOrigin: true,
-      //   rewrite: (path) => path.replace(/^\/api/, ""),
-      // },
+      "/desktop": {
+        target: "http://47.98.234.82:8000", // 后端服务地址
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/desktop/, "/desktop"),
+        ws: true,
+      },
     },
   },
 });
