@@ -315,6 +315,8 @@ export const MessageResponse = memo(
         "size-full [&>*:first-child]:mt-0 [&>*:last-child]:mb-0",
         className
       )}
+      shikiTheme={["tokyo-night", "tokyo-night"]}
+      // shikiTheme={["nord", "nord"]}
       {...props}
     />
   ),

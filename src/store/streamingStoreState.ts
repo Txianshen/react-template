@@ -92,7 +92,7 @@ export function applyTextSSE(event: any, state: StreamingStoreState) {
 
     const index = event.index ?? 0;
 
-    let content = msg.content.find((c) => c.index === index);
+    let content = msg.content?.find((c) => c.index === index);
     if (!content) {
       content = {
         object: "content",
@@ -121,7 +121,7 @@ export function applyTextSSE(event: any, state: StreamingStoreState) {
     const msg = response.content.find((m) => m.id === event.msg_id);
     if (!msg) return;
     const index = event.index ?? 0;
-    let content = msg.content.find((c) => c.index === index);
+    let content = msg.content?.find((c) => c.index === index);
     if (!content) {
       content = {
         object: "content",
