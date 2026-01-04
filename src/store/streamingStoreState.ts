@@ -158,6 +158,9 @@ export interface StreamingStoreState {
   //applyUserMessage
   applyUserMessage: (text: string, sessionId: string) => void;
 
+  // setResponses
+  setResponses: (responses: StableResponse[]) => void;
+
   // reset / clear
   reset: () => void;
 }
@@ -187,6 +190,11 @@ export const useStreamingStore = create(
           ],
           session_id: sessionId,
         });
+      });
+    },
+    setResponses: (responses) => {
+      set((state) => {
+        state.responses = responses;
       });
     },
 

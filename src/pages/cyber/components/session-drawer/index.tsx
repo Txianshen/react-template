@@ -8,8 +8,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useState, useEffect } from "react";
-import { listSessions, createSession, deleteSession } from "@/api/cyber";
+import { listSessions, createSession, deleteSession, getSession } from "@/api/cyber";
 import { useCyberStore } from "@/store/cyberStore";
+import { useStreamingStore } from "@/store/streamingStoreState";
 import { Trash2 } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
 import {
@@ -138,10 +139,29 @@ export default function SessionManagementDrawer({
   };
 
   // 切换到指定会话
-  const handleSwitchSession = (session: Session) => {
+  const handleSwitchSession = async (session: Session) => {
+    if (!userId) return;
     setSessionId(session.id);
-    toast.success(`已切换到会话: ${session.id.substring(0, 8)}...`);
     setOpen(false); // 关闭抽屉
+
+    try {
+      // 先清空当前对话
+      useStreamingStore.getState().reset();
+      
+      const response = await getSession(userId, session.id);
+      if (response && response.code === 200) {
+        // 这里假设后端返回的 session 对象中包含 messages 字段，且格式匹配
+        // 如果 response.data 直接是 session 对象
+        const messages = response.data?.messages || []; 
+        useStreamingStore.getState().setResponses(messages);
+        toast.success(`已切换到会话: ${session.id.substring(0, 8)}...`);
+      } else {
+        toast.error(response?.msg || "获取会话详情失败");
+      }
+    } catch (error) {
+      console.error("切换会话失败:", error);
+      // toast.error("切换会话失败");
+    }
   };
 
   return (

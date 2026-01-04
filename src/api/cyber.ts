@@ -51,7 +51,10 @@ export function listSessions(user_id: string): Promise<ApiResponse<any>> {
 }
 
 // 获取某个会话详情
-export function getSession(user_id: string, session_id: string) {
+export function getSession(
+  user_id: string,
+  session_id: string
+): Promise<ApiResponse<any>> {
   return axios.get(`/getSession?user_id=${user_id}&session_id=${session_id}`);
 }
 
