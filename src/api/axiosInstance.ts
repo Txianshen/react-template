@@ -1,6 +1,5 @@
-import axios, { type AxiosError, type AxiosResponse } from "axios";
+import axios, { type AxiosError } from "axios";
 import { toast } from "sonner";
-
 // 创建 axios 实例
 // 根据环境变量决定是否使用代理
 const baseURL = import.meta.env.VITE_API_SERVICE_URL
@@ -32,17 +31,17 @@ axiosInstance.interceptors.request.use(
 
 // 响应拦截器
 axiosInstance.interceptors.response.use(
-  (response: AxiosResponse) => {
-    return response.data;
+  (response) => {
+    return response.data; // API响应格式为 {code: number, data: any, msg: string}
   },
   (error: AxiosError) => {
     console.log("响应拦截器:", error, error.response);
     // 错误处理
     if (error.response) {
-      const code = error.response.code;
+      const status = error.response.status;
       const message = (error.response.data as { message?: string })?.message;
 
-      switch (code) {
+      switch (status) {
         case 401:
           toast.error("未授权，请重新登录");
           localStorage.removeItem("token");

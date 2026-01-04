@@ -19,6 +19,19 @@ const buttonVariants = cva(
         ghost:
           "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
         link: "text-primary underline-offset-4 hover:underline",
+        /* ===== 大屏：取消按钮 ===== */
+        panelGhost:
+          "border border-[rgba(120,180,255,0.25)] " +
+          "bg-transparent text-[rgba(180,220,255,0.65)] " +
+          "hover:bg-[rgba(120,180,255,0.08)] " +
+          "hover:text-[rgba(220,240,255,0.9)]",
+
+        /* ===== 大屏：确认删除按钮 ===== */
+        panelDanger:
+          "border border-[rgba(220,80,80,0.6)] " +
+          "bg-[rgba(180,60,60,0.85)] text-[#ffecec] " +
+          "shadow-[0_0_12px_rgba(180,60,60,0.35)] " +
+          "hover:bg-[rgba(200,80,80,0.95)]",
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",

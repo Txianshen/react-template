@@ -18,8 +18,11 @@ const RightTop = lazy(() => import("./components/right-top"));
 import Dock from "@/components/dock";
 import GlowSettingsButton from "./components/setting-btn";
 import ModelSettingsDrawer from "./components/setting-drawer";
+import SessionManagementDrawer from "./components/session-drawer";
+import GlowSessionButton from "./components/session-btn";
 function CyberPage() {
   const [open, setOpen] = useState(false);
+  const [sessionOpen, setSessionOpen] = useState(false);
   useEffect(() => {
     // 只在 Cyber 大屏页面启用 autofit
     autofit.init(
@@ -106,9 +109,7 @@ function CyberPage() {
               scale={scale}
             >
               {/* <Graph /> */}
-              <Suspense fallback={null}>
-                <Graph />
-              </Suspense>
+              <Suspense fallback={null}>{<Graph />}</Suspense>
             </DraggableWindow>
           </div>
         </div>
@@ -116,7 +117,12 @@ function CyberPage() {
         {/* 右侧列 - 上中下 1:1:1 布局 */}
         <div className="p-4 flex flex-col gap-4">
           <GlowSettingsButton onClick={() => setOpen(true)} />
+          <GlowSessionButton onClick={() => setSessionOpen(true)} />
           <ModelSettingsDrawer open={open} setOpen={setOpen} />
+          <SessionManagementDrawer
+            open={sessionOpen}
+            setOpen={setSessionOpen}
+          />
           <div className="flex-1 relative rounded-lg p-0">
             <DraggableWindow
               id="left-bottom"
@@ -125,9 +131,7 @@ function CyberPage() {
               scale={scale}
             >
               {/* <LeftBottom /> */}
-              <Suspense fallback={null}>
-                <LeftBottom />
-              </Suspense>
+              <Suspense fallback={null}><LeftBottom /></Suspense>
             </DraggableWindow>
           </div>
           <div className="flex-1 relative rounded-lg p-0">
@@ -139,9 +143,7 @@ function CyberPage() {
               scale={scale}
             >
               {/* <RightCenter /> */}
-              <Suspense fallback={null}>
-                <RightCenter />
-              </Suspense>
+              <Suspense fallback={null}><RightCenter /></Suspense>
             </DraggableWindow>
           </div>
           <div className="flex-1 relative rounded-lg p-0">
@@ -153,9 +155,7 @@ function CyberPage() {
               scale={scale}
             >
               {/* <RightBottom /> */}
-              <Suspense fallback={null}>
-                <RightBottom />
-              </Suspense>
+              <Suspense fallback={null}><RightBottom /></Suspense>
             </DraggableWindow>
           </div>
         </div>

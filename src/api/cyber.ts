@@ -1,4 +1,5 @@
 import axios from "./axiosInstance";
+import type { ApiResponse } from "@/types/api";
 
 // 获取可用的模型配置项
 export function getAvaliableConfig() {
@@ -42,4 +43,34 @@ export function getPlaygroundInfo() {
 // 获取漏洞列表
 export function getPoc(user_id: string, session_id: string) {
   return axios.get(`/getPoc?user_id=${user_id}&session_id=${session_id}`);
+}
+
+// session管理
+export function listSessions(user_id: string): Promise<ApiResponse<any>> {
+  return axios.get(`/listSessions?user_id=${user_id}`);
+}
+
+// 获取某个会话详情
+export function getSession(user_id: string, session_id: string) {
+  return axios.get(`/getSession?user_id=${user_id}&session_id=${session_id}`);
+}
+
+// 创建会话
+export function createSession(
+  user_id: string,
+  session_id: string
+): Promise<ApiResponse<any>> {
+  return axios.get(
+    `/createSession?user_id=${user_id}&session_id=${session_id}`
+  );
+}
+
+// 删除会话
+export function deleteSession(
+  user_id: string,
+  session_id: string
+): Promise<ApiResponse<any>> {
+  return axios.get(
+    `/deleteSession?user_id=${user_id}&session_id=${session_id}`
+  );
 }
