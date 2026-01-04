@@ -6,6 +6,7 @@ import { useCallback, useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { useStreamingStore } from "@/store/streamingStoreState";
 import { useCyberStore } from "@/store/cyberStore";
+import { createSession } from '@/api/cyber'
 
 function LeftTop() {
   const { canvasRef, setIsActive } = useAudioVisualization();
@@ -16,14 +17,27 @@ function LeftTop() {
 
   const apply = useStreamingStore.getState().applySSEEvent;
   const applyUserMessage = useStreamingStore.getState().applyUserMessage;
-  const { sessionId, setUserId, setSessionId } = useCyberStore();
+  const { userId, sessionId, setUserId, setSessionId } = useCyberStore();
 
   // 初始化时创建 sessionId 并保存
   useEffect(() => {
-    const newSessionId = uuidv4();
-    const userId = "mock_user"; // 这里可以替换为实际的用户ID获取逻辑
-    setSessionId(newSessionId);
-    setUserId(userId);
+    const initSession = async () => {
+      const newSessionId = uuidv4();
+      const user = "mock_user"; // 这里可以替换为实际的用户ID获取逻辑
+      setUserId(user);
+
+      try {
+        const response = await createSession(user, newSessionId);
+        if (response && response.code === 200) {
+          setSessionId(newSessionId);
+        } else {
+          console.error("Failed to create session on init:", response?.msg);
+        }
+      } catch (error) {
+        console.error("Error creating session on init:", error);
+      }
+    };
+    initSession();
   }, []);
   // 当语音识别按钮的状态改变时，同步控制音频可视化
   const handleSpeechButtonListeningChange = useCallback(
@@ -68,7 +82,7 @@ function LeftTop() {
               },
             ],
             session_id: sessionId,
-            user_id: "mock_user", // 可选，便于区分多用户
+            user_id: userId, // 可选，便于区分多用户
           }),
         }
       );

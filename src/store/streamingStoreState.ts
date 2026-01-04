@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import { v4 as uuidv4 } from "uuid";
-import type { StableResponse, Message, ContentItem } from "@/types/chat";
+import type { StableResponse } from "@/types/chat";
 export function applyTextSSE(event: any, state: StreamingStoreState) {
   const { responses, cursor } = state;
 
@@ -139,7 +139,6 @@ export function applyTextSSE(event: any, state: StreamingStoreState) {
       }
     }
   }
-
   /** ---------- content (工具调用输出) ---------- */
 }
 

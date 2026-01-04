@@ -141,6 +141,10 @@ export default function SessionManagementDrawer({
   // 切换到指定会话
   const handleSwitchSession = async (session: Session) => {
     if (!userId) return;
+    if (sessionId === session.id) {
+      setOpen(false); // 关闭抽屉
+      return
+    };
     setSessionId(session.id);
     setOpen(false); // 关闭抽屉
 
@@ -154,7 +158,7 @@ export default function SessionManagementDrawer({
         // 如果 response.data 直接是 session 对象
         const messages = response.data?.messages || []; 
         useStreamingStore.getState().setResponses(messages);
-        toast.success(`已切换到会话: ${session.id.substring(0, 8)}...`);
+        toast.success(`已切换到会话: ${session.id}`);
       } else {
         toast.error(response?.msg || "获取会话详情失败");
       }
@@ -191,7 +195,8 @@ export default function SessionManagementDrawer({
                     {sessions.map((session) => (
                       <div
                         key={session.id}
-                        className={`flex items-center justify-between p-3 rounded-lg border border-cyan-400/30 transition-colors group relative ${
+                        onClick={() => handleSwitchSession(session)}
+                        className={`cursor-pointer flex items-center justify-between p-3 rounded-lg border border-cyan-400/30 transition-colors group relative ${
                           session.id === sessionId
                             ? "bg-[#0f1a2e] border-cyan-400/60"
                             : "hover:bg-[#0f1a2e]"
@@ -199,7 +204,6 @@ export default function SessionManagementDrawer({
                       >
                         <div
                           className="flex-1 cursor-pointer min-w-0 "
-                          onClick={() => handleSwitchSession(session)}
                         >
                           <div className="truncate text-cyan-100 text-sm">
                             {session.id}

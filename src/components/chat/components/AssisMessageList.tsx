@@ -145,7 +145,7 @@ export function AssisMessageList({
             }
           }
           // 如果不是数组，返回空
-          return null;
+          return message.text || '';
         })}
       </MessageContent>
     </Message>
