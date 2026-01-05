@@ -16,10 +16,11 @@ const RightBottom = lazy(() => import("./components/right-bottom"));
 const RightCenter = lazy(() => import("./components/right-center"));
 const RightTop = lazy(() => import("./components/right-top"));
 import Dock from "@/components/dock";
-import GlowSettingsButton from "./components/setting-btn";
+// import GlowSettingsButton from "./components/setting-btn";
 import ModelSettingsDrawer from "./components/setting-drawer";
 import SessionManagementDrawer from "./components/session-drawer";
-import GlowSessionButton from "./components/session-btn";
+// import GlowSessionButton from "./components/session-btn";
+import WorkspaceButton from "./components/workspace-btn";
 function CyberPage() {
   const [open, setOpen] = useState(false);
   const [sessionOpen, setSessionOpen] = useState(false);
@@ -116,8 +117,12 @@ function CyberPage() {
 
         {/* 右侧列 - 上中下 1:1:1 布局 */}
         <div className="p-4 flex flex-col gap-4">
-          <GlowSettingsButton onClick={() => setOpen(true)} />
-          <GlowSessionButton onClick={() => setSessionOpen(true)} />
+          <WorkspaceButton
+            onOpenSettings={() => setOpen(true)}
+            onOpenSessions={() => setSessionOpen(true)}
+          />
+          {/* <GlowSettingsButton onClick={() => setOpen(true)} />
+          <GlowSessionButton onClick={() => setSessionOpen(true)} /> */}
           <ModelSettingsDrawer open={open} setOpen={setOpen} />
           <SessionManagementDrawer
             open={sessionOpen}
