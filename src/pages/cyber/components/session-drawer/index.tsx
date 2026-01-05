@@ -97,6 +97,9 @@ export default function SessionManagementDrawer({
         fetchSessions();
         // 设置新创建的会话为当前会话
         setSessionId(newSessionId);
+        // 清空聊天记录
+        useStreamingStore.getState().reset();
+        useStreamingStore.getState().setResponses([]);
       } else {
         toast.error(response?.msg || "创建会话失败");
       }
@@ -120,9 +123,17 @@ export default function SessionManagementDrawer({
       const response = await deleteSession(userId, deletingSessionId);
       if (response && response.code === 200) {
         toast.success("会话删除成功");
-        // 如果删除的是当前会话，则清空当前会话ID
+        // 如果删除的是当前会话，则创建新会话
         if (deletingSessionId === sessionId) {
-          setSessionId(null);
+          const newSessionId = uuidv4();
+          const createResponse = await createSession(userId, newSessionId);
+          if (createResponse && createResponse.code === 200) {
+            setSessionId(newSessionId);
+            useStreamingStore.getState().reset(); // 清空聊天记录
+          } else {
+            toast.error(createResponse?.msg || "自动创建新会话失败");
+            setSessionId(null);
+          }
         }
         // 刷新会话列表
         fetchSessions();
