@@ -20,7 +20,7 @@ export type ExtendedRouteObject = RouteObject & {
 const routesConfig: ExtendedRouteObject[] = [
   {
     path: "/",
-    element: <Navigate to="/cyber" replace />,
+    element: <Navigate to="/login" replace />,
   },
   // 登录页面
   {

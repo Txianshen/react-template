@@ -63,7 +63,7 @@ export default function CyberInput({
       }
 
       // 调用新的暂停API
-      const response = await interruptAgent(userId, sessionId);
+      const response = await interruptAgent(sessionId);
 
       if (response) {
         console.log("暂停成功，状态重置为 ready");

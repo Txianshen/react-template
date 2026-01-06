@@ -27,7 +27,7 @@ function LeftTop() {
       setUserId(user);
 
       try {
-        const response = await createSession(user, newSessionId);
+        const response = await createSession(newSessionId);
         if (response && response.code === 200) {
           setSessionId(newSessionId);
         } else {
@@ -67,13 +67,22 @@ function LeftTop() {
     }, 100);
     // 使用普通的 fetch 请求替代 fetchEventSource
     try {
+      // 从localStorage获取token
+      const token = localStorage.getItem("token");
+      const headers: HeadersInit = {
+        "Content-Type": "application/json",
+      };
+      
+      // 如果token存在，添加到请求头
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+      }
+      
       const response = await fetch(
         `${import.meta.env.VITE_API_SERVICE_URL}/process`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: headers,
           body: JSON.stringify({
             input: [
               {
@@ -82,7 +91,7 @@ function LeftTop() {
               },
             ],
             session_id: sessionId,
-            user_id: userId, // 可选，便于区分多用户
+            // user_id: userId, // 可选，便于区分多用户
           }),
         }
       );

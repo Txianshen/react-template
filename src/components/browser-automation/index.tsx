@@ -33,7 +33,7 @@ export default function BrowserAutomation() {
     }
 
     try {
-      const response = await getSandboxUrl(userId, sessionId);
+      const response = await getSandboxUrl(sessionId);
       // 假设响应数据在 response.data 中
       if (response.data) {
         // 在开发环境中，将完整URL转换为代理路径

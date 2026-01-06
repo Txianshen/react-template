@@ -1,3 +1,4 @@
+import { FetchSSE } from "./sse-fetch";
 /**
  * SSE 响应数据类型
  */
@@ -51,7 +52,16 @@ class GenericSSE<T = any> {
     this.isManualClose = false;
 
     try {
-      this.eventSource = new EventSource(this.url);
+      // 从localStorage获取token并添加到URL参数
+      const token = localStorage.getItem("token");
+      let urlWithToken = this.url;
+      
+      if (token) {
+        const separator = this.url.includes('?') ? '&' : '?';
+        urlWithToken = `${this.url}${separator}token=${encodeURIComponent(token)}`;
+      }
+      
+      this.eventSource = new EventSource(urlWithToken);
 
       this.eventSource.onopen = () => {
         console.log("SSE 连接成功:", this.url);
@@ -164,6 +174,69 @@ export { GenericSSE, type SSEResponse };
  * 创建计划 SSE 实例
  */
 export function createPlanSSE(url?: string): GenericSSE<string> {
-  const sseUrl = url || `/getCurrentPlana`;
+  const sseUrl = url || `/getCurrentPlan`;
   return new GenericSSE<string>(sseUrl, true);
+}
+
+/**
+ * SSE配置选项
+ */
+export interface SSEOptions {
+  /** 是否使用Fetch SSE（支持自定义header） */
+  useFetchSSE?: boolean;
+  /** 自定义headers */
+  headers?: Record<string, string>;
+  /** 会话ID */
+  session_id?: string;
+}
+
+/**
+ * 创建带认证的计划 SSE 实例（支持header和session_id）
+ * 
+ * @example
+ * ```typescript
+ * // 使用原生EventSource（token在URL中）
+ * const sse1 = createAuthPlanSSE();
+ * 
+ * // 使用Fetch SSE（token在header中）
+ * const sse2 = createAuthPlanSSE({ useFetchSSE: true });
+ * 
+ * // 使用Fetch SSE并添加自定义header
+ * const sse3 = createAuthPlanSSE({ 
+ *   useFetchSSE: true,
+ *   headers: { "X-Custom": "value" }
+ * });
+ * 
+ * // 使用Fetch SSE并传递session_id
+ * const sse4 = createAuthPlanSSE({ 
+ *   useFetchSSE: true,
+ *   session_id: "your-session-id"
+ * });
+ * ```
+ */
+export function createAuthPlanSSE(options: SSEOptions = {}): GenericSSE<string> | FetchSSE<string> {
+  const { useFetchSSE = false, headers = {}, session_id } = options;
+  
+  // 获取token
+  const token = localStorage.getItem("token");
+  
+  if (useFetchSSE) {
+    // 使用Fetch SSE，支持自定义header
+    const authHeaders: Record<string, string> = { ...headers };
+    if (token) {
+      authHeaders["Authorization"] = `Bearer ${token}`;
+    }
+    
+    // 构建URL，添加session_id参数
+    let url = "/getCurrentPlan";
+    if (session_id) {
+      url += `?session_id=${session_id}`;
+    }
+    
+    return new FetchSSE<string>(url, authHeaders, true);
+  } else {
+    // 使用原生EventSource，token在URL中
+    const sseUrl = token ? `/getCurrentPlan?token=${encodeURIComponent(token)}` : `/getCurrentPlan`;
+    return new GenericSSE<string>(sseUrl, true);
+  }
 }

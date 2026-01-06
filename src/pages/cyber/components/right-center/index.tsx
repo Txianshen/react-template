@@ -32,7 +32,7 @@ export default function RightCenter() {
       try {
         setLoading(true);
         // 调用 getPoc 接口获取漏洞列表
-        const response = await getPoc(userId, sessionId);
+        const response = await getPoc(sessionId);
         if (response.data && response.code === 200) {
           setPocList(response.data || "");
         } else {

@@ -16,23 +16,14 @@ export function setConfig(config: Record<string, any>) {
   return axios.post("/setConfig", config);
 }
 
-// // 获取AI决策推理结果
-// export function getCurrentPlan(user_id: string, session_id: string) {
-//   return axios.get(
-//     `/getCurrentPlan?user_id=${user_id}&session_id=${session_id}`
-//   );
-// }
-
 // 获取浏览器自动化沙箱url
-export function getSandboxUrl(user_id: string, session_id: string) {
-  return axios.get(
-    `/getSandboxUrl?user_id=${user_id}&session_id=${session_id}`
-  );
+export function getSandboxUrl(session_id: string) {
+  return axios.get(`/getSandboxUrl?session_id=${session_id}`);
 }
 
 // 中断ai对话
-export function interruptAgent(user_id: string, session_id: string) {
-  return axios.post(`/interruptAgent`, { user_id, session_id });
+export function interruptAgent(session_id: string) {
+  return axios.post(`/interruptAgent`, { session_id });
 }
 
 // 获取网络关系container --/api/getPlaygroundInfo
@@ -41,39 +32,42 @@ export function getPlaygroundInfo() {
 }
 
 // 获取漏洞列表
-export function getPoc(user_id: string, session_id: string) {
-  return axios.get(`/getPoc?user_id=${user_id}&session_id=${session_id}`);
+export function getPoc(session_id: string) {
+  return axios.get(`/getPoc?session_id=${session_id}`);
 }
 
 // session管理
-export function listSessions(user_id: string): Promise<ApiResponse<any>> {
-  return axios.get(`/listSessions?user_id=${user_id}`);
+export function listSessions(): Promise<ApiResponse<any>> {
+  return axios.get(`/listSessions`);
 }
 
 // 获取某个会话详情
-export function getSession(
-  user_id: string,
-  session_id: string
-): Promise<ApiResponse<any>> {
-  return axios.get(`/getSession?user_id=${user_id}&session_id=${session_id}`);
+export function getSession(session_id: string): Promise<ApiResponse<any>> {
+  return axios.get(`/getSession?session_id=${session_id}`);
 }
 
 // 创建会话
-export function createSession(
-  user_id: string,
-  session_id: string
-): Promise<ApiResponse<any>> {
-  return axios.get(
-    `/createSession?user_id=${user_id}&session_id=${session_id}`
-  );
+export function createSession(session_id: string): Promise<ApiResponse<any>> {
+  return axios.get(`/createSession?session_id=${session_id}`);
 }
 
 // 删除会话
-export function deleteSession(
-  user_id: string,
-  session_id: string
-): Promise<ApiResponse<any>> {
-  return axios.get(
-    `/deleteSession?user_id=${user_id}&session_id=${session_id}`
-  );
+export function deleteSession(session_id: string): Promise<ApiResponse<any>> {
+  return axios.get(`/deleteSession?session_id=${session_id}`);
+}
+
+
+// 登录接口
+// 接口路径/api/auth/login
+// 传参： username和 password formdata的形式
+export function login(username: string, password: string) {
+  const formData = new FormData();
+  formData.append('username', username);
+  formData.append('password', password);
+  
+  return axios.post("/auth/login", formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  });
 }

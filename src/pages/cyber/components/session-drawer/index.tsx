@@ -62,7 +62,7 @@ export default function SessionManagementDrawer({
 
     setLoading(true);
     try {
-      const response = await listSessions(userId);
+      const response = await listSessions();
       console.log("fetchSessions", response);
       if (response && response.code === 200) {
         // 按时间倒序排列，最新的会话在前面
@@ -90,7 +90,7 @@ export default function SessionManagementDrawer({
       // 生成新的会话ID
       const newSessionId = uuidv4();
 
-      const response = await createSession(userId, newSessionId);
+      const response = await createSession(newSessionId);
       if (response && response.code === 200) {
         toast.success("会话创建成功");
         // 刷新会话列表
@@ -120,13 +120,13 @@ export default function SessionManagementDrawer({
     if (!deletingSessionId || !userId) return;
 
     try {
-      const response = await deleteSession(userId, deletingSessionId);
+      const response = await deleteSession(deletingSessionId);
       if (response && response.code === 200) {
         toast.success("会话删除成功");
         // 如果删除的是当前会话，则创建新会话
         if (deletingSessionId === sessionId) {
           const newSessionId = uuidv4();
-          const createResponse = await createSession(userId, newSessionId);
+          const createResponse = await createSession(newSessionId);
           if (createResponse && createResponse.code === 200) {
             setSessionId(newSessionId);
             useStreamingStore.getState().reset(); // 清空聊天记录
@@ -163,7 +163,7 @@ export default function SessionManagementDrawer({
       // 先清空当前对话
       useStreamingStore.getState().reset();
       
-      const response = await getSession(userId, session.id);
+      const response = await getSession(session.id);
       if (response && response.code === 200) {
         // 这里假设后端返回的 session 对象中包含 messages 字段，且格式匹配
         // 如果 response.data 直接是 session 对象
