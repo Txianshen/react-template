@@ -20,13 +20,11 @@ export default function LeftBottom() {
     // 检查 userId 和 sessionId 是否存在
     if (!userId || !sessionId) return;
 
-    // 创建支持header的计划 SSE 实例
-    // useFetchSSE: true 表示使用Fetch SSE，token会放在header中
+    // 创建计划 SSE 实例（统一使用Fetch SSE，token自动在header中）
     const sse = createAuthPlanSSE({ 
-      useFetchSSE: true,
       session_id: sessionId,
       // headers: {
-      //   // // 可以添加其他自定义header
+      //   // 可以添加其他自定义header
       //   // "X-User-ID": userId,
       //   // "X-Session-ID": sessionId
       // }

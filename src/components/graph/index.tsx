@@ -70,8 +70,8 @@ export default function Graph() {
     const manager = styleManagerRef.current;
     if (!manager) return;
 
-    // 使用支持请求头的SSE，将token放在header中
-    const sse = createAttackSSE({ useFetchSSE: true });
+    // 使用Fetch SSE，token自动在header中
+    const sse = createAttackSSE();
 
     sse.onMessage((data) => {
       console.log("收到攻击状态:", data);

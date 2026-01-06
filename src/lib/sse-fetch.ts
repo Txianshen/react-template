@@ -201,19 +201,3 @@ class FetchSSE<T = any> {
 }
 
 export { FetchSSE, type SSEResponse };
-
-/**
- * 创建基于Fetch的计划SSE实例
- */
-// export function createFetchPlanSSE(url?: string): FetchSSE<string> {
-//   // 获取token并添加到headers
-//   const token = localStorage.getItem("token");
-//   const headers: Record<string, string> = {};
-  
-//   if (token) {
-//     headers["Authorization"] = `Bearer ${token}`;
-//   }
-  
-//   const sseUrl = url || `/getCurrentPlan`;
-//   return new FetchSSE<string>(sseUrl, headers, true);
-// }
