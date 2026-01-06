@@ -119,14 +119,14 @@ export default function WorkspaceButton({
                 </span>
               </div>
             </div>
-
+{/* 
             <button
               onClick={handleOpenEdit}
               className="flex items-center gap-3 w-full px-3 py-2 rounded-md text-sm text-cyan-100 hover:bg-cyan-900/30 hover:text-cyan-300 transition-colors"
             >
               <UserPen className="w-4 h-4" />
               <span>编辑信息</span>
-            </button>
+            </button> */}
             <button
               onClick={handleLogout}
               className="flex items-center gap-3 w-full px-3 py-2 rounded-md text-sm text-red-400 hover:bg-red-900/20 hover:text-red-300 transition-colors"
