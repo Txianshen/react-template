@@ -3,7 +3,6 @@ import CyberInput from "@/components/cyber-input";
 import type { FileUIPart } from "ai";
 import { useAudioVisualization } from "@/hooks/use-auto-visualization";
 import { useCallback, useState, useEffect } from "react";
-import { v4 as uuidv4 } from "uuid";
 import { useStreamingStore } from "@/store/streamingStoreState";
 import { useCyberStore } from "@/store/cyberStore";
 import { createSession } from '@/api/cyber'
@@ -22,14 +21,13 @@ function LeftTop() {
   // 初始化时创建 sessionId 并保存
   useEffect(() => {
     const initSession = async () => {
-      const newSessionId = uuidv4();
       const user = "mock_user"; // 这里可以替换为实际的用户ID获取逻辑
       setUserId(user);
 
       try {
-        const response = await createSession(newSessionId);
-        if (response && response.code === 200) {
-          setSessionId(newSessionId);
+        const response = await createSession();
+        if (response && response.code === 200 && response.data?.id) {
+          setSessionId(response.data.id);
         } else {
           console.error("Failed to create session on init:", response?.msg);
         }

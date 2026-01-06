@@ -12,7 +12,7 @@ import { listSessions, createSession, deleteSession, getSession } from "@/api/cy
 import { useCyberStore } from "@/store/cyberStore";
 import { useStreamingStore } from "@/store/streamingStoreState";
 import { Trash2 } from "lucide-react";
-import { v4 as uuidv4 } from "uuid";
+
 import {
   Dialog,
   DialogContent,
@@ -87,11 +87,9 @@ export default function SessionManagementDrawer({
     }
 
     try {
-      // 生成新的会话ID
-      const newSessionId = uuidv4();
-
-      const response = await createSession(newSessionId);
-      if (response && response.code === 200) {
+      const response = await createSession();
+      if (response && response.code === 200 && response.data?.id) {
+        const newSessionId = response.data.id;
         toast.success("会话创建成功");
         // 刷新会话列表
         fetchSessions();
@@ -125,9 +123,9 @@ export default function SessionManagementDrawer({
         toast.success("会话删除成功");
         // 如果删除的是当前会话，则创建新会话
         if (deletingSessionId === sessionId) {
-          const newSessionId = uuidv4();
-          const createResponse = await createSession(newSessionId);
-          if (createResponse && createResponse.code === 200) {
+          const createResponse = await createSession();
+          if (createResponse && createResponse.code === 200 && createResponse.data?.id) {
+            const newSessionId = createResponse.data.id;
             setSessionId(newSessionId);
             useStreamingStore.getState().reset(); // 清空聊天记录
           } else {
