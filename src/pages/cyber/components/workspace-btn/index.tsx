@@ -47,7 +47,7 @@ export default function WorkspaceButton({
               className="flex items-center gap-3 w-full px-3 py-2 rounded-md text-sm text-cyan-100 hover:bg-cyan-900/30 hover:text-cyan-300 transition-colors"
             >
               <MessageSquare className="w-4 h-4" />
-              <span>会话列表</span>
+              <span>会话历史</span>
             </button>
           </div>
         </HoverCardContent>

@@ -188,7 +188,7 @@ export default function SessionManagementDrawer({
         >
           <SheetHeader>
             <SheetTitle className="text-cyan-300 tracking-wide text-2xl">
-              会话列表
+              会话历史
             </SheetTitle>
           </SheetHeader>
           <div className="flex flex-col flex-1 overflow-y-auto">
