@@ -6,13 +6,13 @@ import { getPlaygroundInfo } from "@/api/cyber";
 // 模块化导入
 import { registerCustomNodes } from "./customNodes";
 import { extractTopologyData } from "./dataParser";
-import { applyTopologyStyles, ATTACK_STATE_STYLES } from "./styleConfig";
+import { applyTopologyStyles } from "./styleConfig";
 import { createGraphOptions } from "./graphOptions";
 import {
   createAttackSSE,
-  type AttackSSE,
   type AttackStatus,
 } from "./attackSSE";
+import type { FetchSSE } from "@/lib/fetch-sse";
 import {
   createAttackStyleManager,
   type AttackStyleManager,
@@ -43,9 +43,9 @@ const processGraphData = (rawData: any[]) => {
 };
 
 export default function Graph() {
-  const graphRef = useRef();
+  const graphRef = useRef(null);
   const graphInstanceRef = useRef<G6Graph | null>(null);
-  const sseRef = useRef<AttackSSE | null>(null);
+  const sseRef = useRef<FetchSSE<AttackStatus> | null>(null);
   const styleManagerRef = useRef<AttackStyleManager | null>(null);
 
   /**

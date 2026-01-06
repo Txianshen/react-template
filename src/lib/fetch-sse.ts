@@ -19,7 +19,7 @@ class FetchSSE<T = any> {
   private controller: AbortController | null = null;
   private url: string;
   private reconnectInterval: number = 3000;
-  private reconnectTimer: NodeJS.Timeout | null = null;
+  private reconnectTimer: ReturnType<typeof setTimeout> | null = null;
   private onMessageCallback: OnMessageCallback<T> | null = null;
   private onStatusChangeCallback: OnStatusChangeCallback | null = null;
   private onErrorCallback: OnErrorCallback | null = null;

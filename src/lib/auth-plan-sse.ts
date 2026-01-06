@@ -1,4 +1,4 @@
-import { FetchSSE } from "./sse-fetch";
+import { FetchSSE } from "./fetch-sse";
 
 /**
  * SSE 响应数据类型
@@ -15,23 +15,6 @@ export interface SSEResponse<T = any> {
 export type OnMessageCallback<T = any> = (data: T) => void;
 export type OnStatusChangeCallback = (connected: boolean) => void;
 export type OnErrorCallback = (error: any) => void;
-
-/**
- * 创建计划 SSE 实例（统一使用Fetch SSE）
- */
-export function createPlanSSE(url?: string): FetchSSE<string> {
-  const sseUrl = url || `/getCurrentPlan`;
-  
-  // 获取token并添加到headers
-  const token = localStorage.getItem("token");
-  const headers: Record<string, string> = {};
-  
-  if (token) {
-    headers["Authorization"] = `Bearer ${token}`;
-  }
-  
-  return new FetchSSE<string>(sseUrl, headers, true);
-}
 
 /**
  * SSE配置选项（简化版 - 统一使用Fetch SSE）

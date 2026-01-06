@@ -1,5 +1,5 @@
-import { FetchSSE } from '@/lib/sse-fetch'
-import type { SSEOptions } from "@/lib/sse";
+import { FetchSSE } from '@/lib/fetch-sse'
+import type { SSEOptions } from "@/lib/auth-plan-sse";
 
 /**
  * 攻击状态数据类型
@@ -43,10 +43,8 @@ export function createAttackSSE(options: SSEOptions = {}): FetchSSE<AttackStatus
   // 构建URL，添加session_id参数
   let url = "/getPlaygroundStatus";
   if (session_id) {
-    url += `?session_id=${encodeURIComponent(session_id)}`;
+    url += `?session_id=${session_id}`;
   }
   
   return new FetchSSE<AttackStatus>(url, authHeaders, true);
 }
-
-export type { AttackSSE, AttackStatus };

@@ -9,7 +9,7 @@ import {
   MessageResponse,
 } from "@/components/ai-elements/message";
 import { useCyberStore } from "@/store/cyberStore";
-import { createAuthPlanSSE } from "@/lib/sse";
+import { createAuthPlanSSE } from "@/lib/auth-plan-sse";
 import { useEffect } from "react";
 
 // 定义 LeftBottom 组件
