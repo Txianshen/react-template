@@ -46,9 +46,15 @@ export function getSession(session_id: string): Promise<ApiResponse<any>> {
   return axios.get(`/getSession?session_id=${session_id}`);
 }
 
-// 创建会话
-export function createSession(session_id: string): Promise<ApiResponse<any>> {
-  return axios.get(`/createSession?session_id=${session_id}`);
+// 创建会话（后端返回session信息，其中id为session_id）
+// 返回结构：
+// {
+//   id: "52e865e5-2a62-41ab-a5ab-5d3b9646320b",  // 这就是session_id
+//   messages: [],
+//   user_id: "lihaoran1"
+// }
+export function createSession(): Promise<ApiResponse<{id: string; messages: any[]; user_id: string}>> {
+  return axios.get("/createSession");
 }
 
 // 删除会话
