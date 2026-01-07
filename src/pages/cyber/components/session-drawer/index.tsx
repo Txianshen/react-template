@@ -26,6 +26,9 @@ interface Session {
   id: string;
   user_id: string;
   messages: any[];
+  config?: {
+    run_mode?: string; // 运行模式：展厅模式、CTF模式、渗透测试模式、护网模式
+  };
   created_at?: string; // 可能的额外字段
   updated_at?: string; // 可能的额外字段
 }
@@ -147,6 +150,26 @@ export default function SessionManagementDrawer({
     }
   };
 
+  // 获取运行模式的样式类名
+  const getRunModeStyle = (runMode?: string) => {
+    if (!runMode) return '';
+    
+    const baseStyle = 'px-2 py-1 text-xs rounded-full font-medium border flex-shrink';
+    
+    switch (runMode) {
+      case '展厅模式':
+        return `${baseStyle} bg-purple-500/20 text-purple-300 border-purple-400/30`;
+      case 'CTF模式':
+        return `${baseStyle} bg-orange-500/20 text-orange-300 border-orange-400/30`;
+      case '渗透测试模式':
+        return `${baseStyle} bg-red-500/20 text-red-300 border-red-400/30`;
+      case '护网模式':
+        return `${baseStyle} bg-blue-500/20 text-blue-300 border-blue-400/30`;
+      default:
+        return `${baseStyle} bg-gray-500/20 text-gray-300 border-gray-400/30`;
+    }
+  };
+
   // 切换到指定会话
   const handleSwitchSession = async (session: Session) => {
     if (!userId) return;
@@ -167,7 +190,7 @@ export default function SessionManagementDrawer({
         // 如果 response.data 直接是 session 对象
         const messages = response.data?.messages || []; 
         useStreamingStore.getState().setResponses(messages);
-        toast.success(`已切换到会话: ${session.id}`);
+        toast.success(`已切换到会话: ${session.id}${session.config?.run_mode ? ` (${session.config.run_mode})` : ''}`);
       } else {
         toast.error(response?.msg || "获取会话详情失败");
       }
@@ -212,9 +235,14 @@ export default function SessionManagementDrawer({
                         }`}
                       >
                         <div
-                          className="flex-1 cursor-pointer min-w-0 "
+                          className="flex-1 cursor-pointer min-w-0 flex items-center gap-2"
                         >
-                          <div className="truncate text-cyan-100 text-sm">
+                          {session.config?.run_mode && (
+                            <span className={getRunModeStyle(session.config.run_mode)}>
+                              {session.config.run_mode}
+                            </span>
+                          )}
+                          <div className="flex-1 truncate text-cyan-100 text-sm mr-8">
                             {session.id}
                           </div>
                         </div>
