@@ -178,7 +178,7 @@ function transformBackendMessagesToUIMessages(
 
   for (const msg of backendMessages) {
     const role = msg.role === "user" ? "user" : "assistant";
-    const lastUIMessage = uiMessages[uiMessages.length - 1];
+    const lastUIMessage = uiMessages[uiMessages.length - 1] as StableResponse;
 
     // 如果没有上一个，或者 role 变了 → 新建 UIMessage
     if (!lastUIMessage || lastUIMessage.role !== role) {
@@ -193,7 +193,7 @@ function transformBackendMessagesToUIMessages(
         content: [
           {
             ...msg,
-            text: msg.content?.find((c) => c.type === "text")?.text || "",
+            text: msg.content?.find((c: any) => c.type === "text")?.text || "",
           },
         ],
       });
@@ -201,7 +201,7 @@ function transformBackendMessagesToUIMessages(
       // role 相同 → 追加到当前 UIMessage
       lastUIMessage.content.push({
         ...msg,
-        text: msg.content?.find((c) => c.type === "text")?.text || "",
+        text: msg.content?.find((c: any) => c.type === "text")?.text || "",
       });
     }
   }

@@ -16,7 +16,8 @@ import {
 } from "@/api/cyber";
 import { useCyberStore } from "@/store/cyberStore";
 import { useStreamingStore } from "@/store/streamingStoreState";
-import { Trash2 } from "lucide-react";
+import { Trash2, Settings } from "lucide-react";
+import ModelSettingsDrawer from "../setting-drawer";
 
 import {
   Dialog,
@@ -51,6 +52,13 @@ export default function SessionManagementDrawer({
     null
   );
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<boolean>(false);
+  const [showSettings, setShowSettings] = useState<boolean>(false);
+  const [currentConfig, setCurrentConfig] = useState<{
+    model_name?: string;
+    run_mode?: string;
+    max_iters?: number;
+  } | null>(null);
+  const [configLoading, setConfigLoading] = useState<boolean>(false);
 
   const { userId, sessionId, setSessionId } = useCyberStore();
 
@@ -59,6 +67,7 @@ export default function SessionManagementDrawer({
     if (open) {
       if (userId) {
         fetchSessions();
+        fetchCurrentConfig();
       } else {
         toast.error("用户ID未设置");
       }
@@ -112,6 +121,30 @@ export default function SessionManagementDrawer({
     } catch (error) {
       console.error("创建会话失败:", error);
       //   toast.error("创建会话失败");
+    }
+  };
+
+  // 获取当前配置信息
+  const fetchCurrentConfig = async () => {
+    setConfigLoading(true);
+    try {
+      const response = (await import("@/api/cyber").then((module) =>
+        module.getCurrentConfig()
+      )) as {
+        data: {
+          model_name?: string;
+          run_mode?: string;
+          max_iters?: number;
+        };
+      };
+
+      if (response && response.data) {
+        setCurrentConfig(response.data);
+      }
+    } catch (error) {
+      console.error("获取当前配置失败:", error);
+    } finally {
+      setConfigLoading(false);
     }
   };
 
@@ -277,13 +310,48 @@ export default function SessionManagementDrawer({
                 )}
               </div>
             </div>
-          </div>{" "}
+          </div>
           {/* 这个div闭合了第169行的div */}
-          <SheetFooter className="px-4 py-4 border-t border-cyan-400/20">
+          <SheetFooter className="px-4 py-4 border-t border-cyan-400/20 space-y-3">
+            {/* 当前配置状态栏 */}
+            <div
+              className="bg-[#0f1a2e] border border-cyan-400/20 rounded-lg p-3 cursor-pointer hover:bg-[#132238] transition-colors"
+              onClick={() => setShowSettings(true)}
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm text-cyan-300 mb-1">当前配置</div>
+                  {configLoading ? (
+                    <div className="text-cyan-200 text-xs">加载中...</div>
+                  ) : currentConfig ? (
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-cyan-100 text-sm font-medium truncate">
+                        {currentConfig.model_name || "未设置模型"}
+                      </span>
+                      {currentConfig.run_mode && (
+                        <span className="px-2 py-1 bg-cyan-500/20 text-cyan-300 text-xs rounded-full border border-cyan-400/30">
+                          {currentConfig.run_mode}
+                        </span>
+                      )}
+                      {currentConfig.max_iters && (
+                        <span className="text-cyan-400 text-xs">
+                          轮数:{currentConfig.max_iters}
+                        </span>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="text-cyan-400 text-xs">暂无配置信息</div>
+                  )}
+                </div>
+                <Settings className="w-4 h-4 text-cyan-400 flex-shrink-0" />
+              </div>
+            </div>
+
+            {/* 新增会话按钮 */}
             <Button
               onClick={handleCreateSession}
               disabled={loading}
-              className="w-full bg-cyan-600 hover:bg-cyan-700 text-lg"
+              className="w-full bg-cyan-600 hover:bg-cyan-700 text-lg py-3"
             >
               新增会话
             </Button>
@@ -315,6 +383,20 @@ export default function SessionManagementDrawer({
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* 模型设置抽屉 */}
+      <ModelSettingsDrawer
+        open={showSettings}
+        setOpen={(isOpen) => {
+          setShowSettings(isOpen);
+          // 注意：只有当设置真正保存成功后，才需要刷新配置
+          // 这里不主动刷新，避免不必要的API调用
+        }}
+        onConfigSaved={() => {
+          // 只有在配置真正保存成功时才刷新显示
+          fetchCurrentConfig();
+        }}
+      />
     </>
   );
 }

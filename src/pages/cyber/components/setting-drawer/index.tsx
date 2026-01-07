@@ -23,9 +23,11 @@ import { getAvaliableConfig, getCurrentConfig, setConfig } from "@/api/cyber";
 export default function ModelSettingsDrawer({
   open,
   setOpen,
+  onConfigSaved, // 可选的配置保存回调
 }: {
   open: boolean;
   setOpen: (v: boolean) => void;
+  onConfigSaved?: () => void;
 }) {
   // 状态管理
   const [availableConfig, setAvailableConfig] = useState<{
@@ -175,6 +177,12 @@ export default function ModelSettingsDrawer({
       await setConfig(config);
       //   console.log("配置保存成功:", config);
       toast.success("配置保存成功！");
+
+      // 调用保存成功回调（如果提供了的话）
+      if (onConfigSaved) {
+        onConfigSaved();
+      }
+
       // 关闭抽屉
       setOpen(false);
     } catch (error) {
