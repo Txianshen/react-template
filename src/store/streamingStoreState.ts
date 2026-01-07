@@ -158,10 +158,55 @@ export interface StreamingStoreState {
   applyUserMessage: (text: string, sessionId: string) => void;
 
   // setResponses
-  setResponses: (responses: StableResponse[]) => void;
+  setResponses: (responses: StableResponse[], sessionId?: string) => void;
 
   // reset / clear
   reset: () => void;
+}
+
+function transformBackendMessagesToUIMessages(
+  backendMessages: any[],
+  options: any
+) {
+  const {
+    sessionId,
+    isLoading = false,
+    responseIdGenerator = () => `response-${Date.now()}`,
+  } = options;
+
+  const uiMessages = [];
+
+  for (const msg of backendMessages) {
+    const role = msg.role === "user" ? "user" : "assistant";
+    const lastUIMessage = uiMessages[uiMessages.length - 1];
+
+    // 如果没有上一个，或者 role 变了 → 新建 UIMessage
+    if (!lastUIMessage || lastUIMessage.role !== role) {
+      uiMessages.push({
+        id: responseIdGenerator(role),
+        role,
+        status: msg.status || "completed",
+        isLoading,
+        session_id: sessionId,
+
+        // 👇 注意：这里是数组
+        content: [
+          {
+            ...msg,
+            text: msg.content?.find((c) => c.type === "text")?.text || "",
+          },
+        ],
+      });
+    } else {
+      // role 相同 → 追加到当前 UIMessage
+      lastUIMessage.content.push({
+        ...msg,
+        text: msg.content?.find((c) => c.type === "text")?.text || "",
+      });
+    }
+  }
+
+  return uiMessages;
 }
 
 export const useStreamingStore = create(
@@ -191,9 +236,12 @@ export const useStreamingStore = create(
         });
       });
     },
-    setResponses: (responses) => {
+    setResponses: (responses, sessionId) => {
       set((state) => {
-        state.responses = responses;
+        state.responses = transformBackendMessagesToUIMessages(responses, {
+          sessionId,
+          isLoading: false,
+        });
       });
     },
 

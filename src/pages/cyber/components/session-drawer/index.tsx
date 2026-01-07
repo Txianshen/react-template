@@ -8,7 +8,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useState, useEffect } from "react";
-import { listSessions, createSession, deleteSession, getSession } from "@/api/cyber";
+import {
+  listSessions,
+  createSession,
+  deleteSession,
+  getSession,
+} from "@/api/cyber";
 import { useCyberStore } from "@/store/cyberStore";
 import { useStreamingStore } from "@/store/streamingStoreState";
 import { Trash2 } from "lucide-react";
@@ -127,7 +132,11 @@ export default function SessionManagementDrawer({
         // 如果删除的是当前会话，则创建新会话
         if (deletingSessionId === sessionId) {
           const createResponse = await createSession();
-          if (createResponse && createResponse.code === 200 && createResponse.data?.id) {
+          if (
+            createResponse &&
+            createResponse.code === 200 &&
+            createResponse.data?.id
+          ) {
             const newSessionId = createResponse.data.id;
             setSessionId(newSessionId);
             useStreamingStore.getState().reset(); // 清空聊天记录
@@ -152,18 +161,19 @@ export default function SessionManagementDrawer({
 
   // 获取运行模式的样式类名
   const getRunModeStyle = (runMode?: string) => {
-    if (!runMode) return '';
-    
-    const baseStyle = 'px-2 py-1 text-xs rounded-full font-medium border flex-shrink';
-    
+    if (!runMode) return "";
+
+    const baseStyle =
+      "px-2 py-1 text-xs rounded-full font-medium border flex-shrink";
+
     switch (runMode) {
-      case '展厅模式':
+      case "展厅模式":
         return `${baseStyle} bg-purple-500/20 text-purple-300 border-purple-400/30`;
-      case 'CTF模式':
+      case "CTF模式":
         return `${baseStyle} bg-orange-500/20 text-orange-300 border-orange-400/30`;
-      case '渗透测试模式':
+      case "渗透测试模式":
         return `${baseStyle} bg-red-500/20 text-red-300 border-red-400/30`;
-      case '护网模式':
+      case "护网模式":
         return `${baseStyle} bg-blue-500/20 text-blue-300 border-blue-400/30`;
       default:
         return `${baseStyle} bg-gray-500/20 text-gray-300 border-gray-400/30`;
@@ -175,22 +185,24 @@ export default function SessionManagementDrawer({
     if (!userId) return;
     if (sessionId === session.id) {
       setOpen(false); // 关闭抽屉
-      return
-    };
+      return;
+    }
     setSessionId(session.id);
     setOpen(false); // 关闭抽屉
 
     try {
       // 先清空当前对话
       useStreamingStore.getState().reset();
-      
+
       const response = await getSession(session.id);
       if (response && response.code === 200) {
         // 这里假设后端返回的 session 对象中包含 messages 字段，且格式匹配
         // 如果 response.data 直接是 session 对象
-        const messages = response.data?.messages || []; 
-        useStreamingStore.getState().setResponses(messages);
-        toast.success(`已切换到会话: ${session.id}${session.config?.run_mode ? ` (${session.config.run_mode})` : ''}`);
+        const messages = response.data?.messages || [];
+        useStreamingStore.getState().setResponses(messages, session.id);
+        toast.success(
+          `已切换到会话: ${session.id}${session.config?.run_mode ? ` (${session.config.run_mode})` : ""}`
+        );
       } else {
         toast.error(response?.msg || "获取会话详情失败");
       }
@@ -234,11 +246,13 @@ export default function SessionManagementDrawer({
                             : "hover:bg-[#0f1a2e]"
                         }`}
                       >
-                        <div
-                          className="flex-1 cursor-pointer min-w-0 flex items-center gap-2"
-                        >
+                        <div className="flex-1 cursor-pointer min-w-0 flex items-center gap-2">
                           {session.config?.run_mode && (
-                            <span className={getRunModeStyle(session.config.run_mode)}>
+                            <span
+                              className={getRunModeStyle(
+                                session.config.run_mode
+                              )}
+                            >
                               {session.config.run_mode}
                             </span>
                           )}

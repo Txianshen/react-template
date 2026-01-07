@@ -53,7 +53,9 @@ export function getSession(session_id: string): Promise<ApiResponse<any>> {
 //   messages: [],
 //   user_id: "lihaoran1"
 // }
-export function createSession(): Promise<ApiResponse<{id: string; messages: any[]; user_id: string}>> {
+export function createSession(): Promise<
+  ApiResponse<{ id: string; messages: any[]; user_id: string }>
+> {
   return axios.get("/createSession");
 }
 
@@ -62,18 +64,17 @@ export function deleteSession(session_id: string): Promise<ApiResponse<any>> {
   return axios.get(`/deleteSession?session_id=${session_id}`);
 }
 
-
 // 登录接口
 // 接口路径/api/auth/login
 // 传参： username和 password formdata的形式
 export function login(username: string, password: string) {
   const formData = new FormData();
-  formData.append('username', username);
-  formData.append('password', password);
-  
+  formData.append("username", username);
+  formData.append("password", password);
+
   return axios.post("/auth/login", formData, {
     headers: {
-      'Content-Type': 'multipart/form-data'
-    }
+      "Content-Type": "multipart/form-data",
+    },
   });
 }
