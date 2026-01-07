@@ -82,13 +82,13 @@ export default function WorkspaceButton({
         >
           <div className="flex flex-col gap-1">
             {/* 功能区 */}
-            <button
+            {/* <button
               onClick={onOpenSettings}
               className="flex items-center gap-3 w-full px-3 py-2 rounded-md text-sm text-cyan-100 hover:bg-cyan-900/30 hover:text-cyan-300 transition-colors"
             >
               <Settings className="w-4 h-4" />
               <span>模型设置</span>
-            </button>
+            </button> */}
             <button
               onClick={onOpenSessions}
               className="flex items-center gap-3 w-full px-3 py-2 rounded-md text-sm text-cyan-100 hover:bg-cyan-900/30 hover:text-cyan-300 transition-colors"
@@ -119,7 +119,7 @@ export default function WorkspaceButton({
                 </span>
               </div>
             </div>
-{/* 
+            {/* 
             <button
               onClick={handleOpenEdit}
               className="flex items-center gap-3 w-full px-3 py-2 rounded-md text-sm text-cyan-100 hover:bg-cyan-900/30 hover:text-cyan-300 transition-colors"
