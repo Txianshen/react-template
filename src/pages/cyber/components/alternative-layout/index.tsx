@@ -86,20 +86,41 @@ export default function AlternativeLayout({ scale }: AlternativeLayoutProps) {
         {/* 右列：浏览器自动化(上) + AI决策推理(下) */}
         <div className="flex flex-col gap-4">
           {/* 浏览器自动化模块 - 上方 */}
-          <div
-            className="relative rounded-lg p-0"
-            style={{ aspectRatio: "1280/800" }}
-          >
-            <DraggableWindow
-              id="alt-right-bottom"
-              title="浏览器自动化"
-              layoutBounds="window"
-              scale={scale}
-            >
-              <Suspense fallback={null}>
-                <RightBottom />
-              </Suspense>
-            </DraggableWindow>
+          <div className="relative rounded-lg p-0 w-full ">
+            {/* 1. 【影子占位符】(Phantom Spacer) 
+        它的唯一作用是撑开父级的高度。
+        它由两部分组成：Header占位 + Content占位 
+    */}
+            <div className="flex flex-col invisible pointer-events-none w-full">
+              {/* 模拟 Header 的高度 (根据你的 BoxHeader 调整，比如 h-10 或 h-[42px]) */}
+              <div className="w-full h-[56.72px] shrink-0"></div>
+
+              {/* 模拟 Content 的比例 (这里设置 16:10) */}
+              <div className="w-full aspect-[16/10]"></div>
+            </div>
+            {/* 2. 【真实组件】 
+        绝对定位，铺满上面撑开的空间。
+        此时:
+        WindowPanel 高度 = Header占位 + 16:10占位
+        WindowPanel Header = Header占位
+        WindowPanel Content = 16:10占位
+        完美对齐！
+    */}
+            <div className="absolute inset-0">
+              <DraggableWindow
+                id="alt-right-bottom"
+                title="浏览器自动化"
+                layoutBounds="window"
+                scale={scale}
+                // 注意：这里传 aspectRatio 主要是为了触发 WindowPanel 内部的一些"非resize"逻辑
+                // 但实际尺寸已经由上面的影子决定了
+                aspectRatio="16/10"
+              >
+                <Suspense fallback={null}>
+                  <RightBottom />
+                </Suspense>
+              </DraggableWindow>
+            </div>
           </div>
 
           {/* AI决策推理模块 - 下方 */}

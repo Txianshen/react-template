@@ -18,7 +18,6 @@ export default function BrowserAutomation() {
   // 创建 ref 来保存 iframe 的引用
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
-
   const handleLoad = () => {
     setLoading(false);
   };
@@ -37,12 +36,12 @@ export default function BrowserAutomation() {
       // 假设响应数据在 response.data 中
       if (response.data) {
         // 在开发环境中，将完整URL转换为代理路径
-        let processedUrl = response.data;
+        const processedUrl = response.data;
         setSteelHost(processedUrl);
         console.log("沙箱 URL 更新为:", processedUrl);
       }
     } catch (error) {
-      console.error("获取沙箱 URL 失败:", error);
+      console.error("获取沙箱 URL 失败，将使用默认远程桌面地址:", error);
       // 出错时回退到默认 URL
       setSteelHost(defaultSteelHost);
     } finally {
@@ -85,8 +84,8 @@ export default function BrowserAutomation() {
         <iframe
           key={key} // 通过改变 key 值强制重新加载 iframe
           src={steelHost}
-          className="w-full border-none"
-          style={{ height: "100%" }}
+          className="w-full border-none block h-full"
+          // style={{ height: "100%" }}
           title="浏览器自动化"
           onLoad={handleLoad}
           onError={handleLoad}
