@@ -84,7 +84,7 @@ export default function CyberInput({
       await handlePause();
       return;
     }
-    console.log("handleSubmit");
+    console.log("handleSubmit", data);
     onSubmit(data);
   };
 
