@@ -6,7 +6,7 @@ import { useCallback, useState, useEffect } from "react";
 import { useStreamingStore } from "@/store/streamingStoreState";
 import { useCyberStore } from "@/store/cyberStore";
 import { createSession, listSessions, getSession } from "@/api/cyber";
-
+import { toast } from "sonner";
 function LeftTop() {
   const { canvasRef, setIsActive } = useAudioVisualization();
   // const [isSimulating, setIsSimulating] = useState(false);
@@ -31,6 +31,7 @@ function LeftTop() {
 
         return createResponse.data.id;
       } else {
+        toast.error(createResponse?.msg || "创建会话失败");
         console.error("Failed to create session on init:", createResponse?.msg);
         return null;
       }
