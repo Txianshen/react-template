@@ -56,6 +56,7 @@ function LeftTop() {
           // 如果存在会话，使用第一个会话的信息
           const firstSession = response.data[0];
           setSessionId(firstSession.id);
+          setUserId(firstSession.user_id);
           console.log("使用现有会话:", firstSession.id);
 
           // 还需要通过session.id触发获取会话详情接口
