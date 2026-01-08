@@ -94,7 +94,7 @@ export default function CyberInput({
         <PromptInput onSubmit={handleSubmit} className="w-full">
           <PromptInputSpeechButton
             onTranscriptionChange={(text: string) => {
-              console.log(text);
+              console.log("onTranscriptionChange", text);
             }}
             onListeningChange={onSpeechButtonListeningChange} // 传递给子组件
             textareaRef={textareaRef}

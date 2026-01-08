@@ -5,7 +5,7 @@ import { useAudioVisualization } from "@/hooks/use-auto-visualization";
 import { useCallback, useState, useEffect } from "react";
 import { useStreamingStore } from "@/store/streamingStoreState";
 import { useCyberStore } from "@/store/cyberStore";
-import { createSession } from '@/api/cyber'
+import { createSession, listSessions, getSession } from "@/api/cyber";
 
 function LeftTop() {
   const { canvasRef, setIsActive } = useAudioVisualization();
@@ -18,21 +18,70 @@ function LeftTop() {
   const applyUserMessage = useStreamingStore.getState().applyUserMessage;
   const { userId, sessionId, setUserId, setSessionId } = useCyberStore();
 
-  // 初始化时创建 sessionId 并保存
+  // 创建新会话的辅助函数
+  const createNewSession = async () => {
+    try {
+      const createResponse = await createSession();
+      if (
+        createResponse &&
+        createResponse.code === 200 &&
+        createResponse.data?.id
+      ) {
+        setSessionId(createResponse.data.id);
+
+        return createResponse.data.id;
+      } else {
+        console.error("Failed to create session on init:", createResponse?.msg);
+        return null;
+      }
+    } catch (error) {
+      console.error("Error creating session:", error);
+      return null;
+    }
+  };
+
+  // 初始化时检查现有会话，如果存在则使用第一个会话，否则创建新会话
   useEffect(() => {
     const initSession = async () => {
-      const user = "mock_user"; // 这里可以替换为实际的用户ID获取逻辑
-      setUserId(user);
-
       try {
-        const response = await createSession();
-        if (response && response.code === 200 && response.data?.id) {
-          setSessionId(response.data.id);
+        // 首先尝试获取现有会话列表
+        const response = await listSessions();
+
+        if (
+          response &&
+          response.code === 200 &&
+          response.data &&
+          response.data.length > 0
+        ) {
+          // 如果存在会话，使用第一个会话的信息
+          const firstSession = response.data[0];
+          setSessionId(firstSession.id);
+          console.log("使用现有会话:", firstSession.id);
+
+          // 还需要通过session.id触发获取会话详情接口
+          try {
+            const sessionDetailResponse = await getSession(firstSession.id);
+            if (sessionDetailResponse && sessionDetailResponse.code === 200) {
+              const messages = sessionDetailResponse.data?.messages || [];
+              useStreamingStore
+                .getState()
+                .setResponses(messages, firstSession.id);
+              console.log("已加载会话消息:", messages.length, "条");
+            } else {
+              console.error("获取会话详情失败:", sessionDetailResponse?.msg);
+            }
+          } catch (detailError) {
+            console.error("获取会话详情异常:", detailError);
+          }
         } else {
-          console.error("Failed to create session on init:", response?.msg);
+          // 如果没有现有会话，创建新会话
+          await createNewSession();
         }
       } catch (error) {
-        console.error("Error creating session on init:", error);
+        console.error("Error initializing session on init:", error);
+
+        // 如果获取会话列表失败，尝试创建新会话
+        await createNewSession();
       }
     };
     initSession();
@@ -70,12 +119,12 @@ function LeftTop() {
       const headers: HeadersInit = {
         "Content-Type": "application/json",
       };
-      
+
       // 如果token存在，添加到请求头
       if (token) {
         headers["Authorization"] = `Bearer ${token}`;
       }
-      
+
       const response = await fetch(
         `${import.meta.env.VITE_API_SERVICE_URL}/process`,
         {
