@@ -65,12 +65,12 @@ export default function SessionManagementDrawer({
   // 获取会话列表
   useEffect(() => {
     if (open) {
-      if (userId) {
-        fetchSessions();
-        fetchCurrentConfig();
-      } else {
-        toast.error("用户ID未设置");
-      }
+      fetchSessions();
+      fetchCurrentConfig();
+      // if (userId) {
+      // } else {
+      //   // toast.error("用户ID未设置");
+      // }
     }
   }, [open, userId]);
 
@@ -99,7 +99,7 @@ export default function SessionManagementDrawer({
   // 创建新会话
   const handleCreateSession = async () => {
     if (!userId) {
-      toast.error("用户ID未设置");
+      // toast.error("用户ID未设置");
       return;
     }
 

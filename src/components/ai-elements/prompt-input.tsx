@@ -1129,15 +1129,35 @@ export const PromptInputSpeechButton = ({
             finalTranscript += result[0]?.transcript ?? "";
           }
         }
-
+        // 源代码
         if (finalTranscript && textareaRef?.current) {
           const textarea = textareaRef.current;
           const currentValue = textarea.value;
           const newValue =
             currentValue + (currentValue ? " " : "") + finalTranscript;
 
-          textarea.value = newValue;
+          // textarea.value = newValue;
+          // textarea.dispatchEvent(new Event("input", { bubbles: true }));
+          // --- 修改开始 ---
+
+          // 1. 获取 HTMLTextAreaElement 原型上的原生 value setter
+          const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+            window.HTMLTextAreaElement.prototype,
+            "value"
+          )?.set;
+
+          // 2. 强制调用原生 setter
+          // 这会让 React 的内部 tracker 意识到值发生了改变
+          if (nativeInputValueSetter) {
+            nativeInputValueSetter.call(textarea, newValue);
+          } else {
+            textarea.value = newValue;
+          }
+
+          // 3. 这里的事件触发现在会被 React 正确捕获并执行 onChange
           textarea.dispatchEvent(new Event("input", { bubbles: true }));
+
+          // --- 修改结束 ---
           onTranscriptionChange?.(newValue);
         }
       };
