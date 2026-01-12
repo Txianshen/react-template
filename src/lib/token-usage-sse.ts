@@ -1,6 +1,15 @@
 import { FetchSSE } from "./fetch-sse";
 
 /**
+ * Token使用情况数据类型
+ */
+export interface TokenUsageData {
+  total_input_tokens: number;
+  total_output_tokens: number;
+  total_tokens: number;
+}
+
+/**
  * SSE 响应数据类型
  */
 export interface SSEResponse<T = any> {
@@ -19,7 +28,7 @@ export type OnErrorCallback = (error: any) => void;
 /**
  * SSE配置选项（简化版 - 统一使用Fetch SSE）
  */
-export interface SSEOptions {
+export interface TokenUsageSSEOptions {
   /** 自定义headers */
   headers?: Record<string, string>;
   /** 会话ID */
@@ -27,25 +36,27 @@ export interface SSEOptions {
 }
 
 /**
- * 创建带认证的计划 SSE 实例（统一使用Fetch SSE，支持header和session_id）
+ * 创建带认证的Token使用情况 SSE 实例（统一使用Fetch SSE，支持header和session_id）
  *
  * @example
  * ```typescript
  * // 基础使用（token在header中）
- * const sse1 = createAuthPlanSSE();
+ * const sse1 = createTokenUsageSSE();
  *
  * // 添加自定义header
- * const sse2 = createAuthPlanSSE({
+ * const sse2 = createTokenUsageSSE({
  *   headers: { "X-Custom": "value" }
  * });
  *
  * // 传递session_id
- * const sse3 = createAuthPlanSSE({
+ * const sse3 = createTokenUsageSSE({
  *   session_id: "your-session-id"
  * });
  * ```
  */
-export function createAuthPlanSSE(options: SSEOptions = {}): FetchSSE<string> {
+export function createTokenUsageSSE(
+  options: TokenUsageSSEOptions = {}
+): FetchSSE<TokenUsageData> {
   const { headers = {}, session_id } = options;
 
   // 获取token
@@ -57,10 +68,10 @@ export function createAuthPlanSSE(options: SSEOptions = {}): FetchSSE<string> {
   }
 
   // 构建URL，添加session_id参数
-  let url = "/getCurrentPlan";
+  let url = "/streamTokenUsage";
   if (session_id) {
     url += `?session_id=${session_id}`;
   }
 
-  return new FetchSSE<string>(url, authHeaders, true);
+  return new FetchSSE<TokenUsageData>(url, authHeaders, true);
 }

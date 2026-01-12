@@ -15,6 +15,8 @@ const LeftBottom = lazy(() => import("./components/left-bottom"));
 const RightBottom = lazy(() => import("./components/right-bottom"));
 const RightCenter = lazy(() => import("./components/right-center"));
 const RightTop = lazy(() => import("./components/right-top"));
+import TokenUsagePanel from "@/components/token-usage-panel";
+import TTSMessageDisplay from "@/components/tts-message-display";
 import Dock from "@/components/dock";
 // import GlowSettingsButton from "./components/setting-btn";
 import ModelSettingsDrawer from "./components/setting-drawer";
@@ -136,7 +138,9 @@ function CyberPage() {
               scale={scale}
             >
               {/* <LeftBottom /> */}
-              <Suspense fallback={null}><LeftBottom /></Suspense>
+              <Suspense fallback={null}>
+                <LeftBottom />
+              </Suspense>
             </DraggableWindow>
           </div>
           <div className="flex-1 relative rounded-lg p-0">
@@ -148,7 +152,9 @@ function CyberPage() {
               scale={scale}
             >
               {/* <RightCenter /> */}
-              <Suspense fallback={null}><RightCenter /></Suspense>
+              <Suspense fallback={null}>
+                <RightCenter />
+              </Suspense>
             </DraggableWindow>
           </div>
           <div className="flex-1 relative rounded-lg p-0">
@@ -160,13 +166,29 @@ function CyberPage() {
               scale={scale}
             >
               {/* <RightBottom /> */}
-              <Suspense fallback={null}><RightBottom /></Suspense>
+              <Suspense fallback={null}>
+                <RightBottom />
+              </Suspense>
+            </DraggableWindow>
+          </div>
+          <div className="flex-1 relative rounded-lg p-0">
+            <DraggableWindow
+              id="token-usage"
+              title="Token 使用情况"
+              layoutBounds="window"
+              scale={scale}
+            >
+              <Suspense fallback={null}>
+                <TokenUsagePanel />
+              </Suspense>
             </DraggableWindow>
           </div>
         </div>
       </div>
       {/* fixed布局任务栏 -- 最小化的窗口 */}
       <Dock />
+      {/* TTS消息显示 - 固定在页面底部 */}
+      <TTSMessageDisplay />
     </div>
   );
 }

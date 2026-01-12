@@ -78,3 +78,12 @@ export function login(username: string, password: string) {
     },
   });
 }
+
+// 获取使用token信息
+// 接口/api/streamTokenUsage
+// 返回data数据
+// data: {
+//   // "total_input_tokens": 14447,
+// // "total_output_tokens": 290,
+// // "total_tokens": 14737
+// }
