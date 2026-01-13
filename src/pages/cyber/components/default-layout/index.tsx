@@ -52,7 +52,7 @@ export default function DefaultLayout({ scale }: DefaultLayoutProps) {
         <div className="flex-1 mt-4 ">
           <DraggableWindow
             id="graph"
-            title="网络关系拓扑图"
+            title="实时网络安全态势感知"
             showHeader={true}
             layoutBounds="window"
             headerComponent={<Header />}

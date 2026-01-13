@@ -8,10 +8,7 @@ import { registerCustomNodes } from "./customNodes";
 import { extractTopologyData } from "./dataParser";
 import { applyTopologyStyles } from "./styleConfig";
 import { createGraphOptions } from "./graphOptions";
-import {
-  createAttackSSE,
-  type AttackStatus,
-} from "./attackSSE";
+import { createAttackSSE, type AttackStatus } from "./attackSSE";
 import type { FetchSSE } from "@/lib/fetch-sse";
 import {
   createAttackStyleManager,

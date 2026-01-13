@@ -2,8 +2,8 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Bug, Shield } from "lucide-react";
 import { toast } from "sonner";
-import { useCyberStore } from "@/store/cyberStore";
-import { getPoc } from "@/api/cyber";
+import RightCenter from "@/pages/cyber/components/right-center";
+import Graph from "@/components/graph/index";
 import {
   Dialog,
   DialogContent,
@@ -19,33 +19,13 @@ import {
 } from "@/components/ui/tooltip";
 
 export default function EdgeDock() {
-  const { sessionId } = useCyberStore();
-  const [pocData, setPocData] = useState<string>("");
-  const [pocLoading, setPocLoading] = useState<boolean>(false);
   const [isDockOpen, setIsDockOpen] = useState<boolean>(false); // 扩展坞状态
   const [activeModal, setActiveModal] = useState<"poc" | "security" | null>(
     null
   ); // 当前激活的模态框
 
-  // 获取POC数据
-  const fetchPocData = async () => {
-    if (!sessionId) return;
-
-    setPocLoading(true);
-    try {
-      const response: any = await getPoc(sessionId);
-      if (response && response.code === 200) {
-        setPocData(response.data || "");
-      }
-    } catch (error) {
-      console.error("获取POC数据失败:", error);
-    } finally {
-      setPocLoading(false);
-    }
-  };
-
   const handlePocClick = () => {
-    fetchPocData();
+    // fetchPocData();
     setActiveModal("poc");
     toast.info("正在获取漏洞POC信息...");
   };
@@ -58,7 +38,6 @@ export default function EdgeDock() {
 
   const handleCloseModal = () => {
     setActiveModal(null);
-    setPocData(""); // 清空POC数据
   };
 
   return (
@@ -111,7 +90,7 @@ export default function EdgeDock() {
                 ? "bg-blue-600/80 border-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.5)]"
                 : "bg-blue-600/50 border-blue-400/30 hover:bg-blue-600/70"
             }`}
-            title="网络安全态势"
+            title="实时网络安全态势感知"
           >
             <Shield className="w-5 h-5 text-white" />
           </Button>
@@ -120,24 +99,18 @@ export default function EdgeDock() {
 
       {/* 第三层级：激活态/沉浸态 - 模态框 */}
       <Dialog open={activeModal !== null} onOpenChange={handleCloseModal}>
-        <DialogContent className="sm:max-w-md bg-[#0b1220] border border-cyan-400/30 max-h-[80vh] overflow-y-auto">
+        <DialogContent className="sm:max-w-[40vw] bg-[#0b1220] border border-cyan-400/30">
           <DialogHeader>
-            <DialogTitle className="text-cyan-300">
-              {activeModal === "poc" ? "漏洞POC信息" : "网络安全态势"}
+            <DialogTitle className="text-cyan-300 text-2xl font-[YouSheTitleHei]">
+              {activeModal === "poc" ? "漏洞POC" : "实时网络安全态势感知"}
             </DialogTitle>
           </DialogHeader>
 
-          <div className="py-2">
-            {activeModal === "poc" && (
-              <div className="text-cyan-100 whitespace-pre-wrap">
-                {pocLoading ? "加载中..." : pocData || "暂无POC数据"}
-              </div>
-            )}
-            {activeModal === "security" && (
-              <div className="text-cyan-100">
-                网络安全态势感知数据将在后续版本中实现...
-              </div>
-            )}
+          <div
+            className={`py-2 ${activeModal === "security" ? "h-[70vh]" : "max-h-[70vh]"} overflow-y-auto`}
+          >
+            {activeModal === "poc" && <RightCenter />}
+            {activeModal === "security" && <Graph />}
           </div>
 
           <DialogFooter>
