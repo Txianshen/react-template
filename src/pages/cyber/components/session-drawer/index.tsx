@@ -33,7 +33,9 @@ interface Session {
   user_id: string;
   messages: any[];
   config?: {
+    model_name?: string;
     run_mode?: string; // 运行模式：展厅模式、CTF模式、渗透测试模式、护网模式
+    max_iters?: number;
   };
   created_at?: string; // 可能的额外字段
   updated_at?: string; // 可能的额外字段
@@ -60,7 +62,14 @@ export default function SessionManagementDrawer({
   } | null>(null);
   const [configLoading, setConfigLoading] = useState<boolean>(false);
 
-  const { userId, sessionId, setSessionId } = useCyberStore();
+  const {
+    userId,
+    sessionId,
+    setSessionId,
+    updateSessionConfigs,
+    setSessionConfig,
+    sessionConfigs,
+  } = useCyberStore();
 
   // 获取会话列表
   useEffect(() => {
@@ -85,6 +94,28 @@ export default function SessionManagementDrawer({
         // 按时间倒序排列，最新的会话在前面
         const sortedSessions = response.data || [];
         setSessions(sortedSessions);
+
+        // 提取每个会话的配置并存储到 store
+        const sessionConfigs: {
+          [sessionId: string]: {
+            model_name?: string;
+            run_mode?: string;
+            max_iters?: number;
+          };
+        } = {};
+
+        sortedSessions.forEach((session: Session) => {
+          if (session.config) {
+            // 将会话中的 config 映射到期望的格式
+            sessionConfigs[session.id] = {
+              model_name: session.config.model_name,
+              run_mode: session.config.run_mode,
+              max_iters: session.config.max_iters,
+            };
+          }
+        });
+
+        updateSessionConfigs(sessionConfigs);
       } else {
         toast.error(response?.msg || "获取会话列表失败");
       }
@@ -137,7 +168,6 @@ export default function SessionManagementDrawer({
           max_iters?: number;
         };
       };
-
       if (response && response.data) {
         setCurrentConfig(response.data);
       }
@@ -221,6 +251,10 @@ export default function SessionManagementDrawer({
       return;
     }
     setSessionId(session.id);
+    // 设置当前会话的配置
+    if (session.config) {
+      setSessionConfig(session.id, session.config);
+    }
     setOpen(false); // 关闭抽屉
 
     try {
@@ -324,19 +358,43 @@ export default function SessionManagementDrawer({
                   {configLoading ? (
                     <div className="text-cyan-200 text-xs">加载中...</div>
                   ) : currentConfig ? (
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-cyan-100 text-sm font-medium truncate">
-                        {currentConfig.model_name || "未设置模型"}
-                      </span>
-                      {currentConfig.run_mode && (
-                        <span className="px-2 py-1 bg-cyan-500/20 text-cyan-300 text-xs rounded-full border border-cyan-400/30">
-                          {currentConfig.run_mode}
+                    <div className="space-y-1">
+                      {/* 全局配置 */}
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="text-cyan-200 text-xs">全局:</span>
+                        <span className="text-cyan-100 text-sm font-medium truncate">
+                          {currentConfig.model_name || "未设置模型"}
                         </span>
-                      )}
-                      {currentConfig.max_iters && (
-                        <span className="text-cyan-400 text-xs">
-                          轮数:{currentConfig.max_iters}
-                        </span>
+                        {currentConfig.run_mode && (
+                          <span className="px-2 py-1 bg-cyan-500/20 text-cyan-300 text-xs rounded-full border border-cyan-400/30">
+                            {currentConfig.run_mode}
+                          </span>
+                        )}
+                        {currentConfig.max_iters && (
+                          <span className="text-cyan-400 text-xs">
+                            轮数:{currentConfig.max_iters}
+                          </span>
+                        )}
+                      </div>
+                      {/* 当前会话配置 */}
+                      {sessionId && sessionConfigs[sessionId] && (
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="text-cyan-200 text-xs">会话:</span>
+                          <span className="text-cyan-100 text-sm font-medium truncate">
+                            {sessionConfigs[sessionId].model_name ||
+                              "未设置模型"}
+                          </span>
+                          {sessionConfigs[sessionId].run_mode && (
+                            <span className="px-2 py-1 bg-purple-500/20 text-purple-300 text-xs rounded-full border border-purple-400/30">
+                              {sessionConfigs[sessionId].run_mode}
+                            </span>
+                          )}
+                          {sessionConfigs[sessionId].max_iters && (
+                            <span className="text-purple-400 text-xs">
+                              轮数:{sessionConfigs[sessionId].max_iters}
+                            </span>
+                          )}
+                        </div>
                       )}
                     </div>
                   ) : (

@@ -2,11 +2,9 @@
 import CyberInput from "@/components/cyber-input";
 import type { FileUIPart } from "ai";
 import { useAudioVisualization } from "@/hooks/use-auto-visualization";
-import { useCallback, useState, useEffect } from "react";
+import { useCallback, useState } from "react";
 import { useStreamingStore } from "@/store/streamingStoreState";
 import { useCyberStore } from "@/store/cyberStore";
-import { createSession, listSessions, getSession } from "@/api/cyber";
-import { toast } from "sonner";
 function LeftTop() {
   const { canvasRef, setIsActive } = useAudioVisualization();
   // const [isSimulating, setIsSimulating] = useState(false);
@@ -16,78 +14,8 @@ function LeftTop() {
 
   const apply = useStreamingStore.getState().applySSEEvent;
   const applyUserMessage = useStreamingStore.getState().applyUserMessage;
-  const { userId, sessionId, setUserId, setSessionId } = useCyberStore();
+  const { sessionId } = useCyberStore();
 
-  // 创建新会话的辅助函数
-  const createNewSession = async () => {
-    try {
-      const createResponse = await createSession();
-      if (
-        createResponse &&
-        createResponse.code === 200 &&
-        createResponse.data?.id
-      ) {
-        setSessionId(createResponse.data.id);
-
-        return createResponse.data.id;
-      } else {
-        toast.error(createResponse?.msg || "创建会话失败");
-        console.error("Failed to create session on init:", createResponse?.msg);
-        return null;
-      }
-    } catch (error) {
-      console.error("Error creating session:", error);
-      return null;
-    }
-  };
-
-  // 初始化时检查现有会话，如果存在则使用第一个会话，否则创建新会话
-  useEffect(() => {
-    const initSession = async () => {
-      try {
-        // 首先尝试获取现有会话列表
-        const response = await listSessions();
-
-        if (
-          response &&
-          response.code === 200 &&
-          response.data &&
-          response.data.length > 0
-        ) {
-          // 如果存在会话，使用第一个会话的信息
-          const firstSession = response.data[0];
-          setSessionId(firstSession.id);
-          setUserId(firstSession.user_id);
-          console.log("使用现有会话:", firstSession.id);
-
-          // 还需要通过session.id触发获取会话详情接口
-          try {
-            const sessionDetailResponse = await getSession(firstSession.id);
-            if (sessionDetailResponse && sessionDetailResponse.code === 200) {
-              const messages = sessionDetailResponse.data?.messages || [];
-              useStreamingStore
-                .getState()
-                .setResponses(messages, firstSession.id);
-              console.log("已加载会话消息:", messages.length, "条");
-            } else {
-              console.error("获取会话详情失败:", sessionDetailResponse?.msg);
-            }
-          } catch (detailError) {
-            console.error("获取会话详情异常:", detailError);
-          }
-        } else {
-          // 如果没有现有会话，创建新会话
-          await createNewSession();
-        }
-      } catch (error) {
-        console.error("Error initializing session on init:", error);
-
-        // 如果获取会话列表失败，尝试创建新会话
-        await createNewSession();
-      }
-    };
-    initSession();
-  }, []);
   // 当语音识别按钮的状态改变时，同步控制音频可视化
   const handleSpeechButtonListeningChange = useCallback(
     (isListening: boolean) => {
