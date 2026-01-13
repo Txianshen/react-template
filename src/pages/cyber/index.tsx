@@ -10,6 +10,7 @@ import Dock from "@/components/dock";
 import SessionManagementDrawer from "./components/session-drawer";
 import WorkspaceButton from "./components/workspace-btn";
 import TTSMessageDisplay from "@/components/tts-message-display";
+import TokenUsageHUD from "@/components/token-usage-hud";
 function CyberPage() {
   // const [open, setOpen] = useState(false);
   const [sessionOpen, setSessionOpen] = useState(false);
@@ -156,6 +157,7 @@ function CyberPage() {
       className="h-[1080px] w-[3840px] bg-cover bg-center bg-no-repeat bg-[url('@/assets/icons/cyber/cyber-bg.svg')]"
     >
       <WorkspaceButton onOpenSessions={() => setSessionOpen(true)} />
+      <TokenUsageHUD />
       {/* 根据运行模式决定布局 */}
       {currentSessionConfig?.run_mode === "展厅模式" ? (
         <>
