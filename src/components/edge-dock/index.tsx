@@ -11,6 +11,12 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export default function EdgeDock() {
   const { sessionId } = useCyberStore();
@@ -60,19 +66,25 @@ export default function EdgeDock() {
       {/* 右侧边缘扩展坞 - 三层级交互系统 */}
       <div className="fixed right-0 top-1/2 transform -translate-y-1/2 flex z-[1000]">
         {/* 第一层级：常态/静默态 - 极窄手柄 */}
-        <div
-          className="w-2 h-16 bg-gradient-to-b from-cyan-500/20 to-blue-500/20 cursor-pointer flex items-center justify-center group"
-          onClick={() => setIsDockOpen(!isDockOpen)}
-          title="展开扩展坞"
-        >
-          {/* 呼吸灯效果 */}
-          <div className="w-1 h-8 bg-cyan-400/60 rounded-full animate-pulse shadow-[0_0_8px_rgba(56,189,248,0.6)]"></div>
-
-          {/* 手柄悬停提示 */}
-          <div className="absolute left-[-80px] bg-gray-900/80 text-cyan-300 text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
-            {isDockOpen ? "收起扩展坞" : "展开扩展坞"}
-          </div>
-        </div>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div
+                className="w-5 h-24 bg-gradient-to-b from-cyan-500/30 to-blue-500/30 cursor-pointer flex items-center justify-center group"
+                onClick={() => setIsDockOpen(!isDockOpen)}
+              >
+                {/* 改进的呼吸灯效果 */}
+                <div className="w-2.5 h-12 bg-gradient-to-b from-cyan-400 to-blue-400 rounded-full animate-pulse shadow-[0_0_12px_rgba(56,189,248,0.8)]"></div>
+              </div>
+            </TooltipTrigger>
+            <TooltipContent
+              side="left"
+              className="bg-gray-900 text-cyan-300 border border-cyan-400/30"
+            >
+              <span>{isDockOpen ? "收起扩展坞" : "展开扩展坞"}</span>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
 
         {/* 第二层级：扩展态/就绪态 - 功能面板 */}
         <div
