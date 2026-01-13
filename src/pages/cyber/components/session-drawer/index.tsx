@@ -366,7 +366,9 @@ export default function SessionManagementDrawer({
                           {currentConfig.model_name || "未设置模型"}
                         </span>
                         {currentConfig.run_mode && (
-                          <span className="px-2 py-1 bg-cyan-500/20 text-cyan-300 text-xs rounded-full border border-cyan-400/30">
+                          <span
+                            className={getRunModeStyle(currentConfig.run_mode)}
+                          >
                             {currentConfig.run_mode}
                           </span>
                         )}
@@ -385,7 +387,11 @@ export default function SessionManagementDrawer({
                               "未设置模型"}
                           </span>
                           {sessionConfigs[sessionId].run_mode && (
-                            <span className="px-2 py-1 bg-purple-500/20 text-purple-300 text-xs rounded-full border border-purple-400/30">
+                            <span
+                              className={getRunModeStyle(
+                                sessionConfigs[sessionId].run_mode
+                              )}
+                            >
                               {sessionConfigs[sessionId].run_mode}
                             </span>
                           )}

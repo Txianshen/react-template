@@ -1,5 +1,6 @@
 import {
   LayoutGrid,
+  BarChart3,
   // Settings,
   MessageSquare,
   User,
@@ -25,6 +26,7 @@ import { useUserStore } from "@/store/userStore";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { toast } from "sonner";
+import TokenUsageDrawer from "@/components/token-usage-panel";
 
 export default function WorkspaceButton({
   // onOpenSettings,
@@ -37,6 +39,7 @@ export default function WorkspaceButton({
   const { userInfo, logout, updateProfile } = useUserStore();
   const [showProfileEdit, setShowProfileEdit] = useState(false);
   const [editName, setEditName] = useState("");
+  const [showTokenUsage, setShowTokenUsage] = useState(false);
 
   const handleLogout = () => {
     logout();
@@ -95,6 +98,13 @@ export default function WorkspaceButton({
             >
               <MessageSquare className="w-4 h-4" />
               <span>会话历史</span>
+            </button>
+            <button
+              onClick={() => setShowTokenUsage(true)}
+              className="flex items-center gap-3 w-full px-3 py-2 rounded-md text-sm text-cyan-100 hover:bg-cyan-900/30 hover:text-cyan-300 transition-colors"
+            >
+              <BarChart3 className="w-4 h-4" />
+              <span>使用情况</span>
             </button>
 
             {/* 分割线 */}
@@ -173,6 +183,9 @@ export default function WorkspaceButton({
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Token使用情况抽屉 */}
+      <TokenUsageDrawer open={showTokenUsage} setOpen={setShowTokenUsage} />
 
       {/* 动画 keyframes */}
       <style>{`

@@ -57,7 +57,7 @@ export default function TTSMessageDisplay({
         borderRadius: "24px",
       }}
     >
-      <div className="text-center text-2xl">{ttsMessage}</div>
+      <div className="text-center text-5xl">{ttsMessage}</div>
     </div>
   );
 }
