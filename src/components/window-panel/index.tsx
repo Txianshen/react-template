@@ -114,7 +114,10 @@ export default function WindowPanel({
             //   bottomRight: true,
             // }}
             default={{ x: pos.x, y: pos.y, width: pos.w, height: pos.h }}
-            size={{ width: pos.w, height: pos.h }}
+            size={{
+              width: pos.w,
+              height: pos.h,
+            }}
             position={{ x: pos.x, y: pos.y }}
             onDragStop={(e, d) => {
               setPos((p) => ({ ...p, x: d.x, y: d.y }));
@@ -128,6 +131,7 @@ export default function WindowPanel({
             }}
             className={cn(
               "bg-[#0e1e3bfa] overflow-hidden !flex flex-col border border-zinc-700 border border-[#536FA9]/60 relative before:absolute before:top-0 before:left-0 before:w-4 before:h-4 before:border-t-[3px] before:border-l-[3px] before:border-[#00D9FF] after:absolute after:top-0 after:right-0 after:w-4 after:h-4 after:border-t-[3px] after:border-r-[3px] after:border-[#00D9FF]",
+              "w-full h-full", // 强制满屏
               className
             )}
           >
@@ -162,9 +166,9 @@ export default function WindowPanel({
             <div className="absolute bottom-0 left-0 w-4 h-4 border-b-[3px] border-l-[3px] border-[#00D9FF]" />
             <div className="absolute bottom-0 right-0 w-4 h-4 border-b-[3px] border-r-[3px] border-[#00D9FF]" />
             {/* Content Area (关键隔离层) */}
-            <div className=" p-4 flex-1 min-h-0 overflow-auto">
+            <div className="w-full h-full p-4 flex items-center justify-center min-h-0 overflow-hidden">
               <div
-                className="h-full overflow-auto"
+                className="w-full h-full overflow-auto"
                 onMouseDown={(e) => e.stopPropagation()}
                 onPointerDown={(e) => e.stopPropagation()}
                 style={{

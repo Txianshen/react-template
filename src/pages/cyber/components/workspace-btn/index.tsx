@@ -1,10 +1,10 @@
 import {
   LayoutGrid,
-  Settings,
+  // Settings,
   MessageSquare,
   User,
   LogOut,
-  UserPen,
+  // UserPen,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -27,10 +27,10 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 export default function WorkspaceButton({
-  onOpenSettings,
+  // onOpenSettings,
   onOpenSessions,
 }: {
-  onOpenSettings: () => void;
+  // onOpenSettings: () => void;
   onOpenSessions: () => void;
 }) {
   const navigate = useNavigate();
@@ -44,10 +44,10 @@ export default function WorkspaceButton({
     toast.success("已退出登录");
   };
 
-  const handleOpenEdit = () => {
-    setEditName(userInfo?.name || "");
-    setShowProfileEdit(true);
-  };
+  // const handleOpenEdit = () => {
+  //   setEditName(userInfo?.name || "");
+  //   setShowProfileEdit(true);
+  // };
 
   const handleSaveProfile = () => {
     if (!editName.trim()) {
