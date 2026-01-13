@@ -46,7 +46,7 @@ export default function TTSMessageDisplay({
 
   return (
     <div
-      className={`fixed bottom-24 left-1/2 transform -translate-x-1/2 z-50 transition-all duration-300 ${
+      className={`fixed bottom-24 z-1000000 left-1/2 transform -translate-x-1/2 z-50 transition-all duration-300 ${
         isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
       } ${className}`}
       style={{
