@@ -313,6 +313,14 @@ export const MessageResponse = memo(
     <Streamdown
       className={cn(
         "size-full [&>*:first-child]:mt-0 [&>*:last-child]:mb-0",
+        // 这样完全不会影响到代码块（pre 里的 code），也不需要去重置背景或 padding
+        "[&_code[data-streamdown='inline-code']]:rounded",
+        "[&_code[data-streamdown='inline-code']]:bg-muted",
+        "[&_code[data-streamdown='inline-code']]:px-1.5",
+        "[&_code[data-streamdown='inline-code']]:py-0.5",
+        "[&_code[data-streamdown='inline-code']]:font-mono",
+        "[&_code[data-streamdown='inline-code']]:text-sm",
+        "[&_code[data-streamdown='inline-code']]:text-foreground", // 确保行内代码文字颜色正确
         className
       )}
       shikiTheme={["tokyo-night", "tokyo-night"]}

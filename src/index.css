@@ -230,7 +230,7 @@ pre code {
   @apply text-2xl;
   /* @apply bg-[#3c3c3c]; */
   /* @apply text-white; */
-  @apply text-black;
+  /* @apply text-black; */
 }
 
 .message-content a {
