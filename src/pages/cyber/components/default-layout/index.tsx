@@ -19,7 +19,6 @@ interface DefaultLayoutProps {
 export default function DefaultLayout({ scale }: DefaultLayoutProps) {
   return (
     <div className="grid h-full grid-cols-[1.2fr_3fr_1.2fr] gap-4">
-      <TokenUsageHUD scale={scale} verticalOffset={60} />
       {/* 左侧列 - 上下 1:1 布局 */}
       <div className="p-4 flex flex-col gap-4">
         <div className="flex-1 rounded-lg p-0 relative">
@@ -62,6 +61,7 @@ export default function DefaultLayout({ scale }: DefaultLayoutProps) {
             scale={scale}
           >
             <div className="relative w-full h-full">
+              <TokenUsageHUD scale={scale} />
               <Suspense fallback={null}>
                 <Graph />
               </Suspense>

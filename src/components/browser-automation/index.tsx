@@ -54,11 +54,11 @@ export default function BrowserAutomation() {
     // 立即调用一次获取 URL
     fetchSandboxUrl();
 
-    // 每10秒刷新一次 iframe
+    // 每2分钟刷新一次 iframe
     const intervalId = setInterval(() => {
       setKey((prevKey) => prevKey + 1); // 改变 key 值强制重新渲染 iframe
       setLoading(true); // 显示加载状态
-    }, 100000);
+    }, 120000);
 
     // 清理函数
     return () => {

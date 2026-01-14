@@ -1,6 +1,5 @@
 import { Suspense, lazy } from "react";
 import DraggableWindow from "@/components/window-panel";
-import TokenUsageHUD from "@/components/token-usage-hud";
 import EdgeDock from "@/components/edge-dock";
 
 // 懒加载组件
@@ -16,7 +15,6 @@ interface AlternativeLayoutProps {
 export default function AlternativeLayout({ scale }: AlternativeLayoutProps) {
   return (
     <div className="h-full w-full">
-      <TokenUsageHUD scale={scale} />
       {/* 主要的左右两列布局 */}
       <div className="grid h-full grid-cols-2 gap-4 p-4">
         {/* 左列：后台终端(上) + 语音指令(下) */}
