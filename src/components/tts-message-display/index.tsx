@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { createTTSSSE } from "@/lib/tts-sse";
+import { TTSManager } from "@/lib/tts-manager";
 
 interface TTSMessageData {
   msg: string;
@@ -17,6 +18,9 @@ export default function TTSMessageDisplay({
   const [ttsMessage, setTtsMessage] = useState<string>("");
   const [isVisible, setIsVisible] = useState<boolean>(false);
 
+  // 初始化TTS管理器
+  const ttsManager = useRef<TTSManager>(new TTSManager());
+
   useEffect(() => {
     const sse = createTTSSSE({
       session_id,
@@ -25,6 +29,8 @@ export default function TTSMessageDisplay({
     sse.onMessage((data: TTSMessageData) => {
       setTtsMessage(data.msg);
       setIsVisible(true);
+      // 添加到TTS管理器进行语音播放
+      ttsManager.current.addText(data.msg);
     });
 
     sse.onError((err) => {
@@ -36,6 +42,8 @@ export default function TTSMessageDisplay({
     // 组件卸载时断开连接
     return () => {
       sse.disconnect();
+      // 取消所有语音合成
+      ttsManager.current.cancel();
     };
   }, [session_id]);
 
