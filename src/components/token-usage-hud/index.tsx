@@ -113,13 +113,13 @@ export default function TokenUsageHUD({
           <div className="drag-handle flex justify-between items-center mb-4 cursor-move pb-2 border-b border-cyan-400/30">
             <div className="flex items-center gap-2">
               <Gauge className="w-4 h-4 text-cyan-400" />
-              <span className="font-mono text-cyan-300 text-sm font-semibold">
+              <span className="font-mono text-cyan-300 text-xl font-semibold">
                 Token 使用情况
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="font-mono text-cyan-200 text-sm">总:</span>
-              <span className="font-mono text-cyan-300 text-sm">
+              <span className="font-mono text-cyan-200 text-lg">总:</span>
+              <span className="font-mono text-cyan-300 text-lg">
                 {tokenUsage ? tokenUsage.total_tokens.toLocaleString() : "0"}
               </span>
             </div>
@@ -136,10 +136,10 @@ export default function TokenUsageHUD({
               <div className="space-y-3">
                 <div className="flex justify-between items-center p-3 bg-[#0f1a2e] rounded-lg border border-cyan-400/20">
                   <span className="text-cyan-200 flex items-center gap-1">
-                    <span className="w-2 h-2 bg-blue-400 rounded-full" />{" "}
+                    <span className="w-2 h-2 bg-blue-400 rounded-full text-lg" />{" "}
                     输入Token:
                   </span>
-                  <span className="font-mono text-base text-cyan-100">
+                  <span className="font-mono text-cyan-100 text-lg">
                     {tokenUsage.total_input_tokens.toLocaleString()}
                   </span>
                 </div>
@@ -149,20 +149,20 @@ export default function TokenUsageHUD({
 
                 <div className="flex justify-between items-center p-3 bg-[#0f1a2e] rounded-lg border border-cyan-400/20">
                   <span className="text-cyan-200 flex items-center gap-1">
-                    <span className="w-2 h-2 bg-green-400 rounded-full" />{" "}
+                    <span className="w-2 h-2 bg-green-400 rounded-full text-lg" />{" "}
                     输出Token:
                   </span>
-                  <span className="font-mono text-base text-cyan-100">
+                  <span className="font-mono text-base text-cyan-100 text-lg">
                     {tokenUsage.total_output_tokens.toLocaleString()}
                   </span>
                 </div>
 
                 <div className="flex justify-between items-center p-3 bg-[#1a2a4a] rounded-lg border border-cyan-400/40 font-bold">
-                  <span className="text-cyan-200 flex items-center gap-1">
+                  <span className="text-cyan-200 flex items-center gap-1 text-lg">
                     <span className="w-2 h-2 bg-purple-400 rounded-full" />{" "}
                     总计Token:
                   </span>
-                  <span className="font-mono text-lg text-cyan-300">
+                  <span className="font-mono text-lg text-cyan-300 text-lg">
                     {tokenUsage.total_tokens.toLocaleString()}
                   </span>
                 </div>
