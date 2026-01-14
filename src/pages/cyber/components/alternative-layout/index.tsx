@@ -1,6 +1,7 @@
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, useRef } from "react";
 import DraggableWindow from "@/components/window-panel";
 import EdgeDock from "@/components/edge-dock";
+import { RefreshCw } from "lucide-react";
 
 // 懒加载组件
 const LeftTop = lazy(() => import("../left-top")); // 语音指令
@@ -13,6 +14,29 @@ interface AlternativeLayoutProps {
 }
 
 export default function AlternativeLayout({ scale }: AlternativeLayoutProps) {
+  const rightBottomRef = useRef<any>(null);
+
+  const handleRefresh = async () => {
+    // 调用子组件的刷新方法
+    if (
+      rightBottomRef.current &&
+      typeof rightBottomRef.current.refresh === "function"
+    ) {
+      rightBottomRef.current.refresh();
+    }
+  };
+
+  const refreshButton = (
+    <button
+      onClick={handleRefresh}
+      className="cursor-pointer text-white hover:text-gray-300 transition-colors"
+      aria-label="Refresh"
+      style={{ width: "32px", height: "32px" }}
+    >
+      <RefreshCw size={20} />
+    </button>
+  );
+
   return (
     <div className="h-full w-full">
       {/* 主要的左右两列布局 */}
@@ -102,9 +126,10 @@ export default function AlternativeLayout({ scale }: AlternativeLayoutProps) {
                 title="浏览器自动化"
                 layoutBounds="window"
                 scale={scale}
+                headerButtons={refreshButton}
               >
                 <Suspense fallback={null}>
-                  <RightBottom />
+                  <RightBottom ref={rightBottomRef} />
                 </Suspense>
               </DraggableWindow>
             </div>

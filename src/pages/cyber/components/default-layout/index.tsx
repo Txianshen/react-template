@@ -1,7 +1,7 @@
-import { Suspense, lazy, useState, useRef } from "react";
+import { Suspense, lazy, useRef } from "react";
 import DraggableWindow from "@/components/window-panel";
 import TokenUsageHUD from "@/components/token-usage-hud";
-import { RotateCcw } from "lucide-react";
+import { RefreshCw } from "lucide-react";
 
 import Header from "../header";
 
@@ -19,10 +19,8 @@ interface DefaultLayoutProps {
 
 export default function DefaultLayout({ scale }: DefaultLayoutProps) {
   const rightBottomRef = useRef<any>(null);
-  const [refreshLoading, setRefreshLoading] = useState(false);
 
-  const handleRefresh = () => {
-    setRefreshLoading(true);
+  const handleRefresh = async () => {
     // 调用子组件的刷新方法
     if (
       rightBottomRef.current &&
@@ -30,18 +28,16 @@ export default function DefaultLayout({ scale }: DefaultLayoutProps) {
     ) {
       rightBottomRef.current.refresh();
     }
-    // 重置加载状态，给UI一点反馈时间
-    setTimeout(() => setRefreshLoading(false), 300);
   };
 
   const refreshButton = (
     <button
       onClick={handleRefresh}
-      className={`cursor-pointer text-white hover:text-gray-300 transition-colors ${refreshLoading ? "animate-spin" : ""}`}
+      className="cursor-pointer text-white hover:text-gray-300 transition-colors"
       aria-label="Refresh"
       style={{ width: "32px", height: "32px" }}
     >
-      <RotateCcw size={20} />
+      <RefreshCw size={20} />
     </button>
   );
 

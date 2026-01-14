@@ -25,11 +25,6 @@ export default function TTSMessageDisplay({
     sse.onMessage((data: TTSMessageData) => {
       setTtsMessage(data.msg);
       setIsVisible(true);
-
-      // 5秒后自动隐藏消息，避免长时间占用屏幕空间
-      //   setTimeout(() => {
-      //     setIsVisible(false);
-      //   }, 5000);
     });
 
     sse.onError((err) => {
