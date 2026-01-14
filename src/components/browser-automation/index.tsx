@@ -3,7 +3,13 @@ import LoadingIcon from "@/assets/icons/loading-icon";
 import { useCyberStore } from "@/store/cyberStore";
 import { getSandboxUrl } from "@/api/cyber";
 
-export default function BrowserAutomation() {
+interface BrowserAutomationProps {
+  onRefresh?: () => void;
+}
+
+export default function BrowserAutomation(props: BrowserAutomationProps) {
+  const { onRefresh } = props;
+
   // 从环境变量获取浏览器服务地址作为默认值
   const defaultSteelHost = "";
   // import.meta.env.VITE_STEEL_HOST || "http://47.98.234.82:8080/";
@@ -65,6 +71,23 @@ export default function BrowserAutomation() {
       clearInterval(intervalId);
     };
   }, [userId, sessionId]);
+
+  // 刷新功能
+  const refreshIframe = () => {
+    setKey((prevKey) => prevKey + 1);
+    setLoading(true);
+    if (onRefresh) {
+      onRefresh();
+    }
+  };
+
+  // 当外部触发刷新时，执行刷新操作
+  useEffect(() => {
+    if (onRefresh) {
+      // 将刷新方法暴露给父组件
+      (BrowserAutomation as any).refresh = refreshIframe;
+    }
+  }, [onRefresh]);
 
   return (
     <div className="w-full h-full relative">

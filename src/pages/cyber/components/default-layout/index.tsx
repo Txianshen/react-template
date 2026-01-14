@@ -1,6 +1,7 @@
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, useState, useRef } from "react";
 import DraggableWindow from "@/components/window-panel";
 import TokenUsageHUD from "@/components/token-usage-hud";
+import { RotateCcw } from "lucide-react";
 
 import Header from "../header";
 
@@ -17,6 +18,33 @@ interface DefaultLayoutProps {
 }
 
 export default function DefaultLayout({ scale }: DefaultLayoutProps) {
+  const rightBottomRef = useRef<any>(null);
+  const [refreshLoading, setRefreshLoading] = useState(false);
+
+  const handleRefresh = () => {
+    setRefreshLoading(true);
+    // 调用子组件的刷新方法
+    if (
+      rightBottomRef.current &&
+      typeof rightBottomRef.current.refresh === "function"
+    ) {
+      rightBottomRef.current.refresh();
+    }
+    // 重置加载状态，给UI一点反馈时间
+    setTimeout(() => setRefreshLoading(false), 300);
+  };
+
+  const refreshButton = (
+    <button
+      onClick={handleRefresh}
+      className={`cursor-pointer text-white hover:text-gray-300 transition-colors ${refreshLoading ? "animate-spin" : ""}`}
+      aria-label="Refresh"
+      style={{ width: "32px", height: "32px" }}
+    >
+      <RotateCcw size={20} />
+    </button>
+  );
+
   return (
     <div className="grid h-full grid-cols-[1.2fr_3fr_1.2fr] gap-4">
       {/* 左侧列 - 上下 1:1 布局 */}
@@ -102,9 +130,10 @@ export default function DefaultLayout({ scale }: DefaultLayoutProps) {
             title="浏览器自动化"
             layoutBounds="window"
             scale={scale}
+            headerButtons={refreshButton}
           >
             <Suspense fallback={null}>
-              <RightBottom />
+              <RightBottom ref={rightBottomRef} />
             </Suspense>
           </DraggableWindow>
         </div>

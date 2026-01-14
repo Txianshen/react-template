@@ -16,6 +16,7 @@ interface WindowPanelProps {
   children?: React.ReactNode;
   className?: string;
   scale?: number;
+  headerButtons?: React.ReactNode; // 自定义头部按钮
 }
 
 export default function WindowPanel({
@@ -27,6 +28,7 @@ export default function WindowPanel({
   children,
   className,
   scale,
+  headerButtons, // 自定义头部按钮
 }: WindowPanelProps) {
   // const saved = JSON.parse(localStorage.getItem("win-" + id) || "null");
   console.log("scale", scale);
@@ -147,21 +149,24 @@ export default function WindowPanel({
                   )}
                 </>
               )}
-              <button
-                onClick={(e) => {
-                  console.log("Minimizing window:", id);
-                  e.stopPropagation();
-                  handleMinimize();
-                }}
-                onMouseDown={(e) => {
-                  console.log("Minimizing window:", id);
-                  e.stopPropagation();
-                }}
-                className="absolute cursor-pointer top-3 right-3 text-white hover:text-gray-300 transition-colors "
-                aria-label="Minimize"
-              >
-                <Minus size={32} />
-              </button>
+              <div className="absolute top-3 right-3 flex gap-2">
+                {headerButtons}
+                <button
+                  onClick={(e) => {
+                    console.log("Minimizing window:", id);
+                    e.stopPropagation();
+                    handleMinimize();
+                  }}
+                  onMouseDown={(e) => {
+                    console.log("Minimizing window:", id);
+                    e.stopPropagation();
+                  }}
+                  className="cursor-pointer text-white hover:text-gray-300 transition-colors"
+                  aria-label="Minimize"
+                >
+                  <Minus size={32} />
+                </button>
+              </div>
             </div>
             <div className="absolute bottom-0 left-0 w-4 h-4 border-b-[3px] border-l-[3px] border-[#00D9FF]" />
             <div className="absolute bottom-0 right-0 w-4 h-4 border-b-[3px] border-r-[3px] border-[#00D9FF]" />
