@@ -12,9 +12,13 @@ interface TokenUsageData {
 
 interface TokenUsageHUDProps {
   scale?: number;
+  verticalOffset?: number;
 }
 
-export default function TokenUsageHUD({ scale = 1 }: TokenUsageHUDProps) {
+export default function TokenUsageHUD({
+  scale = 1,
+  verticalOffset,
+}: TokenUsageHUDProps) {
   const [tokenUsage, setTokenUsage] = useState<TokenUsageData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -50,19 +54,33 @@ export default function TokenUsageHUD({ scale = 1 }: TokenUsageHUDProps) {
     null
   );
   const HUD_WIDTH = 320;
-  const TOP_OFFSET = 24;
+  const DEFAULT_TOP_OFFSET = 24;
+  const TOP_OFFSET =
+    verticalOffset !== undefined ? verticalOffset : DEFAULT_TOP_OFFSET;
+
   useLayoutEffect(() => {
     if (position) return;
 
+    // 计算水平居中位置，考虑scale对组件宽度的影响
+    // 注意：Rnd组件会根据scale调整组件的显示大小，所以需要相应调整位置
+
+    console.log(
+      "Calculating initial position...",
+      window.innerWidth,
+      HUD_WIDTH,
+      Math.round((window.innerWidth - HUD_WIDTH) / 2)
+    );
     const x = Math.round((window.innerWidth - HUD_WIDTH) / 2);
     const y = TOP_OFFSET;
 
     setPosition({ x, y });
-  }, []);
+  }, [verticalOffset, scale]);
+
   useEffect(() => {
     if (!position) return;
 
     const onResize = () => {
+      // 在窗口大小改变时重新计算居中位置
       setPosition((p: any) => ({
         x: Math.round((window.innerWidth - HUD_WIDTH) / 2),
         y: p.y,
@@ -71,7 +89,8 @@ export default function TokenUsageHUD({ scale = 1 }: TokenUsageHUDProps) {
 
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
-  }, []);
+  }, [scale]);
+
   return (
     <>
       <Rnd
