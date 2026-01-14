@@ -1,5 +1,6 @@
 import { Suspense, lazy } from "react";
 import DraggableWindow from "@/components/window-panel";
+import TokenUsageHUD from "@/components/token-usage-hud";
 
 import Header from "../header";
 
@@ -59,9 +60,12 @@ export default function DefaultLayout({ scale }: DefaultLayoutProps) {
             className="bg-[transparent]"
             scale={scale}
           >
-            <Suspense fallback={null}>
-              <Graph />
-            </Suspense>
+            <div className="relative w-full h-full">
+              <TokenUsageHUD scale={scale} />
+              <Suspense fallback={null}>
+                <Graph />
+              </Suspense>
+            </div>
           </DraggableWindow>
         </div>
       </div>

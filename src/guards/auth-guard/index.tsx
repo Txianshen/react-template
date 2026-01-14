@@ -11,9 +11,9 @@ export default function AuthGuard({ children }: AuthGuardProps) {
   const isAuthenticated = localStorage.getItem("token");
 
   // 如果没有token，重定向到登录页
-  // if (!isAuthenticated) {
-  //   return <Navigate to="/login" replace />;
-  // }
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
 
   // 如果有token，渲染子组件
   return <>{children}</>;
