@@ -156,7 +156,10 @@ function CyberPage() {
       id="cyber-screen"
       className="h-[1080px] w-[3840px] bg-cover bg-center bg-no-repeat bg-[url('@/assets/icons/cyber/cyber-bg.svg')]"
     >
-      <WorkspaceButton onOpenSessions={() => setSessionOpen(true)} />
+      <WorkspaceButton
+        onOpenSessions={() => setSessionOpen(true)}
+        isExhibitionMode={currentSessionConfig?.run_mode === "展厅模式"}
+      />
       {/* 根据运行模式决定布局 */}
       {currentSessionConfig?.run_mode === "展厅模式" ? (
         <>

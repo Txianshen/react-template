@@ -29,9 +29,11 @@ import { toast } from "sonner";
 export default function WorkspaceButton({
   // onOpenSettings,
   onOpenSessions,
+  isExhibitionMode = false,
 }: {
   // onOpenSettings: () => void;
   onOpenSessions: () => void;
+  isExhibitionMode?: boolean;
 }) {
   const navigate = useNavigate();
   const { userInfo, logout, updateProfile } = useUserStore();
@@ -65,7 +67,7 @@ export default function WorkspaceButton({
         <HoverCardTrigger asChild>
           <button
             className={cn(
-              "fixed top-6 right-20 z-[100] px-3 py-3 rounded-full flex items-center justify-center gap-2",
+              `fixed top-6 ${isExhibitionMode ? "right-20" : "right-30"} z-[100] px-3 py-3 rounded-full flex items-center justify-center gap-2`,
               "border border-cyan-400/60 text-cyan-300 backdrop-blur-md",
               "shadow-[0_0_12px_rgba(0,255,255,0.6)]",
               "animate-glowPulse",
