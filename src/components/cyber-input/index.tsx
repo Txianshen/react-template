@@ -15,14 +15,13 @@ export type CyberInputProps = {
   placeholder?: string;
   onSubmit: (data: { text: string; files: FileUIPart[] }) => void;
   onSpeechButtonListeningChange?: (isListening: boolean) => void; // 新增属性
-  currentRunId?: string | null; // 添加 currentRunId 属性
+  // currentRunId?: string | null; // 添加 currentRunId 属性
   externalStatus?: "ready" | "streaming" | "submitted" | "error"; // 添加外部控制状态的属性
 };
 
 export default function CyberInput({
   placeholder,
   onSubmit,
-  currentRunId,
   onSpeechButtonListeningChange,
   externalStatus,
 }: CyberInputProps) {

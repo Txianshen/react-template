@@ -177,7 +177,8 @@ function transformBackendMessagesToUIMessages(
   const uiMessages = [];
 
   for (const msg of backendMessages) {
-    const role = msg.role === "user" ? "user" : "assistant";
+    const role =
+      msg.role === "user" ? ("user" as const) : ("assistant" as const);
     const lastUIMessage = uiMessages[uiMessages.length - 1] as StableResponse;
 
     // 如果没有上一个，或者 role 变了 → 新建 UIMessage
@@ -223,7 +224,7 @@ export const useStreamingStore = create(
       set((state) => {
         state.responses.push({
           id: uuidv4(), // uuid
-          role: "user",
+          role: "user" as const,
           type: "message",
           content: [
             {

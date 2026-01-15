@@ -20,7 +20,8 @@ export interface Message {
 export interface StableResponse {
   id: string;
   role: "assistant" | "user";
-  status: "created" | "in_progress" | "completed";
+  type?: string;
+  status?: "created" | "in_progress" | "completed";
   isLoading?: boolean;
   session_id?: string;
   content: Message[];

@@ -54,7 +54,7 @@ export function createGraphOptions(nodes: any[], edges: any[]) {
       },
     ],
     // 自动适配画布
-    autoFit: "view",
+    autoFit: "view" as const,
     // 主题设置
     theme: "dark",
   };

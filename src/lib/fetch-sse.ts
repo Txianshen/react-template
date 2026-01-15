@@ -27,7 +27,7 @@ class FetchSSE<T = any> {
   private headers: Record<string, string>;
 
   constructor(
-    url: string, 
+    url: string,
     headers: Record<string, string> = {},
     autoAppendBaseURL: boolean = true
   ) {
@@ -39,11 +39,11 @@ class FetchSSE<T = any> {
     } else {
       this.url = url;
     }
-    
+
     this.headers = {
-      "Accept": "text/event-stream",
+      Accept: "text/event-stream",
       "Cache-Control": "no-cache",
-      ...headers
+      ...headers,
     };
   }
 
@@ -60,7 +60,7 @@ class FetchSSE<T = any> {
 
     try {
       this.controller = new AbortController();
-      
+
       const response = await fetch(this.url, {
         method: "GET",
         headers: this.headers,
@@ -76,7 +76,7 @@ class FetchSSE<T = any> {
       }
 
       this.onStatusChangeCallback?.(true);
-      
+
       // 清除重连定时器
       if (this.reconnectTimer) {
         clearTimeout(this.reconnectTimer);
@@ -89,7 +89,7 @@ class FetchSSE<T = any> {
 
       while (true) {
         const { done, value } = await reader.read();
-        
+
         if (done) {
           break;
         }
@@ -118,19 +118,18 @@ class FetchSSE<T = any> {
       // 连接正常关闭
       console.log("SSE 连接已关闭");
       this.disconnect();
-      
+
       // 非手动关闭时自动重连
       if (!this.isManualClose) {
         this.scheduleReconnect();
       }
-      
     } catch (error) {
       console.error("SSE 连接错误:", error);
       this.onErrorCallback?.(error as Error);
       this.onStatusChangeCallback?.(false);
-      
+
       this.disconnect();
-      
+
       // 非手动关闭时自动重连
       if (!this.isManualClose) {
         this.scheduleReconnect();

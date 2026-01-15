@@ -32,7 +32,7 @@ export function getPlaygroundInfo() {
 }
 
 // 获取漏洞列表
-export function getPoc(session_id: string) {
+export function getPoc(session_id: string): Promise<ApiResponse<any>> {
   return axios.get(`/getPoc?session_id=${session_id}`);
 }
 
@@ -47,12 +47,6 @@ export function getSession(session_id: string): Promise<ApiResponse<any>> {
 }
 
 // 创建会话（后端返回session信息，其中id为session_id）
-// 返回结构：
-// {
-//   id: "52e865e5-2a62-41ab-a5ab-5d3b9646320b",  // 这就是session_id
-//   messages: [],
-//   user_id: "lihaoran1"
-// }
 export function createSession(): Promise<
   ApiResponse<{ id: string; messages: any[]; user_id: string }>
 > {
@@ -65,8 +59,6 @@ export function deleteSession(session_id: string): Promise<ApiResponse<any>> {
 }
 
 // 登录接口
-// 接口路径/api/auth/login
-// 传参： username和 password formdata的形式
 export function login(username: string, password: string) {
   const formData = new FormData();
   formData.append("username", username);
@@ -78,12 +70,3 @@ export function login(username: string, password: string) {
     },
   });
 }
-
-// 获取使用token信息
-// 接口/api/streamTokenUsage
-// 返回data数据
-// data: {
-//   // "total_input_tokens": 14447,
-// // "total_output_tokens": 290,
-// // "total_tokens": 14737
-// }

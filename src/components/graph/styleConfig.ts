@@ -131,7 +131,10 @@ export const RIPPLE_ANIMATION_FRAMES = [
  * 获取攻击状态对应的节点样式补丁
  */
 export function getAttackStateStyle(state: AttackState): Record<string, any> {
-  return ATTACK_STATE_STYLES[state] || ATTACK_STATE_STYLES.normal;
+  return (
+    ATTACK_STATE_STYLES[state as keyof typeof ATTACK_STATE_STYLES] ||
+    ATTACK_STATE_STYLES.normal
+  );
 }
 
 /**

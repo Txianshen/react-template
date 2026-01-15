@@ -231,7 +231,6 @@ function LeftTop() {
       <CyberInput
         onSubmit={(data) => handleSubmit(data)}
         placeholder="请输入指令"
-        currentRunId={sessionId}
         onSpeechButtonListeningChange={handleSpeechButtonListeningChange}
         externalStatus={cyberInputStatus}
       />

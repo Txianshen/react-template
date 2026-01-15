@@ -700,6 +700,7 @@ export const PromptInput = ({
       files.map(async ({ id, ...item }) => {
         if (item.url && item.url.startsWith("blob:")) {
           return {
+            id,
             ...item,
             url: await convertBlobUrlToDataUrl(item.url),
           };
@@ -730,6 +731,7 @@ export const PromptInput = ({
           }
         }
       } catch (error) {
+        console.log("error", error);
         // Don't clear on error - user may want to retry
       }
     });

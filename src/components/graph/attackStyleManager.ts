@@ -54,7 +54,8 @@ export class AttackStyleManager {
     state: "normal" | "attacking" | "compromised",
     forceRender = true
   ): void {
-    const stateStyle = ATTACK_STATE_STYLES[state];
+    const stateStyle =
+      ATTACK_STATE_STYLES[state as keyof typeof ATTACK_STATE_STYLES];
     if (!stateStyle) {
       console.warn(`未知的攻击状态: ${state}`);
       return;
