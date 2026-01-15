@@ -6,56 +6,88 @@ import {
 import {
   Message,
   MessageContent,
-  MessageResponse,
+  // MessageResponse,
 } from "@/components/ai-elements/message";
 import { useCyberStore } from "@/store/cyberStore";
 import { createAuthPlanSSE } from "@/lib/auth-plan-sse";
-import { useEffect } from "react";
-
-// 定义 LeftBottom 组件
+import { useEffect, useState, useRef } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import rehypeHighlight from "rehype-highlight";
 export default function LeftBottom() {
-  const { userId, sessionId, currentPlan, setCurrentPlan } = useCyberStore();
+  const { userId, sessionId } = useCyberStore();
+
+  // 1. 用于显示的 State
+  const [displayPlan, setDisplayPlan] = useState<string>("");
+
+  // 2. 用于接收最新数据的 Ref (就像一个暂存箱，写入没有任何性能开销)
+  const latestDataRef = useRef<string>("");
+
+  // 3. 动画帧 ID，用于清理
+  const rafIdRef = useRef<number | null>(null);
 
   useEffect(() => {
-    // 检查 userId 和 sessionId 是否存在
     if (!userId || !sessionId) return;
 
-    // 创建计划 SSE 实例（统一使用Fetch SSE，token自动在header中）
-    const sse = createAuthPlanSSE({ 
-      session_id: sessionId,
-      // headers: {
-      //   // 可以添加其他自定义header
-      //   // "X-User-ID": userId,
-      //   // "X-Session-ID": sessionId
-      // }
-    });
+    // --- SSE 连接逻辑 ---
+    const sse = createAuthPlanSSE({ session_id: sessionId });
 
-    // 设置消息回调
     sse.onMessage((data) => {
-      setCurrentPlan(data);
+      // 关键点 A: SSE 来了只管往 Ref 里塞，绝不直接触发 State 更新！
+      // 这是一个同步操作，耗时几乎为 0
+      console.log("Received new data:", data);
+      latestDataRef.current = data;
     });
 
-    // 设置错误回调
     sse.onError((error) => {
-      console.error("获取当前计划 SSE 连接错误:", error);
-      setCurrentPlan("获取当前计划失败");
+      console.error("SSE Error:", error);
     });
 
-    // 连接 SSE
     sse.connect();
 
-    // 清理函数
+    // --- 渲染循环逻辑 (这是流畅的核心) ---
+    const loop = () => {
+      // 关键点 B: 在每一帧绘制前，检查 Ref 里有没有新数据
+      // 这种方式会自动适应浏览器的刷新率 (60fps 或 120fps)
+      setDisplayPlan((prev) => {
+        // 只有当数据真的变了才更新，避免无效渲染
+        if (latestDataRef.current !== prev) {
+          return latestDataRef.current;
+        }
+        return prev;
+      });
+
+      // 继续下一帧
+      rafIdRef.current = requestAnimationFrame(loop);
+    };
+
+    // 启动循环
+    loop();
+
+    // --- 清理函数 ---
     return () => {
       sse.disconnect();
+      if (rafIdRef.current) {
+        cancelAnimationFrame(rafIdRef.current);
+      }
     };
   }, [userId, sessionId]);
 
   return (
-    <Conversation className="h-full ">
+    <Conversation className="h-full">
       <ConversationContent className="gap-4">
-        <Message from="assistant" className="">
-          <MessageContent className=" message-content text-white text-2xl">
-            <MessageResponse>{currentPlan || ""}</MessageResponse>
+        <Message from="assistant">
+          <MessageContent className="message-content text-white text-2xl">
+            {/* 这里直接显示 displayPlan */}
+            {/* MessageResponse针对增量delta场景 */}
+            {/* <MessageResponse>{displayPlan}</MessageResponse> */}
+            {/* ReactMarkdown针对全量更新 */}
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              rehypePlugins={[rehypeHighlight]}
+            >
+              {displayPlan}
+            </ReactMarkdown>
           </MessageContent>
         </Message>
         <ConversationScrollButton />
