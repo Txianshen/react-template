@@ -2,6 +2,7 @@ import { lazy, Suspense } from "react";
 import type { RouteObject } from "react-router-dom";
 import { Navigate, createHashRouter } from "react-router-dom";
 import AuthGuard from "@/guards/auth-guard";
+import PageLoader from "@/components/page-loader";
 
 const CyberPage = lazy(() => import("../pages/cyber"));
 const LoginPage = lazy(() => import("../pages/login"));
@@ -26,7 +27,7 @@ const routesConfig: ExtendedRouteObject[] = [
   {
     path: "/login",
     element: (
-      <Suspense fallback={null}>
+      <Suspense fallback={<PageLoader />}>
         <LoginPage />
       </Suspense>
     ),
@@ -36,7 +37,7 @@ const routesConfig: ExtendedRouteObject[] = [
     path: "/cyber",
     element: (
       <AuthGuard>
-        <Suspense fallback={null}>
+        <Suspense fallback={<PageLoader />}>
           <CyberPage />
         </Suspense>
       </AuthGuard>

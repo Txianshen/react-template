@@ -1,8 +1,8 @@
 import LoadingIcon from "@/assets/icons/loading-icon";
 
 const PageLoader = () => (
-  <div className="flex h-screen items-center justify-center bg-background">
-    <div className="flex flex-col items-center">
+  <div className="flex h-screen items-center justify-center bg-cover bg-center bg-no-repeat bg-[url('@/assets/icons/cyber/cyber-bg.svg')]">
+    <div className="flex flex-col items-center ">
       {/* Gradio 风格的旋转方块 */}
       <LoadingIcon className="animate-spin" size={64} />
       {/* 加载文本 */}
