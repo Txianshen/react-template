@@ -6,14 +6,11 @@ import {
 import {
   Message,
   MessageContent,
-  // MessageResponse,
+  MessageResponse,
 } from "@/components/ai-elements/message";
 import { useCyberStore } from "@/store/cyberStore";
 import { createAuthPlanSSE } from "@/lib/auth-plan-sse";
 import { useEffect, useState, useRef } from "react";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import rehypeHighlight from "rehype-highlight";
 export default function LeftBottom() {
   const { userId, sessionId } = useCyberStore();
 
@@ -79,15 +76,9 @@ export default function LeftBottom() {
         <Message from="assistant">
           <MessageContent className="message-content text-white text-2xl">
             {/* 这里直接显示 displayPlan */}
-            {/* MessageResponse针对增量delta场景 */}
-            {/* <MessageResponse>{displayPlan}</MessageResponse> */}
-            {/* ReactMarkdown针对全量更新 */}
-            <ReactMarkdown
-              remarkPlugins={[remarkGfm]}
-              rehypePlugins={[rehypeHighlight]}
-            >
+            <MessageResponse key={displayPlan.length}>
               {displayPlan}
-            </ReactMarkdown>
+            </MessageResponse>
           </MessageContent>
         </Message>
         <ConversationScrollButton />

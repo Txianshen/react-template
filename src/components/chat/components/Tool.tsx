@@ -75,7 +75,7 @@ export function Tool({
           </div>
         </AccordionTrigger>
         <AccordionContent className="pb-0 text-2xl ">
-          <div className="p-3 pt-0">
+          <div className="p-3 pt-0" key={safeContent.length}>
             <MessageResponse>{safeContent}</MessageResponse>
           </div>
         </AccordionContent>
