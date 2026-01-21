@@ -11,6 +11,8 @@ interface TokenUsageData {
   total_tokens: number;
   total_account: number;
   average_time: number;
+  current_compromised_ip: string[]; // 已被攻破的IP列表
+  current_attack_ip: string; // 当前正在被攻击的IP
 }
 
 // 用于处理可能缺失字段的临时接口
@@ -20,6 +22,8 @@ interface PartialTokenUsageData {
   total_tokens?: number;
   total_account?: number;
   average_time?: number;
+  current_compromised_ip?: string[];
+  current_attack_ip?: string;
 }
 
 interface TokenUsageHUDProps {
@@ -47,6 +51,11 @@ export default function TokenUsageHUD({ scale = 1 }: TokenUsageHUDProps) {
     { decimals: 1 }
   );
 
+  // 攻击状态相关的动画值
+  const animatedCompromisedCount = useNumberAnimation(
+    tokenUsage?.current_compromised_ip?.length || 0
+  );
+
   const { sessionId } = useCyberStore();
 
   useEffect(() => {
@@ -63,6 +72,8 @@ export default function TokenUsageHUD({ scale = 1 }: TokenUsageHUDProps) {
         total_tokens: data.total_tokens || 0,
         total_account: data.total_account || 0,
         average_time: data.average_time || 0,
+        current_compromised_ip: data.current_compromised_ip || [],
+        current_attack_ip: data.current_attack_ip || "",
       };
       setTokenUsage(normalizedData);
       setLoading(false);
@@ -204,6 +215,28 @@ export default function TokenUsageHUD({ scale = 1 }: TokenUsageHUDProps) {
                   </span>
                   <span className="font-mono text-cyan-300 text-3xl font-bold">
                     {animatedAverageTime.toFixed(1)}分钟
+                  </span>
+                </div>
+
+                {/* 已攻破IP数量 */}
+                <div className="flex justify-between items-center p-4 bg-[#0f1a2e] rounded-lg border border-red-400/30">
+                  <span className="text-cyan-200 flex items-center gap-2 text-2xl">
+                    <span className="w-3 h-3 bg-red-500 rounded-full" />
+                    已攻破目标数量:
+                  </span>
+                  <span className="font-mono text-red-400 text-3xl font-bold">
+                    {animatedCompromisedCount}
+                  </span>
+                </div>
+
+                {/* 当前攻击IP */}
+                <div className="flex justify-between items-center p-4 bg-[#0f1a2e] rounded-lg border border-yellow-400/30">
+                  <span className="text-cyan-200 flex items-center gap-2 text-2xl">
+                    <span className="w-3 h-3 bg-yellow-500 rounded-full" />
+                    当前攻击目标:
+                  </span>
+                  <span className="font-mono text-yellow-400 text-2xl font-semibold truncate max-w-[180px]">
+                    {tokenUsage.current_attack_ip || "暂无"}
                   </span>
                 </div>
               </div>
