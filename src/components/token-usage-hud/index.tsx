@@ -118,7 +118,7 @@ export default function TokenUsageHUD({ scale = 1 }: TokenUsageHUDProps) {
         onDragStop={(e, d) => {
           setPosition({ x: d.x, y: d.y });
         }}
-        minWidth={280}
+        minWidth={500}
         minHeight={100}
         dragHandleClassName="drag-handle"
         className="z-[9999]"
@@ -128,10 +128,10 @@ export default function TokenUsageHUD({ scale = 1 }: TokenUsageHUDProps) {
       >
         <div className="w-full h-full bg-[#0b1220]/95 backdrop-blur-xl border border-cyan-400/30 rounded-lg p-4 text-cyan-100">
           {/* 拖拽手柄 */}
-          <div className="drag-handle flex justify-between items-center mb-4 cursor-move pb-2 border-b border-cyan-400/30">
-            <div className="flex items-center gap-2">
-              <Gauge className="w-4 h-4 text-cyan-400" />
-              <span className="font-mono text-cyan-300 text-xl font-semibold">
+          <div className="drag-handle flex justify-between items-center mb-6 cursor-move pb-3 border-b border-cyan-400/30">
+            <div className="flex items-center gap-3">
+              <Gauge className="w-6 h-6 text-cyan-400" />
+              <span className="font-mono text-cyan-300 text-3xl font-bold">
                 统计数据
               </span>
             </div>
@@ -143,21 +143,21 @@ export default function TokenUsageHUD({ scale = 1 }: TokenUsageHUDProps) {
             </div> */}
           </div>
 
-          <div className="flex flex-col space-y-3">
+          <div className="flex flex-col space-y-4">
             {/* {error && <div className="text-red-400 text-sm">错误: {error}</div>} */}
 
             {loading && !tokenUsage && !error && (
-              <div className="text-cyan-300 text-sm">加载中...</div>
+              <div className="text-cyan-300 text-2xl">加载中...</div>
             )}
 
             {tokenUsage && (
               <div className="space-y-3">
-                <div className="flex justify-between items-center p-3 bg-[#0f1a2e] rounded-lg border border-cyan-400/20">
-                  <span className="text-cyan-200 flex items-center gap-1">
-                    <span className="w-2 h-2 bg-blue-400 rounded-full text-lg" />{" "}
+                <div className="flex justify-between items-center p-4 bg-[#0f1a2e] rounded-lg border border-cyan-400/20">
+                  <span className="text-cyan-200 flex items-center gap-2 text-2xl">
+                    <span className="w-3 h-3 bg-blue-400 rounded-full" />
                     输入Token:
                   </span>
-                  <span className="font-mono text-cyan-300 text-lg">
+                  <span className="font-mono text-cyan-300 text-3xl font-bold">
                     {animatedInputTokens.toLocaleString()}
                   </span>
                 </div>
@@ -165,44 +165,44 @@ export default function TokenUsageHUD({ scale = 1 }: TokenUsageHUDProps) {
                 {/* 分隔符 */}
                 <div className="h-px bg-gradient-to-r from-transparent via-cyan-400/30 to-transparent"></div>
 
-                <div className="flex justify-between items-center p-3 bg-[#0f1a2e] rounded-lg border border-cyan-400/20">
-                  <span className="text-cyan-200 flex items-center gap-1">
-                    <span className="w-2 h-2 bg-green-400 rounded-full text-lg" />{" "}
+                <div className="flex justify-between items-center p-4 bg-[#0f1a2e] rounded-lg border border-cyan-400/20">
+                  <span className="text-cyan-200 flex items-center gap-2 text-2xl">
+                    <span className="w-3 h-3 bg-green-400 rounded-full" />
                     输出Token:
                   </span>
-                  <span className="font-mono text-base text-cyan-300 text-lg">
+                  <span className="font-mono text-cyan-300 text-3xl font-bold">
                     {animatedOutputTokens.toLocaleString()}
                   </span>
                 </div>
 
-                <div className="flex justify-between items-center p-3 bg-[#0f1a2e] rounded-lg border border-cyan-400/40">
-                  <span className="text-cyan-200 flex items-center gap-1 ">
-                    <span className="w-2 h-2 bg-purple-400 rounded-full text-lg" />
+                <div className="flex justify-between items-center p-4 bg-[#0f1a2e] rounded-lg border border-cyan-400/40">
+                  <span className="text-cyan-200 flex items-center gap-2 text-2xl">
+                    <span className="w-3 h-3 bg-purple-400 rounded-full" />
                     总计Token:
                   </span>
-                  <span className="font-mono text-lg text-cyan-300 text-lg">
+                  <span className="font-mono text-cyan-300 text-3xl font-bold">
                     {animatedTotalTokens.toLocaleString()}
                   </span>
                 </div>
 
                 {/* 总花费金额 */}
-                <div className="flex justify-between items-center p-3 bg-[#0f1a2e] rounded-lg border border-cyan-400/20">
-                  <span className="text-cyan-200 flex items-center gap-1">
-                    <span className="w-2 h-2 bg-yellow-400 rounded-full text-lg" />
+                <div className="flex justify-between items-center p-4 bg-[#0f1a2e] rounded-lg border border-cyan-400/20">
+                  <span className="text-cyan-200 flex items-center gap-2 text-2xl">
+                    <span className="w-3 h-3 bg-yellow-400 rounded-full" />
                     大模型API调用金额:
                   </span>
-                  <span className="font-mono text-cyan-300 text-lg">
+                  <span className="font-mono text-cyan-300 text-3xl font-bold">
                     ¥{animatedAccount.toFixed(2)}
                   </span>
                 </div>
 
                 {/* 平均攻克时间 */}
-                <div className="flex justify-between items-center p-3 bg-[#0f1a2e] rounded-lg border border-cyan-400/20">
-                  <span className="text-cyan-200 flex items-center gap-1">
-                    <span className="w-2 h-2 bg-orange-400 rounded-full text-lg" />
+                <div className="flex justify-between items-center p-4 bg-[#0f1a2e] rounded-lg border border-cyan-400/20">
+                  <span className="text-cyan-200 flex items-center gap-2 text-2xl">
+                    <span className="w-3 h-3 bg-orange-400 rounded-full" />
                     靶场平均攻克时间:
                   </span>
-                  <span className="font-mono text-cyan-300 text-lg">
+                  <span className="font-mono text-cyan-300 text-3xl font-bold">
                     {animatedAverageTime.toFixed(1)}分钟
                   </span>
                 </div>

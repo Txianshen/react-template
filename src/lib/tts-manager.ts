@@ -1,4 +1,11 @@
 // TTS 管理器类，整合队列和语音合成功能
+function splitChineseText(text: string): string[] {
+  return text
+    .replace(/\n+/g, " ")
+    .split(/[。！？；，、]/)
+    .map((t) => t.trim())
+    .filter(Boolean);
+}
 export class TTSManager {
   private queue: string[] = [];
   private isSpeaking: boolean = false;
@@ -8,7 +15,9 @@ export class TTSManager {
   // 添加文本到队列并自动播放
   public addText(text: string) {
     if (text.trim()) {
-      this.queue.push(text);
+      // this.queue.push(text);
+      const chunks = splitChineseText(text);
+      this.queue.push(...chunks);
       // 如果没有正在播放，则立即开始
       if (!this.isSpeaking) {
         this.speakNext();
@@ -30,7 +39,7 @@ export class TTSManager {
     const utterance = new SpeechSynthesisUtterance(text);
 
     // 设置语音参数
-    utterance.rate = 1.0;
+    utterance.rate = 1.6;
     utterance.pitch = 1.0;
     utterance.volume = 1;
 
