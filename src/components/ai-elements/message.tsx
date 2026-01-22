@@ -322,6 +322,8 @@ export const MessageResponse = memo(
         "[&_code[data-streamdown='inline-code']]:font-mono",
         "[&_code[data-streamdown='inline-code']]:text-sm",
         "[&_code[data-streamdown='inline-code']]:text-foreground", // 确保行内代码文字颜色正确
+        "[&_a]:[word-break:break-word]", // 处理链接换行
+        "[&_p]:[word-break:break-word]",
         className
       )}
       shikiTheme={["tokyo-night", "tokyo-night"]}

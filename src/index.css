@@ -233,6 +233,7 @@ pre code {
 .message-content a {
   @apply text-2xl;
   @apply text-white;
+  /* word-break: break-word; */
 }
 
 .message-content pre {
