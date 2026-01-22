@@ -1,7 +1,3 @@
-/**
- * 基于Fetch的SSE实现，支持自定义请求头
- */
-
 interface SSEResponse<T = any> {
   code: number;
   data: T;
@@ -12,9 +8,6 @@ type OnMessageCallback<T = any> = (data: T) => void;
 type OnStatusChangeCallback = (connected: boolean) => void;
 type OnErrorCallback = (error: Error) => void;
 
-/**
- * 基于Fetch的SSE管理类
- */
 class FetchSSE<T = any> {
   private controller: AbortController | null = null;
   private url: string;
@@ -47,9 +40,6 @@ class FetchSSE<T = any> {
     };
   }
 
-  /**
-   * 连接SSE
-   */
   async connect() {
     if (this.controller) {
       console.log("SSE 已连接");
@@ -70,76 +60,68 @@ class FetchSSE<T = any> {
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
-
       if (!response.body) {
         throw new Error("Response body is null");
-      }
-
-      this.onStatusChangeCallback?.(true);
-
-      // 清除重连定时器
-      if (this.reconnectTimer) {
-        clearTimeout(this.reconnectTimer);
-        this.reconnectTimer = null;
       }
 
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
       let buffer = "";
+      let eventBuffer = "";
+      let connected = false;
 
       while (true) {
         const { done, value } = await reader.read();
 
         if (done) {
+          console.warn("SSE 流结束（可能是服务端关闭或网络问题）");
           break;
         }
 
         buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split("\n");
+        const lines = buffer.split(/\r?\n/);
         buffer = lines.pop() || "";
 
         for (const line of lines) {
-          if (line.startsWith("data: ")) {
-            const data = line.slice(6);
-            try {
-              const response: SSEResponse<T> = JSON.parse(data);
-              if (response.code === 200 && response.data !== undefined) {
-                this.onMessageCallback?.(response.data);
-              } else {
-                console.warn("SSE 收到非成功响应:", response);
+          if (line.startsWith(":")) {
+            // 心跳行，忽略
+            continue;
+          } else if (line.startsWith("data:")) {
+            eventBuffer += line.replace(/^data:\s?/, "");
+          } else if (line.trim() === "") {
+            // 空行表示事件结束
+            if (eventBuffer) {
+              try {
+                const response: SSEResponse<T> = JSON.parse(eventBuffer);
+                if (!connected) {
+                  connected = true;
+                  this.onStatusChangeCallback?.(true);
+                }
+
+                if (response.code === 200 && response.data !== undefined) {
+                  this.onMessageCallback?.(response.data);
+                } else {
+                  console.warn("SSE 收到非成功响应:", response);
+                }
+              } catch (error) {
+                console.error("SSE 消息解析失败:", error, eventBuffer);
               }
-            } catch (error) {
-              console.error("SSE 消息解析失败:", error, data);
+              eventBuffer = "";
             }
           }
         }
       }
 
-      // 连接正常关闭
-      console.log("SSE 连接已关闭");
-      this.disconnect();
-
-      // 非手动关闭时自动重连
-      if (!this.isManualClose) {
-        this.scheduleReconnect();
-      }
+      this.cleanup(false);
+      if (!this.isManualClose) this.scheduleReconnect();
     } catch (error) {
       console.error("SSE 连接错误:", error);
       this.onErrorCallback?.(error as Error);
-      this.onStatusChangeCallback?.(false);
-
-      this.disconnect();
-
-      // 非手动关闭时自动重连
-      if (!this.isManualClose) {
-        this.scheduleReconnect();
-      }
+      this.cleanup(false);
+      if (!this.isManualClose) this.scheduleReconnect();
     }
   }
 
-  /**
-   * 安排重连
-   */
   private scheduleReconnect() {
     if (this.reconnectTimer || this.isManualClose) return;
 
@@ -150,12 +132,12 @@ class FetchSSE<T = any> {
     }, this.reconnectInterval);
   }
 
-  /**
-   * 断开SSE连接
-   */
   disconnect() {
     this.isManualClose = true;
+    this.cleanup(true);
+  }
 
+  private cleanup(triggerStatusChange: boolean) {
     if (this.reconnectTimer) {
       clearTimeout(this.reconnectTimer);
       this.reconnectTimer = null;
@@ -167,33 +149,23 @@ class FetchSSE<T = any> {
       console.log("SSE 已断开");
     }
 
-    this.onStatusChangeCallback?.(false);
+    if (triggerStatusChange) {
+      this.onStatusChangeCallback?.(false);
+    }
   }
 
-  /**
-   * 设置消息回调
-   */
   onMessage(callback: OnMessageCallback<T>) {
     this.onMessageCallback = callback;
   }
 
-  /**
-   * 设置连接状态变化回调
-   */
   onStatusChange(callback: OnStatusChangeCallback) {
     this.onStatusChangeCallback = callback;
   }
 
-  /**
-   * 设置错误回调
-   */
   onError(callback: OnErrorCallback) {
     this.onErrorCallback = callback;
   }
 
-  /**
-   * 获取连接状态
-   */
   isConnected(): boolean {
     return this.controller !== null;
   }
