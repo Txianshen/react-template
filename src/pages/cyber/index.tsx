@@ -10,6 +10,7 @@ import Dock from "@/components/dock";
 import SessionManagementDrawer from "./components/session-drawer";
 import WorkspaceButton from "./components/workspace-btn";
 import TTSMessageDisplay from "@/components/tts-message-display";
+// import PageLoader from "@/components/page-loader";
 
 function CyberPage() {
   // const [open, setOpen] = useState(false);
@@ -161,7 +162,10 @@ function CyberPage() {
         isExhibitionMode={currentSessionConfig?.run_mode === "展厅模式"}
       />
       {/* 根据运行模式决定布局 */}
-      {currentSessionConfig?.run_mode === "展厅模式" ? (
+      {currentSessionConfig?.run_mode === undefined ? (
+        // <PageLoader />
+        <></>
+      ) : currentSessionConfig?.run_mode === "展厅模式" ? (
         <>
           {/* 展厅模式：使用默认布局  */}
           <Suspense fallback={null}>
