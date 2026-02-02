@@ -203,6 +203,11 @@ export default function SessionManagementDrawer({
             const newSessionId = createResponse.data.id;
             setSessionId(newSessionId);
             useStreamingStore.getState().reset(); // 清空聊天记录
+            // 还需要更新下新会话配置
+            updateSessionConfigs({
+              ...sessionConfigs,
+              [newSessionId]: currentConfig || {},
+            });
           } else {
             toast.error(createResponse?.msg || "自动创建新会话失败");
             setSessionId(null);
