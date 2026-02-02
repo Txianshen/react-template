@@ -14,6 +14,53 @@ import TTSMessageDisplay from "@/components/tts-message-display";
 
 function CyberPage() {
   // const [open, setOpen] = useState(false);
+
+  // 加载会话详情的公共函数
+  const loadSessionDetails = async (session: any) => {
+    // 从会话信息中获取并设置用户ID
+    if (session.user_id) {
+      useCyberStore.getState().setUserId(session.user_id);
+    }
+    console.log("使用现有会话:", session.id);
+
+    // 获取会话详情
+    try {
+      const sessionDetailResponse = await getSession(session.id);
+      if (sessionDetailResponse && sessionDetailResponse.code === 200) {
+        const messages = sessionDetailResponse.data?.messages || [];
+        useStreamingStore.getState().setResponses(messages, session.id);
+        console.log("已加载会话消息:", messages.length, "条");
+      } else {
+        console.error("获取会话详情失败:", sessionDetailResponse?.msg);
+      }
+    } catch (detailError) {
+      console.error("获取会话详情异常:", detailError);
+    }
+  };
+
+  // 更新会话配置的公共函数
+  const updateSessionConfigurations = (sessions: any[]) => {
+    const sessionConfigs: {
+      [sessionId: string]: {
+        model_name?: string;
+        run_mode?: string;
+        max_iters?: number;
+      };
+    } = {};
+
+    sessions.forEach((session: any) => {
+      if (session.config) {
+        // 将会话中的 config 映射到期望的格式
+        sessionConfigs[session.id] = {
+          model_name: session.config.model_name,
+          run_mode: session.config.run_mode,
+          max_iters: session.config.max_iters,
+        };
+      }
+    });
+
+    updateSessionConfigs(sessionConfigs);
+  };
   const [sessionOpen, setSessionOpen] = useState(false);
   const currentSessionConfig = useCurrentSessionConfig();
   console.log("currentSessionConfig", currentSessionConfig);
@@ -40,49 +87,12 @@ function CyberPage() {
           // 如果存在会话，使用第一个会话的信息
           const firstSession = response.data[0];
           setSessionId(firstSession.id);
-          // 从会话信息中获取并设置用户ID
-          if (firstSession.user_id) {
-            useCyberStore.getState().setUserId(firstSession.user_id);
-          }
-          console.log("使用现有会话:", firstSession.id);
 
-          // 提取每个会话的配置并存储到 store
-          const sessionConfigs: {
-            [sessionId: string]: {
-              model_name?: string;
-              run_mode?: string;
-              max_iters?: number;
-            };
-          } = {};
+          // 使用公共函数更新会话配置
+          updateSessionConfigurations(response.data);
 
-          response.data.forEach((session: any) => {
-            if (session.config) {
-              // 将会话中的 config 映射到期望的格式
-              sessionConfigs[session.id] = {
-                model_name: session.config.model_name,
-                run_mode: session.config.run_mode,
-                max_iters: session.config.max_iters,
-              };
-            }
-          });
-
-          updateSessionConfigs(sessionConfigs);
-
-          // 还需要通过session.id触发获取会话详情接口
-          try {
-            const sessionDetailResponse = await getSession(firstSession.id);
-            if (sessionDetailResponse && sessionDetailResponse.code === 200) {
-              const messages = sessionDetailResponse.data?.messages || [];
-              useStreamingStore
-                .getState()
-                .setResponses(messages, firstSession.id);
-              console.log("已加载会话消息:", messages.length, "条");
-            } else {
-              console.error("获取会话详情失败:", sessionDetailResponse?.msg);
-            }
-          } catch (detailError) {
-            console.error("获取会话详情异常:", detailError);
-          }
+          // 使用公共函数加载会话详情
+          await loadSessionDetails(firstSession);
         } else {
           // 如果没有现有会话，创建新会话
           const createResponse = await createSession();
@@ -93,6 +103,22 @@ function CyberPage() {
           ) {
             setSessionId(createResponse.data.id);
             console.log("创建新会话:", createResponse.data.id);
+            const newResponse = await listSessions();
+            if (
+              newResponse &&
+              newResponse.code === 200 &&
+              newResponse.data &&
+              newResponse.data.length > 0
+            ) {
+              const firstSession = newResponse.data[0];
+              setSessionId(firstSession.id);
+
+              // 使用公共函数更新会话配置
+              updateSessionConfigurations(newResponse.data);
+
+              // 使用公共函数加载会话详情
+              await loadSessionDetails(firstSession);
+            }
           } else {
             console.error("创建会话失败:", createResponse?.msg);
           }
@@ -101,21 +127,42 @@ function CyberPage() {
         console.error("Error initializing session on init:", error);
 
         // 如果获取会话列表失败，尝试创建新会话
-        try {
-          const createResponse = await createSession();
-          if (
-            createResponse &&
-            createResponse.code === 200 &&
-            createResponse.data?.id
-          ) {
-            setSessionId(createResponse.data.id);
-            console.log("创建新会话:", createResponse.data.id);
-          } else {
-            console.error("创建会话失败:", createResponse?.msg);
-          }
-        } catch (createError) {
-          console.error("Error creating session:", createError);
-        }
+        // try {
+        //   const createResponse = await createSession();
+        //   if (
+        //     createResponse &&
+        //     createResponse.code === 200 &&
+        //     createResponse.data?.id
+        //   ) {
+        //     setSessionId(createResponse.data.id);
+        //     console.log("创建新会话:", createResponse.data.id);
+
+        //     // 对于新创建的会话，获取会话详情并更新配置
+        //     try {
+        //       const newSessionDetailResponse = await getSession(
+        //         createResponse.data.id
+        //       );
+        //       if (
+        //         newSessionDetailResponse &&
+        //         newSessionDetailResponse.code === 200
+        //       ) {
+        //         // 更新会话配置
+        //         if (newSessionDetailResponse.data) {
+        //           updateSessionConfigurations([newSessionDetailResponse.data]);
+        //         }
+
+        //         // 加载会话详情
+        //         await loadSessionDetails(newSessionDetailResponse.data);
+        //       }
+        //     } catch (detailError) {
+        //       console.error("获取新创建会话详情异常:", detailError);
+        //     }
+        //   } else {
+        //     console.error("创建会话失败:", createResponse?.msg);
+        //   }
+        // } catch (createError) {
+        //   console.error("Error creating session:", createError);
+        // }
       }
     };
 
