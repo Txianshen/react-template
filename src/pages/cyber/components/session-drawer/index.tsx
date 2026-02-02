@@ -63,7 +63,6 @@ export default function SessionManagementDrawer({
   const [configLoading, setConfigLoading] = useState<boolean>(false);
 
   const {
-    userId,
     sessionId,
     setSessionId,
     updateSessionConfigs,
@@ -76,16 +75,10 @@ export default function SessionManagementDrawer({
     if (open) {
       fetchSessions();
       fetchCurrentConfig();
-      // if (userId) {
-      // } else {
-      //   // toast.error("用户ID未设置");
-      // }
     }
-  }, [open, userId]);
+  }, [open]);
 
   const fetchSessions = async () => {
-    if (!userId) return;
-
     setLoading(true);
     try {
       const response = await listSessions();
@@ -129,11 +122,6 @@ export default function SessionManagementDrawer({
 
   // 创建新会话
   const handleCreateSession = async () => {
-    if (!userId) {
-      // toast.error("用户ID未设置");
-      return;
-    }
-
     try {
       const response = await createSession();
       if (response && response.code === 200 && response.data?.id) {
@@ -186,7 +174,7 @@ export default function SessionManagementDrawer({
 
   // 删除会话
   const handleDeleteSession = async () => {
-    if (!deletingSessionId || !userId) return;
+    if (!deletingSessionId) return;
 
     try {
       const response = await deleteSession(deletingSessionId);
@@ -250,7 +238,6 @@ export default function SessionManagementDrawer({
 
   // 切换到指定会话
   const handleSwitchSession = async (session: Session) => {
-    if (!userId) return;
     if (sessionId === session.id) {
       setOpen(false); // 关闭抽屉
       return;

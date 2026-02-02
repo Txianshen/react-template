@@ -43,6 +43,16 @@ const routesConfig: ExtendedRouteObject[] = [
       </AuthGuard>
     ),
   },
+  {
+    path: "/cyber/:sessionId",
+    element: (
+      <AuthGuard>
+        <Suspense fallback={<PageLoader />}>
+          <CyberPage />
+        </Suspense>
+      </AuthGuard>
+    ),
+  },
 ];
 
 // 创建 Hash Router

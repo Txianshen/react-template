@@ -15,14 +15,14 @@ import LoadingIcon from "@/assets/icons/loading-icon";
 
 // 定义 RightCenter 组件
 export default function RightCenter() {
-  const { userId, sessionId } = useCyberStore();
+  const { sessionId } = useCyberStore();
   const [pocList, setPocList] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // 检查 userId 和 sessionId 是否存在
-    if (!userId || !sessionId) {
+    // 检查sessionId 是否存在
+    if (!sessionId) {
       // setError("用户ID或会话ID不存在");
       setLoading(false);
       return;
@@ -47,7 +47,7 @@ export default function RightCenter() {
     };
 
     fetchPocList();
-  }, [userId, sessionId]);
+  }, [sessionId]);
 
   return (
     <Conversation className="h-full">

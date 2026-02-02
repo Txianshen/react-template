@@ -19,7 +19,7 @@ export default function BrowserAutomation(props: BrowserAutomationProps) {
   const [key, setKey] = useState(0); // 用于强制刷新 iframe
 
   // 从 cyberStore 获取 userId 和 sessionId
-  const { userId, sessionId } = useCyberStore();
+  const { sessionId } = useCyberStore();
 
   // 创建 ref 来保存 iframe 的引用
   const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -31,8 +31,8 @@ export default function BrowserAutomation(props: BrowserAutomationProps) {
   // 获取沙箱 URL 的函数（只在组件挂载时调用一次）
   const fetchSandboxUrl = async () => {
     // 检查 userId 和 sessionId 是否存在
-    if (!userId || !sessionId) {
-      console.warn("缺少 userId 或 sessionId，无法获取沙箱 URL");
+    if (!sessionId) {
+      console.warn("缺少sessionId，无法获取沙箱 URL");
       setLoading(false);
       return;
     }
@@ -70,7 +70,7 @@ export default function BrowserAutomation(props: BrowserAutomationProps) {
     return () => {
       clearInterval(intervalId);
     };
-  }, [userId, sessionId]);
+  }, [sessionId]);
 
   // 刷新功能
   const refreshIframe = () => {

@@ -25,6 +25,7 @@ import { useUserStore } from "@/store/userStore";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useCyberStore } from "@/store/cyberStore";
 
 export default function WorkspaceButton({
   // onOpenSettings,
@@ -39,9 +40,11 @@ export default function WorkspaceButton({
   const { userInfo, logout, updateProfile } = useUserStore();
   const [showProfileEdit, setShowProfileEdit] = useState(false);
   const [editName, setEditName] = useState("");
+  const { clearCyberData } = useCyberStore();
 
   const handleLogout = () => {
     logout();
+    clearCyberData();
     navigate("/login");
     toast.success("已退出登录");
   };

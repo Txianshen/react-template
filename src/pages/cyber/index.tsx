@@ -1,4 +1,6 @@
 import { useEffect, useState, Suspense, lazy } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+// import { toast } from "sonner";
 import autofit from "autofit.js";
 import { useCurrentSessionConfig, useCyberStore } from "@/store/cyberStore";
 import { useStreamingStore } from "@/store/streamingStoreState";
@@ -13,15 +15,20 @@ import TTSMessageDisplay from "@/components/tts-message-display";
 // import PageLoader from "@/components/page-loader";
 
 function CyberPage() {
+  const { sessionId: urlSessionId } = useParams<{ sessionId: string }>();
+  const navigate = useNavigate();
   // const [open, setOpen] = useState(false);
 
   // 加载会话详情的公共函数
   const loadSessionDetails = async (session: any) => {
     // 从会话信息中获取并设置用户ID
+
     if (session.user_id) {
       useCyberStore.getState().setUserId(session.user_id);
     }
-    console.log("使用现有会话:", session.id);
+    if (session.id) {
+      setSessionId(session.id);
+    }
 
     // 获取会话详情
     try {
@@ -35,6 +42,11 @@ function CyberPage() {
       }
     } catch (detailError) {
       console.error("获取会话详情异常:", detailError);
+    }
+    // 导航到包含会话ID的路由
+
+    if (session.id && !window.location.pathname.includes(session.id)) {
+      navigate(`/cyber/${session.id}`, { replace: true });
     }
   };
 
@@ -63,34 +75,32 @@ function CyberPage() {
   };
   const [sessionOpen, setSessionOpen] = useState(false);
   const currentSessionConfig = useCurrentSessionConfig();
-  console.log("currentSessionConfig", currentSessionConfig);
 
   // 从 store 获取会话相关状态和方法
-  const { sessionId, setSessionId, updateSessionConfigs } = useCyberStore();
+  const { userId, sessionId, setSessionId, updateSessionConfigs } =
+    useCyberStore();
 
   // 初始化会话的逻辑
   useEffect(() => {
     const initSession = async () => {
-      // 检查是否已经初始化过，避免重复初始化
       if (sessionId) return;
+      if (urlSessionId) return;
+      await loadDefaultSession();
+    };
 
+    // 原来的初始化逻辑提取为独立函数
+    const loadDefaultSession = async () => {
       try {
-        // 首先尝试获取现有会话列表
         const response = await listSessions();
-
         if (
           response &&
           response.code === 200 &&
           response.data &&
           response.data.length > 0
         ) {
-          // 如果存在会话，使用第一个会话的信息
           const firstSession = response.data[0];
-          setSessionId(firstSession.id);
-
           // 使用公共函数更新会话配置
           updateSessionConfigurations(response.data);
-
           // 使用公共函数加载会话详情
           await loadSessionDetails(firstSession);
         } else {
@@ -101,8 +111,6 @@ function CyberPage() {
             createResponse.code === 200 &&
             createResponse.data?.id
           ) {
-            setSessionId(createResponse.data.id);
-            console.log("创建新会话:", createResponse.data.id);
             const newResponse = await listSessions();
             if (
               newResponse &&
@@ -111,11 +119,8 @@ function CyberPage() {
               newResponse.data.length > 0
             ) {
               const firstSession = newResponse.data[0];
-              setSessionId(firstSession.id);
-
               // 使用公共函数更新会话配置
               updateSessionConfigurations(newResponse.data);
-
               // 使用公共函数加载会话详情
               await loadSessionDetails(firstSession);
             }
@@ -125,49 +130,38 @@ function CyberPage() {
         }
       } catch (error) {
         console.error("Error initializing session on init:", error);
-
-        // 如果获取会话列表失败，尝试创建新会话
-        // try {
-        //   const createResponse = await createSession();
-        //   if (
-        //     createResponse &&
-        //     createResponse.code === 200 &&
-        //     createResponse.data?.id
-        //   ) {
-        //     setSessionId(createResponse.data.id);
-        //     console.log("创建新会话:", createResponse.data.id);
-
-        //     // 对于新创建的会话，获取会话详情并更新配置
-        //     try {
-        //       const newSessionDetailResponse = await getSession(
-        //         createResponse.data.id
-        //       );
-        //       if (
-        //         newSessionDetailResponse &&
-        //         newSessionDetailResponse.code === 200
-        //       ) {
-        //         // 更新会话配置
-        //         if (newSessionDetailResponse.data) {
-        //           updateSessionConfigurations([newSessionDetailResponse.data]);
-        //         }
-
-        //         // 加载会话详情
-        //         await loadSessionDetails(newSessionDetailResponse.data);
-        //       }
-        //     } catch (detailError) {
-        //       console.error("获取新创建会话详情异常:", detailError);
-        //     }
-        //   } else {
-        //     console.error("创建会话失败:", createResponse?.msg);
-        //   }
-        // } catch (createError) {
-        //   console.error("Error creating session:", createError);
-        // }
       }
     };
 
     initSession();
-  }, [sessionId]); // 只有在 sessionId 未设置时才初始化
+  }, [sessionId]); // 添加 urlSessionId 作为依赖
+
+  useEffect(() => {
+    const initUrlSession = async () => {
+      if (urlSessionId && urlSessionId !== sessionId) {
+        const newResponse = await listSessions();
+        if (
+          newResponse &&
+          newResponse.code === 200 &&
+          newResponse.data &&
+          newResponse.data.length > 0
+        ) {
+          const session = newResponse.data.find(
+            (s: any) => s.id === urlSessionId
+          );
+          if (session) {
+            updateSessionConfigurations(newResponse.data);
+            loadSessionDetails({
+              id: urlSessionId,
+              user_id: userId,
+            });
+          }
+        }
+      }
+    };
+    initUrlSession();
+  }, [urlSessionId]);
+
   useEffect(() => {
     // 只在 Cyber 大屏页面启用 autofit
     autofit.init(

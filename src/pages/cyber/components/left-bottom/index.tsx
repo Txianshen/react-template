@@ -12,7 +12,7 @@ import { useCyberStore } from "@/store/cyberStore";
 import { createAuthPlanSSE } from "@/lib/auth-plan-sse";
 import { useEffect, useState, useRef } from "react";
 export default function LeftBottom() {
-  const { userId, sessionId } = useCyberStore();
+  const { sessionId } = useCyberStore();
 
   // 1. 用于显示的 State
   const [displayPlan, setDisplayPlan] = useState<string>("");
@@ -24,7 +24,7 @@ export default function LeftBottom() {
   const rafIdRef = useRef<number | null>(null);
 
   useEffect(() => {
-    if (!userId || !sessionId) return;
+    if (!sessionId) return;
 
     // --- SSE 连接逻辑 ---
     const sse = createAuthPlanSSE({ session_id: sessionId });
@@ -68,7 +68,7 @@ export default function LeftBottom() {
         cancelAnimationFrame(rafIdRef.current);
       }
     };
-  }, [userId, sessionId]);
+  }, [sessionId]);
 
   return (
     <Conversation className="h-full">

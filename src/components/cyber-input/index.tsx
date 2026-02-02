@@ -31,7 +31,7 @@ export default function CyberInput({
   >("ready");
 
   // 从 cyberStore 获取 userId 和 sessionId
-  const { userId, sessionId } = useCyberStore();
+  const { sessionId } = useCyberStore();
 
   // 当外部状态变化时，更新内部状态
   useEffect(() => {
@@ -55,8 +55,8 @@ export default function CyberInput({
   const handlePause = async () => {
     try {
       // 检查 userId 和 sessionId 是否存在
-      if (!userId || !sessionId) {
-        console.error("缺少 userId 或 sessionId");
+      if (!sessionId) {
+        console.error("sessionId");
         // setStatus("error");
         return;
       }
