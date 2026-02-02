@@ -5,190 +5,155 @@ import autofit from "autofit.js";
 import { useCurrentSessionConfig, useCyberStore } from "@/store/cyberStore";
 import { useStreamingStore } from "@/store/streamingStoreState";
 import { listSessions, getSession, createSession } from "@/api/cyber";
+
 const AlternativeLayout = lazy(() => import("./components/alternative-layout"));
 const DefaultLayout = lazy(() => import("./components/default-layout"));
 import Dock from "@/components/dock";
-// import ModelSettingsDrawer from "./components/setting-drawer";
 import SessionManagementDrawer from "./components/session-drawer";
 import WorkspaceButton from "./components/workspace-btn";
 import TTSMessageDisplay from "@/components/tts-message-display";
-// import PageLoader from "@/components/page-loader";
 
 function CyberPage() {
   const { sessionId: urlSessionId } = useParams<{ sessionId: string }>();
   const navigate = useNavigate();
-  // const [open, setOpen] = useState(false);
 
-  // 加载会话详情的公共函数
-  const loadSessionDetails = async (session: any) => {
-    // 从会话信息中获取并设置用户ID
+  const [sessionOpen, setSessionOpen] = useState(false);
+  const [scale, setScale] = useState(1);
 
+  const currentSessionConfig = useCurrentSessionConfig();
+  const { userId, sessionId, setSessionId, updateSessionConfigs } =
+    useCyberStore();
+
+  /**
+   * ================================
+   * Step 1：真正的「激活会话」
+   * ================================
+   */
+  const activateSession = async (session: any) => {
     if (session.user_id) {
       useCyberStore.getState().setUserId(session.user_id);
     }
+
     if (session.id) {
       setSessionId(session.id);
     }
 
-    // 获取会话详情
     try {
-      const sessionDetailResponse = await getSession(session.id);
-      if (sessionDetailResponse && sessionDetailResponse.code === 200) {
-        const messages = sessionDetailResponse.data?.messages || [];
+      const detailRes = await getSession(session.id);
+      if (detailRes?.code === 200) {
+        const messages = detailRes.data?.messages || [];
         useStreamingStore.getState().setResponses(messages, session.id);
-        console.log("已加载会话消息:", messages.length, "条");
       } else {
-        console.error("获取会话详情失败:", sessionDetailResponse?.msg);
+        console.error("获取会话详情失败:", detailRes?.msg);
       }
-    } catch (detailError) {
-      console.error("获取会话详情异常:", detailError);
+    } catch (err) {
+      console.error("获取会话详情异常:", err);
     }
-    // 导航到包含会话ID的路由
 
     if (session.id && !window.location.pathname.includes(session.id)) {
       navigate(`/cyber/${session.id}`, { replace: true });
     }
   };
 
-  // 更新会话配置的公共函数
-  const updateSessionConfigurations = (sessions: any[]) => {
-    const sessionConfigs: {
-      [sessionId: string]: {
-        model_name?: string;
-        run_mode?: string;
-        max_iters?: number;
-      };
-    } = {};
+  /**
+   * ================================
+   * Step 2：统一入口
+   * list / create / find / activate
+   * ================================
+   */
+  const fetchAndActivateSession = async (target?: {
+    id: string;
+    user_id?: string;
+  }) => {
+    try {
+      let res = await listSessions();
 
-    sessions.forEach((session: any) => {
-      if (session.config) {
-        // 将会话中的 config 映射到期望的格式
-        sessionConfigs[session.id] = {
-          model_name: session.config.model_name,
-          run_mode: session.config.run_mode,
-          max_iters: session.config.max_iters,
-        };
+      // 没有会话 → 创建
+      if (!res?.data || res.data.length === 0) {
+        const created = await createSession();
+        if (!created?.data?.id) {
+          toast.error("创建会话失败");
+          return;
+        }
+        res = await listSessions();
       }
-    });
 
-    updateSessionConfigs(sessionConfigs);
+      if (!res?.data || res.data.length === 0) return;
+
+      // 更新所有 session config
+      const sessionConfigs: any = {};
+      res.data.forEach((s: any) => {
+        if (s.config) {
+          sessionConfigs[s.id] = {
+            model_name: s.config.model_name,
+            run_mode: s.config.run_mode,
+            max_iters: s.config.max_iters,
+          };
+        }
+      });
+      updateSessionConfigs(sessionConfigs);
+
+      // 选择要激活的 session
+      const session = target
+        ? res.data.find((s: any) => s.id === target.id)
+        : res.data[0];
+
+      if (!session) {
+        toast.error("会话不存在");
+        return;
+      }
+
+      await activateSession(session);
+    } catch (err) {
+      console.error("初始化会话失败:", err);
+    }
   };
-  const [sessionOpen, setSessionOpen] = useState(false);
-  const currentSessionConfig = useCurrentSessionConfig();
 
-  // 从 store 获取会话相关状态和方法
-  const { userId, sessionId, setSessionId, updateSessionConfigs } =
-    useCyberStore();
+  /**
+   * ================================
+   * Step 3：useEffect 只负责「来源判断」
+   * ================================
+   */
 
-  // 初始化会话的逻辑
+  // URL session 优先
   useEffect(() => {
-    const initSession = async () => {
-      if (sessionId) return;
-      if (urlSessionId) return;
-      await loadDefaultSession();
-    };
+    if (!urlSessionId) return;
+    if (urlSessionId === sessionId) return;
 
-    // 原来的初始化逻辑提取为独立函数
-    const loadDefaultSession = async () => {
-      try {
-        const response = await listSessions();
-        if (
-          response &&
-          response.code === 200 &&
-          response.data &&
-          response.data.length > 0
-        ) {
-          const firstSession = response.data[0];
-          // 使用公共函数更新会话配置
-          updateSessionConfigurations(response.data);
-          // 使用公共函数加载会话详情
-          await loadSessionDetails(firstSession);
-        } else {
-          // 如果没有现有会话，创建新会话
-          const createResponse = await createSession();
-          if (
-            createResponse &&
-            createResponse.code === 200 &&
-            createResponse.data?.id
-          ) {
-            const newResponse = await listSessions();
-            if (
-              newResponse &&
-              newResponse.code === 200 &&
-              newResponse.data &&
-              newResponse.data.length > 0
-            ) {
-              const firstSession = newResponse.data[0];
-              // 使用公共函数更新会话配置
-              updateSessionConfigurations(newResponse.data);
-              // 使用公共函数加载会话详情
-              await loadSessionDetails(firstSession);
-            }
-          } else {
-            console.error("创建会话失败:", createResponse?.msg);
-          }
-        }
-      } catch (error) {
-        console.error("Error initializing session on init:", error);
-      }
-    };
-
-    initSession();
-  }, [sessionId]); // 添加 urlSessionId 作为依赖
-
-  useEffect(() => {
-    const initUrlSession = async () => {
-      if (urlSessionId && urlSessionId !== sessionId) {
-        const newResponse = await listSessions();
-        if (
-          newResponse &&
-          newResponse.code === 200 &&
-          newResponse.data &&
-          newResponse.data.length > 0
-        ) {
-          const session = newResponse.data.find(
-            (s: any) => s.id === urlSessionId
-          );
-          if (session) {
-            updateSessionConfigurations(newResponse.data);
-            loadSessionDetails({
-              id: urlSessionId,
-              user_id: userId,
-            });
-          } else {
-            toast.error("会话不存在");
-          }
-        }
-      }
-    };
-    initUrlSession();
+    fetchAndActivateSession({ id: urlSessionId, user_id: userId });
   }, [urlSessionId]);
 
+  // 默认初始化
   useEffect(() => {
-    // 只在 Cyber 大屏页面启用 autofit
+    if (sessionId) return;
+    if (urlSessionId) return;
+
+    fetchAndActivateSession();
+  }, [sessionId, urlSessionId]);
+
+  /**
+   * ================================
+   * autofit & scale（原逻辑不动）
+   * ================================
+   */
+  useEffect(() => {
     autofit.init(
       {
-        dh: 1080, // 设计稿高度
-        dw: 3840, // 设计稿宽度
-        el: "#cyber-screen", // 只缩放这个容器
+        dh: 1080,
+        dw: 3840,
+        el: "#cyber-screen",
         resize: true,
       },
       false
     );
-    return () => {
-      autofit.off();
-    };
+    return () => autofit.off();
   }, []);
-  const [scale, setScale] = useState(1);
-  function getAutofitScale() {
-    const scaleX = window.innerWidth / 3840;
-    const scaleY = window.innerHeight / 1080;
-    return Math.min(scaleX, scaleY);
-  }
 
   useEffect(() => {
     const update = () => {
-      setScale(getAutofitScale());
+      const scaleX = window.innerWidth / 3840;
+      const scaleY = window.innerHeight / 1080;
+      setScale(Math.min(scaleX, scaleY));
     };
     update();
     window.addEventListener("resize", update);
@@ -204,29 +169,24 @@ function CyberPage() {
         onOpenSessions={() => setSessionOpen(true)}
         isExhibitionMode={currentSessionConfig?.run_mode === "展厅模式"}
       />
-      {/* 根据运行模式决定布局 */}
+
       {currentSessionConfig?.run_mode === undefined ? (
-        // <PageLoader />
         <></>
       ) : currentSessionConfig?.run_mode === "展厅模式" ? (
         <>
-          {/* 展厅模式：使用默认布局  */}
           <Suspense fallback={null}>
             <DefaultLayout scale={scale} />
           </Suspense>
-          {/* TTS消息显示 */}
           <TTSMessageDisplay />
         </>
       ) : (
-        /* 非展厅模式：左右两列布局 */
         <Suspense fallback={null}>
           <AlternativeLayout scale={scale} />
         </Suspense>
       )}
-      {/* <ModelSettingsDrawer open={open} setOpen={setOpen} /> */}
+
       <SessionManagementDrawer open={sessionOpen} setOpen={setSessionOpen} />
 
-      {/* fixed布局任务栏 -- 最小化的窗口 */}
       <Dock />
     </div>
   );
