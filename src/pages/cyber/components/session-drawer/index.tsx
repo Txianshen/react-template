@@ -18,6 +18,7 @@ import { useCyberStore } from "@/store/cyberStore";
 import { useStreamingStore } from "@/store/streamingStoreState";
 import { Trash2, Settings } from "lucide-react";
 import ModelSettingsDrawer from "../setting-drawer";
+import { useNavigate } from "react-router-dom";
 
 import {
   Dialog,
@@ -69,7 +70,7 @@ export default function SessionManagementDrawer({
     setSessionConfig,
     sessionConfigs,
   } = useCyberStore();
-
+  const navigate = useNavigate();
   // 获取会话列表
   useEffect(() => {
     if (open) {
@@ -131,6 +132,7 @@ export default function SessionManagementDrawer({
         fetchSessions();
         // 设置新创建的会话为当前会话
         setSessionId(newSessionId);
+        navigate(`/cyber/${newSessionId}`);
         // 清空聊天记录
         useStreamingStore.getState().reset();
         useStreamingStore.getState().setResponses([]);
@@ -196,6 +198,7 @@ export default function SessionManagementDrawer({
               ...sessionConfigs,
               [newSessionId]: currentConfig || {},
             });
+            navigate(`/cyber/${newSessionId}`);
           } else {
             toast.error(createResponse?.msg || "自动创建新会话失败");
             setSessionId(null);
@@ -243,6 +246,7 @@ export default function SessionManagementDrawer({
       return;
     }
     setSessionId(session.id);
+    navigate(`/cyber/${session.id}`);
     // 设置当前会话的配置
     if (session.config) {
       setSessionConfig(session.id, session.config);
