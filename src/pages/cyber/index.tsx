@@ -1,6 +1,6 @@
 import { useEffect, useState, Suspense, lazy } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-// import { toast } from "sonner";
+import { toast } from "sonner";
 import autofit from "autofit.js";
 import { useCurrentSessionConfig, useCyberStore } from "@/store/cyberStore";
 import { useStreamingStore } from "@/store/streamingStoreState";
@@ -155,6 +155,8 @@ function CyberPage() {
               id: urlSessionId,
               user_id: userId,
             });
+          } else {
+            toast.error("会话不存在");
           }
         }
       }
