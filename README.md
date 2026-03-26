@@ -1,33 +1,39 @@
-# AI智能攻防平台前端
+# React + Tailwind CSS 模板
 
-这是一个基于 React + TypeScript + Vite 构建的AI智能攻防平台前端项目。
+这是一个基于 React + TypeScript + Vite 的现代前端模板，集成了 Tailwind CSS、Zustand 状态管理和 React Router。
 
 ## 技术栈
 
-- **框架**: React 19
-- **语言**: TypeScript
-- **构建工具**: Vite
-- **路由**: React Router v7
-- **状态管理**: Zustand
-- **UI组件库**: Radix UI + Tailwind CSS
-- **样式**: Tailwind CSS
-- **包管理**: pnpm
+| 分类 | 技术 | 说明 |
+|------|------|------|
+| 框架 | React 19 | 核心框架 |
+| 语言 | TypeScript | 类型安全 |
+| 构建 | Vite 7 | 快速开发构建 |
+| 路由 | React Router v7 | Hash Router 模式 |
+| 状态 | Zustand 5 | 轻量状态管理 |
+| 样式 | Tailwind CSS 4 | 原子化 CSS |
+| 组件 | Radix UI + shadcn/ui | 无障碍 UI 组件 |
+| Toast | Sonner | 轻量提示组件 |
+| 表单 | React Hook Form | 高性能表单 |
+| 图标 | Lucide React | 一致性图标库 |
 
 ## 项目结构
 
 ```
 src/
-├── api/                 # API接口封装
-├── assets/              # 静态资源
-├── components/          # 公共组件
-├── guards/              # 路由守卫
-├── layout/              # 布局组件
-├── lib/                 # 工具库
-├── pages/               # 页面组件
-├── providers/           # 上下文提供者
-├── router/              # 路由配置
-├── store/               # 状态存储
-└── App.tsx             # 根组件
+├── api/                    # API 接口封装
+│   ├── axiosInstance.ts    # Axios 实例配置
+│   └── test.ts             # API 示例
+├── components/             # UI 组件
+│   └── ui/                 # shadcn/ui 组件
+├── hooks/                  # 自定义 Hooks
+├── lib/                    # 工具库
+│   └── utils.ts            # 工具函数 (cn)
+├── pages/                  # 页面组件
+├── router/                 # 路由配置
+├── store/                  # Zustand Store
+├── guards/                 # 路由守卫
+└── App.tsx                 # 根组件
 ```
 
 ## 快速开始
@@ -35,77 +41,94 @@ src/
 ### 环境要求
 
 - Node.js >= 18.x
-- pnpm >= 8.x
-
-### pnpm 安装
-
-如果系统尚未安装 pnpm，可以通过以下方式安装：
-
-```bash
-# 通过 npm 安装
-npm install -g pnpm
-
-```
-
-验证安装：
-
-```bash
-pnpm --version
-```
-
-> 注意：本项目使用 pnpm 作为包管理器，请勿使用 npm 或 yarn 安装依赖。
+- npm / pnpm / yarn
 
 ### 安装依赖
 
 ```bash
+npm install
+# 或
 pnpm install
+# 或
+yarn install
 ```
 
-### 开发环境
+### 开发命令
 
 ```bash
 # 启动开发服务器
-pnpm dev
-```
+npm run dev
 
-默认访问地址: http://localhost:5173
-
-### 生产构建
-
-```bash
 # 构建生产版本
-pnpm build
+npm run build
 
 # 预览生产构建
-pnpm preview
-```
+npm run preview
 
-### 代码检查与格式化
-
-```bash
 # 代码检查
-pnpm lint
+npm run lint
 
 # 代码格式化
-pnpm format
+npm run format
 ```
 
-## 功能模块
+## 常用组件
 
-- 登录认证
-- 智能体管理（综合渗透、信息搜集、端口探测、Web红队等）
-- 浏览器自动化
-- 设置页面
+项目集成了以下 shadcn/ui 组件，可直接使用：
 
-## 路由配置
+- `Button` / `ButtonGroup` - 按钮组件
+- `Dialog` - 对话框
+- `DropdownMenu` - 下拉菜单
+- `Select` - 选择器
+- `Sheet` - 侧边抽屉
+- `Accordion` - 手风琴
+- `Form` / `Input` / `Label` - 表单组件
+- `Tooltip` / `HoverCard` / `Popover` - 浮层组件
+- `Slider` / `Separator` - 布局组件
+- `Command` - 命令面板
+- `Sonner` - Toast 提示
 
-项目使用 Hash Router 模式，主要路由包括：
+## 状态管理示例
 
-- `/login` - 登录页面
-- `/app/settings` - 设置页面
-- `/app/browser` - 浏览器自动化
-- `/app/agents/*` - 各类智能体页面
+```typescript
+// store/demo.ts
+import { create } from "zustand";
 
-## 主题
+interface DemoState {
+  count: number;
+  increment: () => void;
+}
 
-项目默认使用暗色主题，基于 next-themes 实现主题切换功能。
+export const useDemoStore = create<DemoState>((set) => ({
+  count: 0,
+  increment: () => set((state) => ({ count: state.count + 1 })),
+}));
+
+// 组件中使用
+const count = useDemoStore((state) => state.count);
+```
+
+## Hook 示例
+
+```typescript
+// hooks/useCounter.ts
+import { useState } from "react";
+
+export function useCounter(initialValue = 0) {
+  const [count, setCount] = useState(initialValue);
+  const increment = () => setCount((c) => c + 1);
+  const decrement = () => setCount((c) => c - 1);
+  const reset = () => setCount(initialValue);
+  return { count, increment, decrement, reset };
+}
+```
+
+## 样式工具
+
+`cn` 函数用于合并 Tailwind 类名：
+
+```typescript
+import { cn } from "@/lib/utils";
+
+<div className={cn("base-class", isActive && "active-class")} />
+```
